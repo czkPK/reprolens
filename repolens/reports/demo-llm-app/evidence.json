@@ -65,9 +65,9 @@
   {
     "id": "E-010",
     "kind": "rag",
-    "path": "README.md",
-    "line": 17,
-    "excerpt": "knowledge base"
+    "path": "configs/app.yaml",
+    "line": 8,
+    "excerpt": "vector_store"
   },
   {
     "id": "E-011",

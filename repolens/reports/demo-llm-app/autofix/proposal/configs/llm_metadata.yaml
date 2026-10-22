@@ -1,0 +1,8 @@
+model:
+  provider: openai
+  model_id: gpt-4o-mini
+  model_version: gpt-4o-mini
+sampling:
+  temperature: 0.2
+  top_p: 0.9
+  max_tokens: 512

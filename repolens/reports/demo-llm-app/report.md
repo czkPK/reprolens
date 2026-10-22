@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-21T14:44:07.111037+00:00`
+- Generated at: `2026-10-22T13:33:53.226663+00:00`
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
 - Readiness: **At Risk**
@@ -118,19 +118,19 @@
 ### F-012 [MEDIUM] prompt/template 有版本记录
 
 - Criterion: `LLM-02`
-- Message: 有 prompt 文件或描述，但没有版本信息。
+- Message: 有 prompt 文件或描述，但没有可核验的版本信息。
 - Evidence: `E-004`
 
 ### F-013 [MEDIUM] 记录 tokenizer/上下文窗口
 
 - Criterion: `LLM-04`
-- Message: 有采样参数，但没有 tokenizer/上下文窗口说明。
+- Message: 有相关配置，但 tokenizer/上下文窗口仍需补充。
 - Evidence: `E-008`
 
 ### F-014 [MEDIUM] Agent 工具调用轨迹可追溯
 
 - Criterion: `LLM-06`
-- Message: 检测到 Agent 项目，但没有调用轨迹或日志。
+- Message: 检测到 Agent 项目，但调用轨迹仍需补充。
 - Evidence: `E-011`
 
 ### F-015 [MEDIUM] 说明评测集、数据划分和污染风险
@@ -149,7 +149,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.066s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.067s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 
@@ -292,7 +292,7 @@
 - `E-007` [model] `configs/app.yaml:3` — gpt-4
 - `E-008` [llm-config] `configs/app.yaml:4` — temperature
 - `E-009` [rag] `README.md:1` — RAG
-- `E-010` [rag] `README.md:17` — knowledge base
+- `E-010` [rag] `configs/app.yaml:8` — vector_store
 - `E-011` [agent] `README.md:3` — agent
 
 ## Scope and Limitations

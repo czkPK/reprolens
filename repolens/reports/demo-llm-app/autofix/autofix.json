@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-10-22T13:33:53.269551+00:00",
+  "before_score": 49.1,
+  "after_score": 63.4,
+  "delta": 14.3,
+  "generated_files": [
+    {
+      "path": "Dockerfile",
+      "reason": "ENV-02: 增加容器化入口，固定 Python 与依赖安装方式。"
+    },
+    {
+      "path": "reproduce.sh",
+      "reason": "DOC-03: 提供一键复现入口。"
+    },
+    {
+      "path": "tests/test_smoke.py",
+      "reason": "DOC-03: 增加最小烟雾测试，验证关键项目文件存在。"
+    },
+    {
+      "path": "data/download.sh",
+      "reason": "DATA-02: 提供数据下载脚本入口；URL 需要维护者补充。"
+    },
+    {
+      "path": "dataset_card.md",
+      "reason": "DATA-03: 增加数据集卡模板；来源和许可需要维护者确认。"
+    },
+    {
+      "path": "model_card.md",
+      "reason": "MODEL-02/03: 增加模型卡，记录可核验的模型来源。"
+    },
+    {
+      "path": "prompts/prompt_metadata.json",
+      "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+    },
+    {
+      "path": "configs/llm_metadata.yaml",
+      "reason": "LLM-01/03: 增加模型和采样参数配置模板。"
+    },
+    {
+      "path": "eval/README.md",
+      "reason": "LLM-07: 增加评测协议模板；评测集、数据划分和污染分析需要维护者确认。"
+    }
+  ],
+  "fixed_criteria": [
+    "ENV-02",
+    "DOC-03",
+    "LLM-02"
+  ],
+  "changed_criteria": [
+    "ENV-02",
+    "DATA-02",
+    "DATA-03",
+    "MODEL-03",
+    "DOC-03",
+    "LLM-02"
+  ],
+  "remaining_gaps": [
+    "DATA-01",
+    "DATA-02",
+    "DATA-03",
+    "MODEL-03",
+    "EXP-01",
+    "EXP-02",
+    "EXP-03",
+    "EXP-05",
+    "DOC-02",
+    "LLM-04",
+    "LLM-06",
+    "LLM-07",
+    "LLM-08"
+  ],
+  "proposal_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\demo-llm-app\\autofix\\proposal",
+  "staging_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\demo-llm-app\\autofix\\staging",
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+}

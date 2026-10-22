@@ -74,6 +74,10 @@ def _result(
 
 def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     ev = snapshot.evidence_for
+
+    def concrete(flag: str) -> bool:
+        return snapshot.has(flag) and not snapshot.has_placeholder(flag)
+
     results: list[CriterionResult] = []
     by_id = {spec.id: spec for spec in SPECS}
 
@@ -107,15 +111,19 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("DATA-01", "missing", "没有数据来源说明。")
 
-    if snapshot.has("data_script"):
+    if concrete("data_script"):
         add("DATA-02", "pass", "已发现数据下载或预处理脚本。", ev("data_script"))
+    elif snapshot.has("data_script"):
+        add("DATA-02", "partial", "存在数据脚本，但其中仍包含 TODO/占位内容。", ev("data_script"))
     elif snapshot.has("data_mention"):
         add("DATA-02", "partial", "有数据说明，但没有下载/预处理脚本。", ev("data_mention"))
     else:
         add("DATA-02", "missing", "没有数据下载或预处理脚本。")
 
-    if snapshot.has("dataset_card"):
+    if concrete("dataset_card"):
         add("DATA-03", "pass", "已发现数据集卡。", ev("dataset_card"))
+    elif snapshot.has("dataset_card"):
+        add("DATA-03", "partial", "数据集卡已生成，但仍有待补充字段。", ev("dataset_card"))
     elif snapshot.has("license") and snapshot.has("data_mention"):
         add("DATA-03", "partial", "有许可证和数据说明，但没有独立数据集卡。", ev("license", "data_mention"))
     else:
@@ -130,17 +138,17 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("MODEL-01", "missing", "没有模型权重、API 或获取方式。", applicable=is_ml or is_llm)
 
-    if snapshot.has("model_card") or (is_llm and snapshot.has("model_version")):
+    if concrete("model_card") or (is_llm and concrete("model_version")):
         add("MODEL-02", "pass", "已发现模型卡或模型版本说明。", ev("model_card", "model_version"))
-    elif snapshot.has("model_provider"):
-        add("MODEL-02", "partial", "有模型提供方，但没有模型卡或精确版本。", ev("model_provider"))
+    elif snapshot.has("model_card") or snapshot.has("model_version") or snapshot.has("model_provider"):
+        add("MODEL-02", "partial", "有模型卡、版本或提供方信息，但仍需补充完整。", ev("model_card", "model_version", "model_provider"))
     else:
         add("MODEL-02", "missing", "没有模型卡或版本说明。", applicable=is_ml or is_llm)
 
-    if snapshot.has("model_card") and snapshot.has("license"):
+    if concrete("model_card") and concrete("license"):
         add("MODEL-03", "pass", "模型卡和许可证均已发现。", ev("model_card", "license"))
     elif snapshot.has("license") or snapshot.has("model_card"):
-        add("MODEL-03", "partial", "有许可证或模型卡，但没有同时说明模型专用许可和来源。", ev("license", "model_card"))
+        add("MODEL-03", "partial", "有许可证或模型卡，但模型专用许可和来源仍需补充。", ev("license", "model_card"))
     else:
         add("MODEL-03", "missing", "没有模型许可或来源说明。", applicable=is_ml or is_llm)
 
@@ -196,39 +204,45 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("DOC-03", "missing", "没有测试、CI 或一键复现脚本。")
 
+    llm01_pass = concrete("model_provider") and concrete("model_version")
+    llm01_partial = snapshot.has("model_provider") or snapshot.has("model_version")
     add("LLM-01",
-        "pass" if snapshot.has("model_provider") and snapshot.has("model_version") else ("partial" if snapshot.has("model_provider") or snapshot.has("model_version") else "missing"),
-        "已记录模型提供方和版本。" if snapshot.has("model_provider") and snapshot.has("model_version") else ("只记录了模型提供方或版本中的一项。" if snapshot.has("model_provider") or snapshot.has("model_version") else "没有记录模型/API 版本。"),
+        "pass" if llm01_pass else ("partial" if llm01_partial else "missing"),
+        "已记录模型提供方和版本。" if llm01_pass else ("只记录了模型提供方/版本，或仍有待补充字段。" if llm01_partial else "没有记录模型/API 版本。"),
         ev("model_provider", "model_version"), applicable=is_llm)
 
+    llm02_pass = concrete("prompt_files") and concrete("prompt_version")
+    llm02_partial = snapshot.has("prompt_files") or snapshot.has("prompt_mention")
     add("LLM-02",
-        "pass" if snapshot.has("prompt_files") and snapshot.has("prompt_version") else ("partial" if snapshot.has("prompt_files") or snapshot.has("prompt_mention") else "missing"),
-        "已发现版本化 prompt/template。" if snapshot.has("prompt_files") and snapshot.has("prompt_version") else ("有 prompt 文件或描述，但没有版本信息。" if snapshot.has("prompt_files") or snapshot.has("prompt_mention") else "没有 prompt/template 版本记录。"),
+        "pass" if llm02_pass else ("partial" if llm02_partial else "missing"),
+        "已发现版本化 prompt/template。" if llm02_pass else ("有 prompt 文件或描述，但没有可核验的版本信息。" if llm02_partial else "没有 prompt/template 版本记录。"),
         ev("prompt_files", "prompt_version", "prompt_mention"), applicable=is_llm)
 
     add("LLM-03",
-        "pass" if snapshot.has("sampling_params") else ("partial" if snapshot.has("config") else "missing"),
-        "已记录采样参数。" if snapshot.has("sampling_params") else ("有配置文件，但没有明确采样参数。" if snapshot.has("config") else "没有记录 temperature、top_p 等采样参数。"),
+        "pass" if concrete("sampling_params") else ("partial" if snapshot.has("sampling_params") or snapshot.has("config") else "missing"),
+        "已记录采样参数。" if concrete("sampling_params") else ("有采样参数或配置文件，但仍需补充可核验值。" if snapshot.has("sampling_params") or snapshot.has("config") else "没有记录 temperature、top_p 等采样参数。"),
         ev("sampling_params", "config"), applicable=is_llm)
 
     add("LLM-04",
-        "pass" if snapshot.has("tokenizer") else ("partial" if snapshot.has("sampling_params") else "missing"),
-        "已记录 tokenizer 或上下文窗口。" if snapshot.has("tokenizer") else ("有采样参数，但没有 tokenizer/上下文窗口说明。" if snapshot.has("sampling_params") else "没有记录 tokenizer 或上下文窗口。"),
+        "pass" if concrete("tokenizer") else ("partial" if snapshot.has("tokenizer") or snapshot.has("sampling_params") else "missing"),
+        "已记录 tokenizer 或上下文窗口。" if concrete("tokenizer") else ("有相关配置，但 tokenizer/上下文窗口仍需补充。" if snapshot.has("tokenizer") or snapshot.has("sampling_params") else "没有记录 tokenizer 或上下文窗口。"),
         ev("tokenizer", "sampling_params"), applicable=is_llm)
 
     add("LLM-05",
-        "pass" if snapshot.has("rag_index") else ("partial" if is_rag else "missing"),
-        "已记录 RAG 索引/知识库版本。" if snapshot.has("rag_index") else ("检测到 RAG 项目，但没有索引版本信息。" if is_rag else "不适用。"),
+        "pass" if concrete("rag_index") else ("partial" if is_rag else "missing"),
+        "已记录 RAG 索引/知识库版本。" if concrete("rag_index") else ("检测到 RAG 项目，但索引版本仍需补充。" if is_rag else "不适用。"),
         ev("rag_index", "rag_project"), applicable=is_rag)
 
     add("LLM-06",
-        "pass" if snapshot.has("agent_trace") else ("partial" if is_agent else "missing"),
-        "已记录 Agent 工具调用轨迹。" if snapshot.has("agent_trace") else ("检测到 Agent 项目，但没有调用轨迹或日志。" if is_agent else "不适用。"),
+        "pass" if concrete("agent_trace") else ("partial" if is_agent else "missing"),
+        "已记录 Agent 工具调用轨迹。" if concrete("agent_trace") else ("检测到 Agent 项目，但调用轨迹仍需补充。" if is_agent else "不适用。"),
         ev("agent_trace", "agent_project"), applicable=is_agent)
 
+    llm07_pass = concrete("eval_dataset") and concrete("eval_split") and concrete("contamination")
+    llm07_partial = snapshot.has("eval_dataset") or snapshot.has("eval_split") or snapshot.has("contamination")
     add("LLM-07",
-        "pass" if snapshot.has("eval_dataset") and snapshot.has("eval_split") and snapshot.has("contamination") else ("partial" if snapshot.has("eval_dataset") or snapshot.has("eval_split") or snapshot.has("contamination") else "missing"),
-        "已说明评测集、数据划分和污染风险。" if snapshot.has("eval_dataset") and snapshot.has("eval_split") and snapshot.has("contamination") else ("只覆盖了评测集/划分/污染中的一部分。" if snapshot.has("eval_dataset") or snapshot.has("eval_split") or snapshot.has("contamination") else "没有说明评测集、数据划分或污染风险。"),
+        "pass" if llm07_pass else ("partial" if llm07_partial else "missing"),
+        "已说明评测集、数据划分和污染风险。" if llm07_pass else ("只覆盖了评测集/划分/污染中的一部分，或仍有占位内容。" if llm07_partial else "没有说明评测集、数据划分或污染风险。"),
         ev("eval_dataset", "eval_split", "contamination"), applicable=is_llm)
 
     add("LLM-08",

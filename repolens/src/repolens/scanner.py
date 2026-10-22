@@ -19,6 +19,7 @@ SPECIAL_NAMES = {
 }
 IGNORE_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", "dist", "build"}
 MAX_TEXT_BYTES = 400_000
+PLACEHOLDER_RE = re.compile(r"TODO|PLACEHOLDER|CHANGE[_ -]?ME|YOUR_[A-Z_]+|REPLACE_ME|unversioned|not specified|TBD", re.IGNORECASE)
 
 
 @dataclass
@@ -29,6 +30,7 @@ class RepoSnapshot:
     evidence: list[Evidence] = field(default_factory=list)
     flags: dict[str, bool] = field(default_factory=dict)
     flags_evidence: dict[str, list[str]] = field(default_factory=dict)
+    placeholder_flags: set[str] = field(default_factory=set)
 
     def rel(self, path: Path) -> str:
         return path.relative_to(self.root).as_posix()
@@ -53,6 +55,12 @@ class RepoSnapshot:
 
     def has(self, flag: str) -> bool:
         return bool(self.flags.get(flag))
+
+    def has_placeholder(self, flag: str) -> bool:
+        return flag in self.placeholder_flags
+
+    def mark_placeholder(self, flag: str) -> None:
+        self.placeholder_flags.add(flag)
 
     def evidence_for(self, *flags: str) -> list[str]:
         result: list[str] = []
@@ -135,7 +143,10 @@ def scan_repo(root: Path) -> RepoSnapshot:
         if path:
             text = texts.get(snapshot.rel(path), "")
             snippet = text.strip().splitlines()[0] if text.strip() else path.name
-            snapshot.mark(flag, snapshot.add_evidence(kind, path, 1 if text.strip() else None, snippet))
+            evidence_id = snapshot.add_evidence(kind, path, 1 if text.strip() else None, snippet)
+            snapshot.mark(flag, evidence_id)
+            if PLACEHOLDER_RE.search(text):
+                snapshot.mark_placeholder(flag)
 
     add_file_flag("readme", r"(^|/)readme(\.md|\.rst|\.txt)?$", "readme")
     add_file_flag("deps", r"(^|/)requirements\.txt$|(^|/)pyproject\.toml$|(^|/)environment\.ya?ml$|(^|/)pipfile$", "dependency-manifest")
@@ -163,7 +174,12 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 continue
             path = root / rel_path
             line = _line_number(text, match.start())
-            snapshot.mark(flag, snapshot.add_evidence(kind, path, line, match.group(0)))
+            evidence_id = snapshot.add_evidence(kind, path, line, match.group(0))
+            around = text[max(0, match.start() - 80):match.end() + 80]
+            if PLACEHOLDER_RE.search(around):
+                snapshot.mark_placeholder(flag)
+            else:
+                snapshot.mark(flag, evidence_id)
             return
 
     def is_prompt_or_config(rel_path: str) -> bool:
@@ -189,7 +205,12 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 continue
             path = root / rel_path
             line = _line_number(text, match.start())
-            snapshot.mark(flag, snapshot.add_evidence(kind, path, line, match.group(0)))
+            evidence_id = snapshot.add_evidence(kind, path, line, match.group(0))
+            around = text[max(0, match.start() - 80):match.end() + 80]
+            if PLACEHOLDER_RE.search(around):
+                snapshot.mark_placeholder(flag)
+            else:
+                snapshot.mark(flag, evidence_id)
             return
 
     find_text(r"pip install|conda env|docker build|uv sync|poetry install", "install_instructions", "instruction")
