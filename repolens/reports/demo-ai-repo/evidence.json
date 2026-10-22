@@ -1,0 +1,79 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "# Demo AI Project"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "requirements.txt",
+    "line": 1,
+    "excerpt": "torch>=2.0"
+  },
+  {
+    "id": "E-003",
+    "kind": "script",
+    "path": "train.py",
+    "line": 1,
+    "excerpt": "import torch"
+  },
+  {
+    "id": "E-004",
+    "kind": "script",
+    "path": "eval.py",
+    "line": 1,
+    "excerpt": "import torch"
+  },
+  {
+    "id": "E-005",
+    "kind": "config",
+    "path": "configs/default.yaml",
+    "line": 1,
+    "excerpt": "seed: null"
+  },
+  {
+    "id": "E-006",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 8,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-007",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 14,
+    "excerpt": "python train"
+  },
+  {
+    "id": "E-008",
+    "kind": "data",
+    "path": "README.md",
+    "line": 18,
+    "excerpt": "dataset"
+  },
+  {
+    "id": "E-009",
+    "kind": "metric",
+    "path": "README.md",
+    "line": 18,
+    "excerpt": "Expected"
+  },
+  {
+    "id": "E-010",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 18,
+    "excerpt": "split"
+  },
+  {
+    "id": "E-011",
+    "kind": "evaluation",
+    "path": "data/README.md",
+    "line": 3,
+    "excerpt": "benchmark"
+  }
+]

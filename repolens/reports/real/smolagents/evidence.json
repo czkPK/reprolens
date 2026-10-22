@@ -1,0 +1,149 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<!---"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "pyproject.toml",
+    "line": 1,
+    "excerpt": "[build-system]"
+  },
+  {
+    "id": "E-003",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "Apache License"
+  },
+  {
+    "id": "E-004",
+    "kind": "ci",
+    "path": ".github/workflows/build_documentation.yml",
+    "line": 1,
+    "excerpt": "name: Build documentation"
+  },
+  {
+    "id": "E-005",
+    "kind": "tests",
+    "path": "tests/conftest.py",
+    "line": 1,
+    "excerpt": "from unittest.mock import patch"
+  },
+  {
+    "id": "E-006",
+    "kind": "script",
+    "path": "Makefile",
+    "line": 1,
+    "excerpt": ".PHONY: quality style test docs"
+  },
+  {
+    "id": "E-007",
+    "kind": "prompt",
+    "path": "src/smolagents/prompts/code_agent.yaml",
+    "line": 1,
+    "excerpt": "system_prompt: |-"
+  },
+  {
+    "id": "E-008",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 57,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-009",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 38,
+    "excerpt": "make it secure, we support executing in sandboxed environments via [Blaxel](https://blaxel.ai), [E2B](https://e2b.dev/), [Modal](https://modal.com/), or Docker."
+  },
+  {
+    "id": "E-010",
+    "kind": "data",
+    "path": "README.md",
+    "line": 8,
+    "excerpt": "http://"
+  },
+  {
+    "id": "E-011",
+    "kind": "metric",
+    "path": "docs/README.md",
+    "line": 264,
+    "excerpt": "expected"
+  },
+  {
+    "id": "E-012",
+    "kind": "hardware",
+    "path": "docs/source/en/guided_tour.md",
+    "line": 201,
+    "excerpt": "VRAM"
+  },
+  {
+    "id": "E-013",
+    "kind": "model",
+    "path": "README.md",
+    "line": 2,
+    "excerpt": "HuggingFace"
+  },
+  {
+    "id": "E-014",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 182,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-015",
+    "kind": "evaluation",
+    "path": "docs/README.md",
+    "line": 243,
+    "excerpt": "split"
+  },
+  {
+    "id": "E-016",
+    "kind": "cost",
+    "path": "docs/source/en/tutorials/building_good_agents.md",
+    "line": 21,
+    "excerpt": "cost"
+  },
+  {
+    "id": "E-017",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 2,
+    "excerpt": "HuggingFace"
+  },
+  {
+    "id": "E-018",
+    "kind": "model",
+    "path": "README.md",
+    "line": 42,
+    "excerpt": "llama"
+  },
+  {
+    "id": "E-019",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 46,
+    "excerpt": "LangChain"
+  },
+  {
+    "id": "E-020",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 46,
+    "excerpt": "MCP"
+  },
+  {
+    "id": "E-021",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 239,
+    "excerpt": "benchmark"
+  }
+]

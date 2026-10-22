@@ -1,0 +1,182 @@
+{
+  "project_root": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\licenselens\\examples\\demo-saas",
+  "usage_mode": "saas",
+  "project_license": "MIT",
+  "dependencies": [
+    {
+      "name": "requests",
+      "version": "2.32.3",
+      "license_spdx": "Apache-2.0",
+      "source": "requirements.txt",
+      "confidence": 0.75,
+      "evidence": [
+        "manifest:requirements.txt",
+        "catalog:common-packages"
+      ]
+    },
+    {
+      "name": "numpy",
+      "version": "2.1.0",
+      "license_spdx": "BSD-3-Clause",
+      "source": "requirements.txt",
+      "confidence": 0.95,
+      "evidence": [
+        "manifest:requirements.txt",
+        "metadata:python-distribution"
+      ]
+    },
+    {
+      "name": "some-agpl-lib",
+      "version": "1.0.0",
+      "license_spdx": "AGPL-3.0-only",
+      "source": "requirements.txt",
+      "confidence": 0.95,
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "info",
+      "package": "requests",
+      "license_spdx": "Apache-2.0",
+      "rule": "notice-required",
+      "message": "requests 使用 Apache-2.0，分发或对外服务时应保留版权、许可证和 NOTICE 信息。",
+      "evidence": [
+        "manifest:requirements.txt",
+        "catalog:common-packages",
+        "license:Apache-2.0",
+        "obligation:include-notice"
+      ]
+    },
+    {
+      "id": "F-002",
+      "severity": "info",
+      "package": "numpy",
+      "license_spdx": "BSD-3-Clause",
+      "rule": "notice-required",
+      "message": "numpy 使用 BSD-3-Clause，分发或对外服务时应保留版权、许可证和 NOTICE 信息。",
+      "evidence": [
+        "manifest:requirements.txt",
+        "metadata:python-distribution",
+        "license:BSD-3-Clause",
+        "obligation:include-notice"
+      ]
+    },
+    {
+      "id": "F-003",
+      "severity": "high",
+      "package": "some-agpl-lib",
+      "license_spdx": "AGPL-3.0-only",
+      "rule": "network-copyleft",
+      "message": "some-agpl-lib 使用 AGPL-3.0-only，在对外提供 SaaS 服务时可能触发网络 copyleft 义务，需要隔离或替换。",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:network-copyleft"
+      ]
+    },
+    {
+      "id": "F-004",
+      "severity": "info",
+      "package": "some-agpl-lib",
+      "license_spdx": "AGPL-3.0-only",
+      "rule": "notice-required",
+      "message": "some-agpl-lib 使用 AGPL-3.0-only，分发或对外服务时应保留版权、许可证和 NOTICE 信息。",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:include-notice"
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "finding_id": "F-001",
+      "action": "将 requests 的版权与许可证信息加入 NOTICE/第三方声明",
+      "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+      "cost": "low",
+      "impact": "medium",
+      "evidence": [
+        "manifest:requirements.txt",
+        "catalog:common-packages",
+        "license:Apache-2.0",
+        "obligation:include-notice"
+      ]
+    },
+    {
+      "finding_id": "F-002",
+      "action": "将 numpy 的版权与许可证信息加入 NOTICE/第三方声明",
+      "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+      "cost": "low",
+      "impact": "medium",
+      "evidence": [
+        "manifest:requirements.txt",
+        "metadata:python-distribution",
+        "license:BSD-3-Clause",
+        "obligation:include-notice"
+      ]
+    },
+    {
+      "finding_id": "F-003",
+      "action": "替换 some-agpl-lib 为 Apache-2.0/MIT 等更宽松许可的等价依赖",
+      "rationale": "从源头消除 copyleft 兼容性风险，通常是最稳定的整改方式。",
+      "cost": "medium",
+      "impact": "high",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:network-copyleft"
+      ]
+    },
+    {
+      "finding_id": "F-003",
+      "action": "将 some-agpl-lib 隔离为独立服务或独立进程，并评估其对外分发方式",
+      "rationale": "通过架构隔离降低衍生作品边界的不确定性，但需要法律与工程联合复核。",
+      "cost": "medium",
+      "impact": "medium",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:network-copyleft",
+        "architecture:isolation"
+      ]
+    },
+    {
+      "finding_id": "F-003",
+      "action": "联系 some-agpl-lib 的版权方，确认商业许可或书面例外",
+      "rationale": "在无法替换依赖时，取得明确授权可以消除许可证不确定性。",
+      "cost": "high",
+      "impact": "high",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:network-copyleft",
+        "process:commercial-license"
+      ]
+    },
+    {
+      "finding_id": "F-004",
+      "action": "将 some-agpl-lib 的版权与许可证信息加入 NOTICE/第三方声明",
+      "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+      "cost": "low",
+      "impact": "medium",
+      "evidence": [
+        "manifest:requirements.txt",
+        "override:licenses.json",
+        "license:AGPL-3.0-only",
+        "obligation:include-notice"
+      ]
+    }
+  ],
+  "generated_at": "2026-10-19T02:49:38.231287+00:00",
+  "tool_version": "0.1.0"
+}

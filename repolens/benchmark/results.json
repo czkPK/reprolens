@@ -1,0 +1,138 @@
+[
+  {
+    "name": "demo-llm-app",
+    "score": 49.1,
+    "exact_matches": 10,
+    "total_expectations": 10,
+    "positive_tp": 6,
+    "positive_fp": 0,
+    "positive_fn": 0,
+    "details": [
+      {
+        "criterion_id": "ENV-01",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "DATA-02",
+        "expected": "missing",
+        "actual": "missing",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-01",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-02",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-03",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-04",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-05",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-06",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-07",
+        "expected": "missing",
+        "actual": "missing",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-08",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      }
+    ]
+  },
+  {
+    "name": "demo-ai-repo",
+    "score": 54.2,
+    "exact_matches": 4,
+    "total_expectations": 4,
+    "positive_tp": 2,
+    "positive_fp": 0,
+    "positive_fn": 0,
+    "details": [
+      {
+        "criterion_id": "ENV-01",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "EXP-03",
+        "expected": "missing",
+        "actual": "missing",
+        "match": true
+      },
+      {
+        "criterion_id": "MODEL-02",
+        "expected": "missing",
+        "actual": "missing",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-01",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      }
+    ]
+  },
+  {
+    "name": "mem0",
+    "score": 81.9,
+    "exact_matches": 0,
+    "total_expectations": 0,
+    "positive_tp": 0,
+    "positive_fp": 0,
+    "positive_fn": 0,
+    "details": []
+  },
+  {
+    "name": "openai-python",
+    "score": 70.3,
+    "exact_matches": 0,
+    "total_expectations": 0,
+    "positive_tp": 0,
+    "positive_fp": 0,
+    "positive_fn": 0,
+    "details": []
+  },
+  {
+    "name": "smolagents",
+    "score": 70.0,
+    "exact_matches": 0,
+    "total_expectations": 0,
+    "positive_tp": 0,
+    "positive_fp": 0,
+    "positive_fn": 0,
+    "details": []
+  }
+]

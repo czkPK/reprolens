@@ -1,0 +1,40 @@
+[
+  {
+    "name": "demo-llm-app",
+    "path": "examples/demo-llm-app",
+    "expected": {
+      "ENV-01": "pass",
+      "DATA-02": "missing",
+      "LLM-01": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "pass",
+      "LLM-04": "partial",
+      "LLM-05": "pass",
+      "LLM-06": "partial",
+      "LLM-07": "missing",
+      "LLM-08": "partial"
+    }
+  },
+  {
+    "name": "demo-ai-repo",
+    "path": "examples/demo-ai-repo",
+    "expected": {
+      "ENV-01": "pass",
+      "EXP-03": "missing",
+      "MODEL-02": "missing",
+      "LLM-01": "not_applicable"
+    }
+  },
+  {"name": "mem0", "path": "benchmark/repos/mem0", "expected": {}},
+  {"name": "haystack", "path": "benchmark/repos/haystack", "expected": {}},
+  {"name": "llama_index", "path": "benchmark/repos/llama_index", "expected": {}},
+  {"name": "autogen", "path": "benchmark/repos/autogen", "expected": {}},
+  {"name": "crewAI", "path": "benchmark/repos/crewAI", "expected": {}},
+  {"name": "dspy", "path": "benchmark/repos/dspy", "expected": {}},
+  {"name": "langflow", "path": "benchmark/repos/langflow", "expected": {}},
+  {"name": "browser-use", "path": "benchmark/repos/browser-use", "expected": {}},
+  {"name": "openai-python", "path": "benchmark/repos/openai-python", "expected": {}},
+  {"name": "smolagents", "path": "benchmark/repos/smolagents", "expected": {}},
+  {"name": "embedchain", "path": "benchmark/repos/embedchain", "expected": {}},
+  {"name": "phoenix", "path": "benchmark/repos/phoenix", "expected": {}}
+]

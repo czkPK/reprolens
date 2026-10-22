@@ -1,0 +1,114 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "# OpenAI Python API library"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "pyproject.toml",
+    "line": 1,
+    "excerpt": "[project]"
+  },
+  {
+    "id": "E-003",
+    "kind": "lockfile",
+    "path": "uv.lock",
+    "line": null,
+    "excerpt": "uv.lock"
+  },
+  {
+    "id": "E-004",
+    "kind": "container",
+    "path": ".devcontainer/Dockerfile",
+    "line": 1,
+    "excerpt": "ARG VARIANT=\"3.10\""
+  },
+  {
+    "id": "E-005",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "Apache License"
+  },
+  {
+    "id": "E-006",
+    "kind": "ci",
+    "path": ".github/workflows/castiron-custom-code-comment.yml",
+    "line": 1,
+    "excerpt": "# File generated from our OpenAPI spec by Castiron. See CONTRIBUTING.md for details."
+  },
+  {
+    "id": "E-007",
+    "kind": "tests",
+    "path": "tests/conftest.py",
+    "line": 1,
+    "excerpt": "from __future__ import annotations"
+  },
+  {
+    "id": "E-008",
+    "kind": "script",
+    "path": "src/openai/types/eval_create_params.py",
+    "line": 1,
+    "excerpt": "# File generated from our OpenAPI spec by Castiron. See CONTRIBUTING.md for details."
+  },
+  {
+    "id": "E-009",
+    "kind": "script",
+    "path": ".github/scripts/setup-playwright-sandbox.sh",
+    "line": 1,
+    "excerpt": "#!/usr/bin/env bash"
+  },
+  {
+    "id": "E-010",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 20,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-011",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 886,
+    "excerpt": "make the request, which may not always be what you want."
+  },
+  {
+    "id": "E-012",
+    "kind": "data",
+    "path": "README.md",
+    "line": 4,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-013",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 234,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-014",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-015",
+    "kind": "model",
+    "path": "README.md",
+    "line": 39,
+    "excerpt": "gpt-5"
+  },
+  {
+    "id": "E-016",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 391,
+    "excerpt": "function calling"
+  }
+]

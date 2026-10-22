@@ -1,0 +1,177 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<p align=\"center\">"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "pyproject.toml",
+    "line": 1,
+    "excerpt": "[build-system]"
+  },
+  {
+    "id": "E-003",
+    "kind": "lockfile",
+    "path": "poetry.lock",
+    "line": null,
+    "excerpt": "poetry.lock"
+  },
+  {
+    "id": "E-004",
+    "kind": "container",
+    "path": "server/docker-compose.yaml",
+    "line": 1,
+    "excerpt": "name: mem0-dev"
+  },
+  {
+    "id": "E-005",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "Apache License"
+  },
+  {
+    "id": "E-006",
+    "kind": "ci",
+    "path": ".github/workflows/agent-plugins-python-checks.yml",
+    "line": 1,
+    "excerpt": "name: Agent Plugins Python Checks"
+  },
+  {
+    "id": "E-007",
+    "kind": "tests",
+    "path": "tests/test_api_keys_router.py",
+    "line": 1,
+    "excerpt": "\"\"\"Tests for the api-keys router."
+  },
+  {
+    "id": "E-008",
+    "kind": "script",
+    "path": "Makefile",
+    "line": 1,
+    "excerpt": ".PHONY: format sort lint"
+  },
+  {
+    "id": "E-009",
+    "kind": "prompt",
+    "path": "mem0-ts/src/oss/src/prompts/index.ts",
+    "line": 1,
+    "excerpt": "import { z } from \"zod\";"
+  },
+  {
+    "id": "E-010",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 106,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-011",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 155,
+    "excerpt": "make bootstrap"
+  },
+  {
+    "id": "E-012",
+    "kind": "data",
+    "path": "README.md",
+    "line": 2,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-013",
+    "kind": "metric",
+    "path": "README.md",
+    "line": 74,
+    "excerpt": "reproduce"
+  },
+  {
+    "id": "E-014",
+    "kind": "model",
+    "path": "README.md",
+    "line": 209,
+    "excerpt": "huggingface"
+  },
+  {
+    "id": "E-015",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 226,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-016",
+    "kind": "evaluation",
+    "path": "server/main.py",
+    "line": 41,
+    "excerpt": "Validation"
+  },
+  {
+    "id": "E-017",
+    "kind": "cost",
+    "path": "README.md",
+    "line": 9,
+    "excerpt": "Cost"
+  },
+  {
+    "id": "E-018",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 207,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-019",
+    "kind": "model",
+    "path": "README.md",
+    "line": 207,
+    "excerpt": "gpt-5"
+  },
+  {
+    "id": "E-020",
+    "kind": "llm-config",
+    "path": "server/main.py",
+    "line": 135,
+    "excerpt": "temperature"
+  },
+  {
+    "id": "E-021",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 65,
+    "excerpt": "retrieval"
+  },
+  {
+    "id": "E-022",
+    "kind": "rag",
+    "path": "server/main.py",
+    "line": 113,
+    "excerpt": "COLLECTION_NAME"
+  },
+  {
+    "id": "E-023",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 69,
+    "excerpt": "Agent"
+  },
+  {
+    "id": "E-024",
+    "kind": "agent",
+    "path": "server/main.py",
+    "line": 184,
+    "excerpt": "run_id"
+  },
+  {
+    "id": "E-025",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 53,
+    "excerpt": "Benchmark"
+  }
+]

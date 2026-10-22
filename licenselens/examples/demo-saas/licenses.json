@@ -1,0 +1,7 @@
+{
+  "_project_license": "MIT",
+  "some-agpl-lib": {
+    "license": "AGPL-3.0-only",
+    "source": "example fixture"
+  }
+}

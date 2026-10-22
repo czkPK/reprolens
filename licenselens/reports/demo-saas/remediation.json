@@ -1,0 +1,82 @@
+[
+  {
+    "finding_id": "F-001",
+    "action": "将 requests 的版权与许可证信息加入 NOTICE/第三方声明",
+    "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+    "cost": "low",
+    "impact": "medium",
+    "evidence": [
+      "manifest:requirements.txt",
+      "catalog:common-packages",
+      "license:Apache-2.0",
+      "obligation:include-notice"
+    ]
+  },
+  {
+    "finding_id": "F-002",
+    "action": "将 numpy 的版权与许可证信息加入 NOTICE/第三方声明",
+    "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+    "cost": "low",
+    "impact": "medium",
+    "evidence": [
+      "manifest:requirements.txt",
+      "metadata:python-distribution",
+      "license:BSD-3-Clause",
+      "obligation:include-notice"
+    ]
+  },
+  {
+    "finding_id": "F-003",
+    "action": "替换 some-agpl-lib 为 Apache-2.0/MIT 等更宽松许可的等价依赖",
+    "rationale": "从源头消除 copyleft 兼容性风险，通常是最稳定的整改方式。",
+    "cost": "medium",
+    "impact": "high",
+    "evidence": [
+      "manifest:requirements.txt",
+      "override:licenses.json",
+      "license:AGPL-3.0-only",
+      "obligation:network-copyleft"
+    ]
+  },
+  {
+    "finding_id": "F-003",
+    "action": "将 some-agpl-lib 隔离为独立服务或独立进程，并评估其对外分发方式",
+    "rationale": "通过架构隔离降低衍生作品边界的不确定性，但需要法律与工程联合复核。",
+    "cost": "medium",
+    "impact": "medium",
+    "evidence": [
+      "manifest:requirements.txt",
+      "override:licenses.json",
+      "license:AGPL-3.0-only",
+      "obligation:network-copyleft",
+      "architecture:isolation"
+    ]
+  },
+  {
+    "finding_id": "F-003",
+    "action": "联系 some-agpl-lib 的版权方，确认商业许可或书面例外",
+    "rationale": "在无法替换依赖时，取得明确授权可以消除许可证不确定性。",
+    "cost": "high",
+    "impact": "high",
+    "evidence": [
+      "manifest:requirements.txt",
+      "override:licenses.json",
+      "license:AGPL-3.0-only",
+      "obligation:network-copyleft",
+      "process:commercial-license"
+    ]
+  },
+  {
+    "finding_id": "F-004",
+    "action": "将 some-agpl-lib 的版权与许可证信息加入 NOTICE/第三方声明",
+    "rationale": "满足署名和许可证保留义务，降低分发合规风险。",
+    "cost": "low",
+    "impact": "medium",
+    "evidence": [
+      "manifest:requirements.txt",
+      "override:licenses.json",
+      "license:AGPL-3.0-only",
+      "obligation:include-notice"
+    ]
+  }
+]

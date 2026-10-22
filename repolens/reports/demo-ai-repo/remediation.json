@@ -1,0 +1,100 @@
+[
+  {
+    "finding_id": "F-006",
+    "action": "添加模型卡，记录模型版本、结构、超参数和训练数据",
+    "rationale": "让模型行为可追溯。",
+    "cost": "low",
+    "impact": "high",
+    "estimated_score_gain": 8.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-005",
+    "action": "提供模型权重下载地址或权重大小、文件名说明",
+    "rationale": "让读者能够获得与结果对应的模型。",
+    "cost": "medium",
+    "impact": "high",
+    "estimated_score_gain": 8.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-004",
+    "action": "添加数据集卡或数据许可说明",
+    "rationale": "明确数据边界和再分发条件。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 6.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-007",
+    "action": "在模型卡中说明模型许可和来源",
+    "rationale": "避免模型使用和再分发风险。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 6.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-008",
+    "action": "固定并记录随机种子、框架确定性和硬件差异",
+    "rationale": "降低结果不可重复的随机性。",
+    "cost": "low",
+    "impact": "high",
+    "estimated_score_gain": 6.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-010",
+    "action": "添加测试、CI 或一键复现脚本",
+    "rationale": "把复现变成持续可验证的工程流程。",
+    "cost": "medium",
+    "impact": "medium",
+    "estimated_score_gain": 6.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-002",
+    "action": "补充数据来源、获取方式和数据许可说明",
+    "rationale": "让读者知道数据从哪里来、能否使用。",
+    "cost": "low",
+    "impact": "high",
+    "estimated_score_gain": 4.0,
+    "evidence_ids": [
+      "E-008"
+    ]
+  },
+  {
+    "finding_id": "F-001",
+    "action": "添加锁文件或 Dockerfile，固定 Python、CUDA 和依赖版本",
+    "rationale": "消除环境版本漂移，提升跨机器复现概率。",
+    "cost": "medium",
+    "impact": "high",
+    "estimated_score_gain": 4.0,
+    "evidence_ids": [
+      "E-002"
+    ]
+  },
+  {
+    "finding_id": "F-003",
+    "action": "添加数据下载或预处理脚本",
+    "rationale": "把数据准备从手工步骤变成可执行流程。",
+    "cost": "medium",
+    "impact": "high",
+    "estimated_score_gain": 4.0,
+    "evidence_ids": [
+      "E-008"
+    ]
+  },
+  {
+    "finding_id": "F-009",
+    "action": "在 README/模型卡中说明 GPU 型号、显存和驱动要求",
+    "rationale": "减少环境不匹配导致的失败。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 2.5,
+    "evidence_ids": [
+      "E-002"
+    ]
+  }
+]

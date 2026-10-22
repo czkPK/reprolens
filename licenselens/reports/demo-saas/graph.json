@@ -1,0 +1,126 @@
+{
+  "nodes": [
+    {
+      "id": "project",
+      "type": "project",
+      "label": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\licenselens\\examples\\demo-saas",
+      "license": "MIT",
+      "usage_mode": "saas"
+    },
+    {
+      "id": "dep:requests",
+      "type": "dependency",
+      "label": "requests",
+      "version": "2.32.3",
+      "license": "Apache-2.0",
+      "confidence": 0.75
+    },
+    {
+      "id": "license:Apache-2.0",
+      "type": "license",
+      "label": "Apache-2.0"
+    },
+    {
+      "id": "finding:F-001",
+      "type": "finding",
+      "label": "notice-required",
+      "severity": "info"
+    },
+    {
+      "id": "dep:numpy",
+      "type": "dependency",
+      "label": "numpy",
+      "version": "2.1.0",
+      "license": "BSD-3-Clause",
+      "confidence": 0.95
+    },
+    {
+      "id": "license:BSD-3-Clause",
+      "type": "license",
+      "label": "BSD-3-Clause"
+    },
+    {
+      "id": "finding:F-002",
+      "type": "finding",
+      "label": "notice-required",
+      "severity": "info"
+    },
+    {
+      "id": "dep:some-agpl-lib",
+      "type": "dependency",
+      "label": "some-agpl-lib",
+      "version": "1.0.0",
+      "license": "AGPL-3.0-only",
+      "confidence": 0.95
+    },
+    {
+      "id": "license:AGPL-3.0-only",
+      "type": "license",
+      "label": "AGPL-3.0-only"
+    },
+    {
+      "id": "finding:F-003",
+      "type": "finding",
+      "label": "network-copyleft",
+      "severity": "high"
+    },
+    {
+      "id": "finding:F-004",
+      "type": "finding",
+      "label": "notice-required",
+      "severity": "info"
+    }
+  ],
+  "edges": [
+    {
+      "source": "project",
+      "target": "dep:requests",
+      "type": "uses"
+    },
+    {
+      "source": "dep:requests",
+      "target": "license:Apache-2.0",
+      "type": "licensed-under"
+    },
+    {
+      "source": "dep:requests",
+      "target": "finding:F-001",
+      "type": "triggers"
+    },
+    {
+      "source": "project",
+      "target": "dep:numpy",
+      "type": "uses"
+    },
+    {
+      "source": "dep:numpy",
+      "target": "license:BSD-3-Clause",
+      "type": "licensed-under"
+    },
+    {
+      "source": "dep:numpy",
+      "target": "finding:F-002",
+      "type": "triggers"
+    },
+    {
+      "source": "project",
+      "target": "dep:some-agpl-lib",
+      "type": "uses"
+    },
+    {
+      "source": "dep:some-agpl-lib",
+      "target": "license:AGPL-3.0-only",
+      "type": "licensed-under"
+    },
+    {
+      "source": "dep:some-agpl-lib",
+      "target": "finding:F-003",
+      "type": "triggers"
+    },
+    {
+      "source": "dep:some-agpl-lib",
+      "target": "finding:F-004",
+      "type": "triggers"
+    }
+  ]
+}

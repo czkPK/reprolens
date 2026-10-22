@@ -1,0 +1,4 @@
+seed: null
+model:
+  name: tiny-classifier
+  version: 0.1
