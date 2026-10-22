@@ -1,35 +1,6 @@
 [
   {
-    "finding_id": "F-007",
-    "action": "固定并记录随机种子、框架确定性和硬件差异",
-    "rationale": "降低结果不可重复的随机性。",
-    "cost": "low",
-    "impact": "high",
-    "estimated_score_gain": 6.0,
-    "evidence_ids": []
-  },
-  {
-    "finding_id": "F-009",
-    "action": "记录 temperature、top_p、max_tokens 等采样参数",
-    "rationale": "让生成行为可以复现和比较。",
-    "cost": "low",
-    "impact": "medium",
-    "estimated_score_gain": 5.0,
-    "evidence_ids": []
-  },
-  {
-    "finding_id": "F-002",
-    "action": "补充数据来源、获取方式和数据许可说明",
-    "rationale": "让读者知道数据从哪里来、能否使用。",
-    "cost": "low",
-    "impact": "high",
-    "estimated_score_gain": 4.0,
-    "evidence_ids": [
-      "E-010"
-    ]
-  },
-  {
-    "finding_id": "F-010",
+    "finding_id": "F-004",
     "action": "记录 tokenizer、上下文窗口和截断策略",
     "rationale": "避免输入长度和分词差异导致结果变化。",
     "cost": "low",
@@ -49,52 +20,7 @@
     ]
   },
   {
-    "finding_id": "F-003",
-    "action": "添加数据下载或预处理脚本",
-    "rationale": "把数据准备从手工步骤变成可执行流程。",
-    "cost": "medium",
-    "impact": "high",
-    "estimated_score_gain": 4.0,
-    "evidence_ids": [
-      "E-010"
-    ]
-  },
-  {
-    "finding_id": "F-006",
-    "action": "添加评测脚本、评测命令和指标计算方式",
-    "rationale": "让结果可以被独立验证。",
-    "cost": "medium",
-    "impact": "high",
-    "estimated_score_gain": 4.0,
-    "evidence_ids": [
-      "E-011"
-    ]
-  },
-  {
-    "finding_id": "F-004",
-    "action": "添加数据集卡或数据许可说明",
-    "rationale": "明确数据边界和再分发条件。",
-    "cost": "low",
-    "impact": "medium",
-    "estimated_score_gain": 3.0,
-    "evidence_ids": [
-      "E-003",
-      "E-010"
-    ]
-  },
-  {
-    "finding_id": "F-005",
-    "action": "在模型卡中说明模型许可和来源",
-    "rationale": "避免模型使用和再分发风险。",
-    "cost": "low",
-    "impact": "medium",
-    "estimated_score_gain": 3.0,
-    "evidence_ids": [
-      "E-003"
-    ]
-  },
-  {
-    "finding_id": "F-008",
+    "finding_id": "F-002",
     "action": "将 prompt/template 版本化并记录在配置或模型卡中",
     "rationale": "避免 prompt 漂移导致结果不可复现。",
     "cost": "low",
@@ -106,7 +32,7 @@
     ]
   },
   {
-    "finding_id": "F-013",
+    "finding_id": "F-006",
     "action": "说明评测集、数据划分和污染/泄漏风险",
     "rationale": "让指标具有可比性，避免高估效果。",
     "cost": "low",
@@ -118,18 +44,18 @@
     ]
   },
   {
-    "finding_id": "F-011",
-    "action": "记录 RAG 索引版本、embedding 模型和 chunk 参数",
-    "rationale": "让检索结果可以复现。",
-    "cost": "medium",
-    "impact": "high",
+    "finding_id": "F-003",
+    "action": "记录 temperature、top_p、max_tokens 等采样参数",
+    "rationale": "让生成行为可以复现和比较。",
+    "cost": "low",
+    "impact": "medium",
     "estimated_score_gain": 2.5,
     "evidence_ids": [
-      "E-019"
+      "E-007"
     ]
   },
   {
-    "finding_id": "F-012",
+    "finding_id": "F-005",
     "action": "保存 Agent 工具调用轨迹、run_id 和关键日志",
     "rationale": "让多步调用过程可以审计。",
     "cost": "medium",
@@ -137,6 +63,19 @@
     "estimated_score_gain": 2.5,
     "evidence_ids": [
       "E-020"
+    ]
+  },
+  {
+    "finding_id": "F-007",
+    "action": "说明推理成本、延迟和 token 消耗",
+    "rationale": "让读者评估复现成本。",
+    "cost": "low",
+    "impact": "low",
+    "estimated_score_gain": 2.0,
+    "evidence_ids": [
+      "E-016",
+      "E-012",
+      "E-017"
     ]
   }
 ]

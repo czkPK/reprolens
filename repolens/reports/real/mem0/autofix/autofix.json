@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-10-22T13:44:10.196620+00:00",
-  "before_score": 81.9,
-  "after_score": 86.2,
-  "delta": 4.3,
+  "generated_at": "2026-10-22T14:05:04.094997+00:00",
+  "before_score": 84.8,
+  "after_score": 87.9,
+  "delta": 3.1,
   "accepted": true,
   "generated_files": [
-    {
-      "path": "data/download.sh",
-      "reason": "DATA-02: 提供数据下载脚本入口；URL 需要维护者补充。"
-    },
     {
       "path": "prompts/prompt_metadata.json",
       "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
     }
   ],
   "rejected_files": [
+    {
+      "path": "data/download.sh",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
     {
       "path": "dataset_card.md",
       "reason": "修复提案未提升评分，已自动丢弃。"
@@ -33,21 +33,17 @@
     }
   ],
   "fixed_criteria": [
-    "DATA-01",
     "LLM-02"
   ],
   "changed_criteria": [
-    "DATA-01",
     "LLM-02"
   ],
   "remaining_gaps": [
-    "DATA-02",
-    "DATA-03",
-    "MODEL-03",
-    "EXP-02",
-    "EXP-03",
+    "LLM-03",
     "LLM-04",
-    "LLM-07"
+    "LLM-05",
+    "LLM-07",
+    "LLM-08"
   ],
   "proposal_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\real\\mem0\\autofix\\proposal",
   "staging_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\real\\mem0\\autofix\\staging",

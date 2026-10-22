@@ -1,15 +1,4 @@
 --- /dev/null
-+++ b/data/download.sh
-@@ -0,0 +1,8 @@
-+#!/usr/bin/env bash
-+set -euo pipefail
-+DATA_URL="${DATA_URL:-TODO}"
-+if [ "$DATA_URL" = "TODO" ]; then
-+  echo "Set DATA_URL before running this script." >&2
-+  exit 2
-+fi
-+curl -L "$DATA_URL" -o data/raw.zip
---- /dev/null
 +++ b/prompts/prompt_metadata.json
 @@ -0,0 +1,16 @@
 +{

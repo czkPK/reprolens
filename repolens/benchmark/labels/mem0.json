@@ -1,0 +1,22 @@
+{
+  "repo": "mem0",
+  "project_type": "llm_memory_framework",
+  "labeled_at": "2026-10-22",
+  "labeling_note": "Model-agnostic memory layer; vector-store and prompt risks are applicable, but project-owned datasets/models are not.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "Python dependencies are declared in pyproject.toml.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "poetry.lock", "evidence_line": null, "rationale": "poetry.lock and a server docker-compose file pin the environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "mem0 is a memory layer, not a project-owned dataset workflow.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The framework supports many model providers and does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "Apache-2.0 applies to the code; no project-owned model license is involved.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "Makefile", "evidence_line": 1, "rationale": "The repository provides tests and evaluation tooling for executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the memory framework.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": "Makefile", "evidence_line": 1, "rationale": "Tests, CI and Make targets provide reproducible verification commands.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "mem0-ts/src/oss/src/prompts/index.ts", "evidence_line": 1, "rationale": "Prompt code exists, but no prompt version or hash metadata is recorded.", "confidence": "high"},
+    {"criterion_id": "LLM-03", "expected_status": "partial", "evidence_path": "server/main.py", "evidence_line": 135, "rationale": "Some generation/retrieval parameters appear in server code, but no complete sampling configuration is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 65, "rationale": "Retrieval and vector stores are core, but index/embedding versions are not recorded.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 69, "rationale": "Agent mentions are integrations; mem0 is not itself an agent trace system.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 53, "rationale": "Benchmarks are mentioned, but data splits and contamination analysis are not documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 9, "rationale": "Cost is mentioned as a benefit, but no reproducible cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

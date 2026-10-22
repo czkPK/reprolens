@@ -31,6 +31,7 @@ class RepoSnapshot:
     flags: dict[str, bool] = field(default_factory=dict)
     flags_evidence: dict[str, list[str]] = field(default_factory=dict)
     placeholder_flags: set[str] = field(default_factory=set)
+    project_type: str = "unknown"
 
     def rel(self, path: Path) -> str:
         return path.relative_to(self.root).as_posix()
@@ -252,6 +253,31 @@ def scan_repo(root: Path) -> RepoSnapshot:
         or any(name in all_text for name in ("openai", "anthropic", "huggingface", "transformers", "llm", "chat model", "retrieval augmented"))
     ):
         snapshot.mark("llm_project", snapshot.evidence_for("prompt_mention", "prompt_files", "model_provider", "model_version", "rag_project", "agent_project", "deps"))
+
+    root_readme_text = "\n".join(
+        text for rel_path, text in texts.items()
+        if "/" not in rel_path and Path(rel_path).name.lower().startswith("readme")
+    ).lower()
+    has_app_entry = any(
+        "/" not in rel_path and Path(rel_path).name.lower() in {"app.py", "main.py"}
+        for rel_path in texts
+    ) or any(rel_path.lower().startswith(("server/", "ui/", "web/", "frontend/", "backend/")) for rel_path in texts)
+    is_demo_app = any(
+        phrase in root_readme_text
+        for phrase in ("demo llm", "demo app", "web app", "chat app", "assistant app", "rag app")
+    )
+    if "memory layer" in root_readme_text or "memory framework" in root_readme_text:
+        snapshot.project_type = "memory_framework"
+    elif "api library" in root_readme_text or "sdk" in root_readme_text or "client library" in root_readme_text:
+        snapshot.project_type = "sdk"
+    elif has_app_entry or is_demo_app:
+        snapshot.project_type = "application"
+    elif snapshot.has("agent_project") and snapshot.has("prompt_files") and any(rel_path.lower().startswith("src/") for rel_path in texts):
+        snapshot.project_type = "agent_framework"
+    elif snapshot.has("ml_project"):
+        snapshot.project_type = "ml_project"
+    else:
+        snapshot.project_type = "unknown"
 
     return snapshot
 

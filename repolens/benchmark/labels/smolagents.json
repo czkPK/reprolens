@@ -1,0 +1,22 @@
+{
+  "repo": "smolagents",
+  "project_type": "llm_agent_framework",
+  "labeled_at": "2026-10-22",
+  "labeling_note": "Model-agnostic framework; prompt/agent risks are applicable, but project-owned datasets and fixed model versions are not.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "Python dependencies are declared in pyproject.toml.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "partial", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "A dependency manifest exists, but no lockfile or reproducible container build is provided.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The framework does not ship a project-owned dataset workflow.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The framework supports many model providers and does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "Apache-2.0 applies to the code; no project-owned model license is involved.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "Makefile", "evidence_line": 1, "rationale": "The repository provides a test target and a test suite for executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the framework repository.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": "Makefile", "evidence_line": 1, "rationale": "Tests, CI and Make targets provide reproducible verification commands.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "src/smolagents/prompts/code_agent.yaml", "evidence_line": 1, "rationale": "Prompt files are shipped, but no prompt version or hash metadata is recorded.", "confidence": "high"},
+    {"criterion_id": "LLM-03", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 100, "rationale": "Sampling parameters appear in documentation, but no fixed project configuration is provided.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 46, "rationale": "RAG is shown as an example/integration, not a project-owned index.", "confidence": "medium"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 212, "rationale": "The framework supports agent tool calls, but no mandatory trace/log artifact is provided.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 239, "rationale": "Benchmark and split concepts are mentioned, but contamination and a complete evaluation protocol are missing.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "docs/source/en/tutorials/building_good_agents.md", "evidence_line": 21, "rationale": "Cost is discussed qualitatively, but no reproducible cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

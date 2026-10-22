@@ -25,16 +25,115 @@
       "LLM-01": "not_applicable"
     }
   },
-  {"name": "mem0", "path": "benchmark/repos/mem0", "expected": {}},
-  {"name": "haystack", "path": "benchmark/repos/haystack", "expected": {}},
-  {"name": "llama_index", "path": "benchmark/repos/llama_index", "expected": {}},
-  {"name": "autogen", "path": "benchmark/repos/autogen", "expected": {}},
-  {"name": "crewAI", "path": "benchmark/repos/crewAI", "expected": {}},
-  {"name": "dspy", "path": "benchmark/repos/dspy", "expected": {}},
-  {"name": "langflow", "path": "benchmark/repos/langflow", "expected": {}},
-  {"name": "browser-use", "path": "benchmark/repos/browser-use", "expected": {}},
-  {"name": "openai-python", "path": "benchmark/repos/openai-python", "expected": {}},
-  {"name": "smolagents", "path": "benchmark/repos/smolagents", "expected": {}},
-  {"name": "embedchain", "path": "benchmark/repos/embedchain", "expected": {}},
-  {"name": "phoenix", "path": "benchmark/repos/phoenix", "expected": {}}
+  {
+    "name": "mem0",
+    "path": "benchmark/repos/mem0",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "partial",
+      "LLM-05": "partial",
+      "LLM-06": "not_applicable",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "label_file": "benchmark/labels/mem0.json",
+    "project_type": "llm_memory_framework"
+  },
+  {
+    "name": "haystack",
+    "path": "benchmark/repos/haystack",
+    "expected": {}
+  },
+  {
+    "name": "llama_index",
+    "path": "benchmark/repos/llama_index",
+    "expected": {}
+  },
+  {
+    "name": "autogen",
+    "path": "benchmark/repos/autogen",
+    "expected": {}
+  },
+  {
+    "name": "crewAI",
+    "path": "benchmark/repos/crewAI",
+    "expected": {}
+  },
+  {
+    "name": "dspy",
+    "path": "benchmark/repos/dspy",
+    "expected": {}
+  },
+  {
+    "name": "langflow",
+    "path": "benchmark/repos/langflow",
+    "expected": {}
+  },
+  {
+    "name": "browser-use",
+    "path": "benchmark/repos/browser-use",
+    "expected": {}
+  },
+  {
+    "name": "openai-python",
+    "path": "benchmark/repos/openai-python",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "not_applicable",
+      "LLM-03": "not_applicable",
+      "LLM-05": "not_applicable",
+      "LLM-06": "not_applicable",
+      "LLM-07": "not_applicable",
+      "LLM-08": "not_applicable"
+    },
+    "label_file": "benchmark/labels/openai-python.json",
+    "project_type": "llm_sdk"
+  },
+  {
+    "name": "smolagents",
+    "path": "benchmark/repos/smolagents",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "partial",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "partial",
+      "LLM-05": "not_applicable",
+      "LLM-06": "partial",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "label_file": "benchmark/labels/smolagents.json",
+    "project_type": "llm_agent_framework"
+  },
+  {
+    "name": "embedchain",
+    "path": "benchmark/repos/embedchain",
+    "expected": {}
+  },
+  {
+    "name": "phoenix",
+    "path": "benchmark/repos/phoenix",
+    "expected": {}
+  }
 ]

@@ -1,0 +1,22 @@
+{
+  "repo": "openai-python",
+  "project_type": "llm_sdk",
+  "labeled_at": "2026-10-22",
+  "labeling_note": "SDK repos are model-agnostic; model-, dataset- and experiment-specific criteria are marked N/A.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "Python project dependencies are declared in pyproject.toml.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "uv.lock", "evidence_line": null, "rationale": "uv.lock plus a devcontainer Dockerfile pin the environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "This is an API SDK, not a dataset or model experiment.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The SDK supports multiple models; it does not own or ship a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "Apache-2.0 is the code license; there is no project-owned model license.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "tests/conftest.py", "evidence_line": 1, "rationale": "The repository has a test suite and CI workflows that provide executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the SDK repository.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/castiron-custom-code-comment.yml", "evidence_line": 1, "rationale": "Tests, CI workflows and helper scripts are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 234, "rationale": "The README mentions API prompt parameters, not a project-owned prompt/template.", "confidence": "high"},
+    {"criterion_id": "LLM-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The SDK does not ship a fixed sampling configuration for a project-owned model.", "confidence": "high"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The repository is an SDK, not a RAG application with a project-owned index.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 391, "rationale": "Function-calling API support is not the same as a reproducible agent trace.", "confidence": "high"},
+    {"criterion_id": "LLM-07", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The SDK does not define a model evaluation dataset or benchmark protocol.", "confidence": "high"},
+    {"criterion_id": "LLM-08", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The SDK does not make a project-level inference cost claim.", "confidence": "high"}
+  ]
+}
