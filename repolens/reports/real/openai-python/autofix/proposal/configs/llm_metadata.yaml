@@ -1,0 +1,8 @@
+model:
+  provider: bedrock
+  model_id: TODO
+  model_version: TODO
+sampling:
+  temperature: TODO
+  top_p: TODO
+  max_tokens: TODO

@@ -239,30 +239,45 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
     proposal_dir = out_dir / "proposal"
     staging_dir = out_dir / "staging"
+    if proposal_dir.exists():
+        shutil.rmtree(proposal_dir)
     proposal_dir.mkdir(parents=True, exist_ok=True)
 
     files = _build_proposal(root, result)
-    for item in files:
-        target = proposal_dir / item.path
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(item.content, encoding="utf-8")
-
     _copy_repo(root, staging_dir)
+
+    accepted: list[AutoFixFile] = []
+    rejected: list[dict[str, str]] = []
+    current_score = result.total_score
+    current_criteria = result.criteria
+
     for item in files:
         target = staging_dir / item.path
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(item.content, encoding="utf-8")
+        candidate_criteria = evaluate_criteria(scan_repo(staging_dir))
+        candidate_score = total_score(candidate_criteria)
+        if candidate_score > current_score:
+            accepted.append(item)
+            current_score = candidate_score
+            current_criteria = candidate_criteria
+        else:
+            target.unlink(missing_ok=True)
+            rejected.append({"path": item.path, "reason": "修复提案未提升评分，已自动丢弃。"})
 
-    after_criteria = evaluate_criteria(scan_repo(staging_dir))
-    after_score = total_score(after_criteria)
+    for item in accepted:
+        target = proposal_dir / item.path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(item.content, encoding="utf-8")
+
     before = {item.id: item.status for item in result.criteria}
-    after = {item.id: item.status for item in after_criteria}
+    after = {item.id: item.status for item in current_criteria}
     fixed = [cid for cid in before if before[cid] != "pass" and after.get(cid) == "pass"]
     improved = [cid for cid in before if before[cid] != after.get(cid)]
     remaining = [cid for cid, state in after.items() if state in {"missing", "partial"}]
 
     patch_lines: list[str] = []
-    for item in files:
+    for item in accepted:
         patch_lines.extend(
             difflib.unified_diff(
                 [],
@@ -277,11 +292,11 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "before_score": result.total_score,
-        "after_score": after_score,
-        "delta": round(after_score - result.total_score, 1),
-        "generated_files": [
-            {"path": item.path, "reason": item.reason} for item in files
-        ],
+        "after_score": current_score,
+        "delta": round(current_score - result.total_score, 1),
+        "accepted": bool(accepted),
+        "generated_files": [{"path": item.path, "reason": item.reason} for item in accepted],
+        "rejected_files": rejected,
         "fixed_criteria": fixed,
         "changed_criteria": improved,
         "remaining_gaps": remaining,
@@ -294,20 +309,27 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
         "# ReproLens AutoFix Proposal",
         "",
         f"- Before score: **{result.total_score:.1f}**",
-        f"- After score: **{after_score:.1f}**",
-        f"- Estimated gain: **+{after_score - result.total_score:.1f}**",
+        f"- After score: **{current_score:.1f}**",
+        f"- Estimated gain: **+{current_score - result.total_score:.1f}**",
+        f"- Accepted: **{bool(accepted)}**",
         "",
         "## Generated Files",
         "",
         "| File | Reason |",
         "|---|---|",
     ]
-    for item in files:
+    for item in accepted:
         lines.append(f"| `{item.path}` | {item.reason} |")
+    if not accepted:
+        lines.append("| - | No proposal improved the score; nothing was accepted. |")
+    if rejected:
+        lines.extend(["", "## Rejected Candidates", ""])
+        for item in rejected:
+            lines.append(f"- `{item['path']}`: {item['reason']}")
     lines.extend(["", "## Criteria Improved", ""])
     lines.extend(f"- `{cid}`" for cid in improved) if improved else lines.append("- None")
     lines.extend(["", "## Remaining Gaps", ""])
     lines.extend(f"- `{cid}`" for cid in remaining) if remaining else lines.append("- None")
-    lines.extend(["", "## Review Note", "", "Generated templates with TODO fields are intentionally not treated as verified evidence. Fill them with project-specific facts before re-auditing."])
+    lines.extend(["", "## Review Note", "", "Generated templates with TODO fields are intentionally not treated as verified evidence. Candidates that reduce the audit score are automatically rejected."])
     (out_dir / "FIX_PROPOSAL.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report

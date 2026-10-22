@@ -1,6 +1,6 @@
 {
   "repo_path": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\benchmark\\repos\\openai-python",
-  "generated_at": "2026-10-21T15:11:58.754068+00:00",
+  "generated_at": "2026-10-22T13:43:44.409716+00:00",
   "total_score": 70.3,
   "readiness": "Partially Ready",
   "dimensions": [
@@ -157,7 +157,7 @@
       "points": 3.0,
       "max_points": 6,
       "applicable": true,
-      "note": "有许可证或模型卡，但没有同时说明模型专用许可和来源。",
+      "note": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
       "evidence_ids": [
         "E-005"
       ]
@@ -289,7 +289,7 @@
       "points": 3.0,
       "max_points": 6,
       "applicable": true,
-      "note": "有 prompt 文件或描述，但没有版本信息。",
+      "note": "有 prompt 文件或描述，但没有可核验的版本信息。",
       "evidence_ids": [
         "E-013"
       ]
@@ -335,7 +335,7 @@
       "points": 2.5,
       "max_points": 5,
       "applicable": true,
-      "note": "检测到 Agent 项目，但没有调用轨迹或日志。",
+      "note": "检测到 Agent 项目，但调用轨迹仍需补充。",
       "evidence_ids": [
         "E-016"
       ]
@@ -402,7 +402,7 @@
       "severity": "medium",
       "criterion_id": "MODEL-03",
       "title": "说明模型许可和来源",
-      "message": "有许可证或模型卡，但没有同时说明模型专用许可和来源。",
+      "message": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
       "evidence_ids": [
         "E-005"
       ]
@@ -430,7 +430,7 @@
       "severity": "medium",
       "criterion_id": "LLM-02",
       "title": "prompt/template 有版本记录",
-      "message": "有 prompt 文件或描述，但没有版本信息。",
+      "message": "有 prompt 文件或描述，但没有可核验的版本信息。",
       "evidence_ids": [
         "E-013"
       ]
@@ -456,7 +456,7 @@
       "severity": "medium",
       "criterion_id": "LLM-06",
       "title": "Agent 工具调用轨迹可追溯",
-      "message": "检测到 Agent 项目，但没有调用轨迹或日志。",
+      "message": "检测到 Agent 项目，但调用轨迹仍需补充。",
       "evidence_ids": [
         "E-016"
       ]
@@ -728,7 +728,7 @@
       "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
       "status": "pass",
       "returncode": 0,
-      "duration_seconds": 1.486,
+      "duration_seconds": 2.055,
       "stdout": "\n",
       "stderr": ""
     }

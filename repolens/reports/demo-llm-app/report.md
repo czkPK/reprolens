@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-22T13:33:53.226663+00:00`
+- Generated at: `2026-10-22T13:42:03.810057+00:00`
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
 - Readiness: **At Risk**
@@ -149,7 +149,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.067s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.078s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

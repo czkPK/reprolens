@@ -1,8 +1,9 @@
 {
-  "generated_at": "2026-10-22T13:33:53.269551+00:00",
+  "generated_at": "2026-10-22T13:42:04.049387+00:00",
   "before_score": 49.1,
   "after_score": 63.4,
   "delta": 14.3,
+  "accepted": true,
   "generated_files": [
     {
       "path": "Dockerfile",
@@ -31,14 +32,16 @@
     {
       "path": "prompts/prompt_metadata.json",
       "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
-    },
+    }
+  ],
+  "rejected_files": [
     {
       "path": "configs/llm_metadata.yaml",
-      "reason": "LLM-01/03: 增加模型和采样参数配置模板。"
+      "reason": "修复提案未提升评分，已自动丢弃。"
     },
     {
       "path": "eval/README.md",
-      "reason": "LLM-07: 增加评测协议模板；评测集、数据划分和污染分析需要维护者确认。"
+      "reason": "修复提案未提升评分，已自动丢弃。"
     }
   ],
   "fixed_criteria": [

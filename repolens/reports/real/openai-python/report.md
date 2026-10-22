@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\benchmark\repos\openai-python`
-- Generated at: `2026-10-21T15:11:58.754068+00:00`
+- Generated at: `2026-10-22T13:43:44.409716+00:00`
 - Files scanned: **2570**
 - Overall score: **70.3 / 100**
 - Readiness: **Partially Ready**
@@ -70,7 +70,7 @@
 ### F-004 [MEDIUM] 说明模型许可和来源
 
 - Criterion: `MODEL-03`
-- Message: 有许可证或模型卡，但没有同时说明模型专用许可和来源。
+- Message: 有许可证或模型卡，但模型专用许可和来源仍需补充。
 - Evidence: `E-005`
 
 ### F-005 [MEDIUM] 设置并说明随机种子
@@ -88,7 +88,7 @@
 ### F-007 [MEDIUM] prompt/template 有版本记录
 
 - Criterion: `LLM-02`
-- Message: 有 prompt 文件或描述，但没有版本信息。
+- Message: 有 prompt 文件或描述，但没有可核验的版本信息。
 - Evidence: `E-013`
 
 ### F-008 [MEDIUM] 记录采样参数
@@ -106,7 +106,7 @@
 ### F-010 [MEDIUM] Agent 工具调用轨迹可追溯
 
 - Criterion: `LLM-06`
-- Message: 检测到 Agent 项目，但没有调用轨迹或日志。
+- Message: 检测到 Agent 项目，但调用轨迹仍需补充。
 - Evidence: `E-016`
 
 ### F-011 [MEDIUM] 说明评测集、数据划分和污染风险
@@ -125,7 +125,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 1.486s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 2.055s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

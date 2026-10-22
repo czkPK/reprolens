@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\benchmark\repos\smolagents`
-- Generated at: `2026-10-21T15:11:57.214031+00:00`
+- Generated at: `2026-10-22T13:43:41.277432+00:00`
 - Files scanned: **185**
 - Overall score: **70.0 / 100**
 - Readiness: **Partially Ready**
@@ -76,7 +76,7 @@
 ### F-005 [MEDIUM] 说明模型许可和来源
 
 - Criterion: `MODEL-03`
-- Message: 有许可证或模型卡，但没有同时说明模型专用许可和来源。
+- Message: 有许可证或模型卡，但模型专用许可和来源仍需补充。
 - Evidence: `E-003`
 
 ### F-006 [MEDIUM] 提供评测脚本或评测命令
@@ -94,7 +94,7 @@
 ### F-008 [MEDIUM] prompt/template 有版本记录
 
 - Criterion: `LLM-02`
-- Message: 有 prompt 文件或描述，但没有版本信息。
+- Message: 有 prompt 文件或描述，但没有可核验的版本信息。
 - Evidence: `E-007`, `E-014`
 
 ### F-009 [MEDIUM] 记录采样参数
@@ -112,26 +112,26 @@
 ### F-011 [MEDIUM] RAG 索引/知识库有版本记录
 
 - Criterion: `LLM-05`
-- Message: 检测到 RAG 项目，但没有索引版本信息。
+- Message: 检测到 RAG 项目，但索引版本仍需补充。
 - Evidence: `E-019`
 
 ### F-012 [MEDIUM] Agent 工具调用轨迹可追溯
 
 - Criterion: `LLM-06`
-- Message: 检测到 Agent 项目，但没有调用轨迹或日志。
+- Message: 检测到 Agent 项目，但调用轨迹仍需补充。
 - Evidence: `E-020`
 
 ### F-013 [MEDIUM] 说明评测集、数据划分和污染风险
 
 - Criterion: `LLM-07`
-- Message: 只覆盖了评测集/划分/污染中的一部分。
+- Message: 只覆盖了评测集/划分/污染中的一部分，或仍有占位内容。
 - Evidence: `E-021`, `E-015`
 
 ## Execution Evidence
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.224s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.272s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

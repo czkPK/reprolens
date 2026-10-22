@@ -3,6 +3,7 @@
 - Before score: **49.1**
 - After score: **63.4**
 - Estimated gain: **+14.3**
+- Accepted: **True**
 
 ## Generated Files
 
@@ -15,8 +16,11 @@
 | `dataset_card.md` | DATA-03: 增加数据集卡模板；来源和许可需要维护者确认。 |
 | `model_card.md` | MODEL-02/03: 增加模型卡，记录可核验的模型来源。 |
 | `prompts/prompt_metadata.json` | LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。 |
-| `configs/llm_metadata.yaml` | LLM-01/03: 增加模型和采样参数配置模板。 |
-| `eval/README.md` | LLM-07: 增加评测协议模板；评测集、数据划分和污染分析需要维护者确认。 |
+
+## Rejected Candidates
+
+- `configs/llm_metadata.yaml`: 修复提案未提升评分，已自动丢弃。
+- `eval/README.md`: 修复提案未提升评分，已自动丢弃。
 
 ## Criteria Improved
 
@@ -45,4 +49,4 @@
 
 ## Review Note
 
-Generated templates with TODO fields are intentionally not treated as verified evidence. Fill them with project-specific facts before re-auditing.
+Generated templates with TODO fields are intentionally not treated as verified evidence. Candidates that reduce the audit score are automatically rejected.

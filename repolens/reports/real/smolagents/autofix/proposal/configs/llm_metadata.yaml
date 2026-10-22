@@ -1,0 +1,8 @@
+model:
+  provider: TODO
+  model_id: os.environ.get
+  model_version: os.environ.get
+sampling:
+  temperature: 0.2
+  top_p: TODO
+  max_tokens: TODO

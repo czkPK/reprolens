@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\benchmark\repos\mem0`
-- Generated at: `2026-10-21T15:11:58.674009+00:00`
+- Generated at: `2026-10-22T13:43:42.035100+00:00`
 - Files scanned: **1837**
 - Overall score: **81.9 / 100**
 - Readiness: **Partially Ready**
@@ -70,7 +70,7 @@
 ### F-004 [MEDIUM] 说明模型许可和来源
 
 - Criterion: `MODEL-03`
-- Message: 有许可证或模型卡，但没有同时说明模型专用许可和来源。
+- Message: 有许可证或模型卡，但模型专用许可和来源仍需补充。
 - Evidence: `E-005`
 
 ### F-005 [MEDIUM] 提供评测脚本或评测命令
@@ -88,26 +88,26 @@
 ### F-007 [MEDIUM] prompt/template 有版本记录
 
 - Criterion: `LLM-02`
-- Message: 有 prompt 文件或描述，但没有版本信息。
+- Message: 有 prompt 文件或描述，但没有可核验的版本信息。
 - Evidence: `E-009`, `E-015`
 
 ### F-008 [MEDIUM] 记录 tokenizer/上下文窗口
 
 - Criterion: `LLM-04`
-- Message: 有采样参数，但没有 tokenizer/上下文窗口说明。
+- Message: 有相关配置，但 tokenizer/上下文窗口仍需补充。
 - Evidence: `E-020`
 
 ### F-009 [MEDIUM] 说明评测集、数据划分和污染风险
 
 - Criterion: `LLM-07`
-- Message: 只覆盖了评测集/划分/污染中的一部分。
+- Message: 只覆盖了评测集/划分/污染中的一部分，或仍有占位内容。
 - Evidence: `E-025`, `E-016`
 
 ## Execution Evidence
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.739s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.884s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 
