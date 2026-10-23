@@ -1,0 +1,184 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "# Open WebUI 👋"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "package.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-003",
+    "kind": "lockfile",
+    "path": "package-lock.json",
+    "line": null,
+    "excerpt": "package-lock.json"
+  },
+  {
+    "id": "E-004",
+    "kind": "container",
+    "path": "docker-compose.yaml",
+    "line": 1,
+    "excerpt": "services:"
+  },
+  {
+    "id": "E-005",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "Open WebUI License"
+  },
+  {
+    "id": "E-006",
+    "kind": "ci",
+    "path": ".github/workflows/backend.yaml",
+    "line": 1,
+    "excerpt": "# ─────────────────────────────────────────────────────────────────────────────"
+  },
+  {
+    "id": "E-007",
+    "kind": "tests",
+    "path": "src/lib/components/workspace/common/versionDiff.test.ts",
+    "line": 1,
+    "excerpt": "import { describe, expect, it } from 'vitest';"
+  },
+  {
+    "id": "E-008",
+    "kind": "script",
+    "path": "backend/open_webui/routers/evaluations.py",
+    "line": 1,
+    "excerpt": "import logging"
+  },
+  {
+    "id": "E-009",
+    "kind": "script",
+    "path": "Makefile",
+    "line": 1,
+    "excerpt": "ifneq ($(shell which docker-compose 2>/dev/null),)"
+  },
+  {
+    "id": "E-010",
+    "kind": "prompt",
+    "path": "src/routes/(app)/workspace/prompts/+page.svelte",
+    "line": null,
+    "excerpt": "+page.svelte"
+  },
+  {
+    "id": "E-011",
+    "kind": "weights",
+    "path": "test/test_files/image_gen/sd-empty.pt",
+    "line": null,
+    "excerpt": "sd-empty.pt"
+  },
+  {
+    "id": "E-012",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 118,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-013",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 136,
+    "excerpt": "make sure to include the `-v open-webui:/app/backend/data` in your Docker command. This step is crucial as it ensures your database is properly mounted and prevents any loss of data."
+  },
+  {
+    "id": "E-014",
+    "kind": "data",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-015",
+    "kind": "metric",
+    "path": "backend/open_webui/retrieval/loaders/main.py",
+    "line": 644,
+    "excerpt": "expected"
+  },
+  {
+    "id": "E-016",
+    "kind": "hardware",
+    "path": "README.md",
+    "line": 26,
+    "excerpt": "cuda"
+  },
+  {
+    "id": "E-017",
+    "kind": "model",
+    "path": "README.md",
+    "line": 54,
+    "excerpt": "Transformers"
+  },
+  {
+    "id": "E-018",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 48,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-019",
+    "kind": "evaluation",
+    "path": "backend/open_webui/main.py",
+    "line": 1180,
+    "excerpt": "split"
+  },
+  {
+    "id": "E-020",
+    "kind": "cost",
+    "path": "README.md",
+    "line": 68,
+    "excerpt": "cost"
+  },
+  {
+    "id": "E-021",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 13,
+    "excerpt": "Ollama"
+  },
+  {
+    "id": "E-022",
+    "kind": "model",
+    "path": "README.md",
+    "line": 13,
+    "excerpt": "llama"
+  },
+  {
+    "id": "E-023",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 58,
+    "excerpt": "RAG"
+  },
+  {
+    "id": "E-024",
+    "kind": "rag",
+    "path": "backend/open_webui/main.py",
+    "line": 708,
+    "excerpt": "embedding_model"
+  },
+  {
+    "id": "E-025",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 32,
+    "excerpt": "MCP"
+  },
+  {
+    "id": "E-026",
+    "kind": "agent",
+    "path": "backend/open_webui/main.py",
+    "line": 241,
+    "excerpt": "session_id"
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "generated_at": "2026-10-23T13:51:38.407640+00:00",
+  "before_score": 86.1,
+  "after_score": 88.9,
+  "delta": 2.8,
+  "accepted": true,
+  "generated_files": [
+    {
+      "path": "prompts/prompt_metadata.json",
+      "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+    }
+  ],
+  "rejected_files": [
+    {
+      "path": "data/download.sh",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "dataset_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "model_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "configs/llm_metadata.yaml",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "eval/README.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    }
+  ],
+  "fixed_criteria": [
+    "LLM-02"
+  ],
+  "changed_criteria": [
+    "LLM-02"
+  ],
+  "remaining_gaps": [
+    "LLM-03",
+    "LLM-04",
+    "LLM-07",
+    "LLM-08"
+  ],
+  "proposal_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\fresh-holdout\\open-webui\\autofix\\proposal",
+  "staging_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\fresh-holdout\\open-webui\\autofix\\staging",
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+}

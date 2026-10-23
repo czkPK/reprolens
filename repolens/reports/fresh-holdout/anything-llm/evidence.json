@@ -1,0 +1,100 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<a name=\"readme-top\"></a>"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "package.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-003",
+    "kind": "container",
+    "path": "docker/docker-compose.yml",
+    "line": 1,
+    "excerpt": "name: anythingllm"
+  },
+  {
+    "id": "E-004",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "The MIT License"
+  },
+  {
+    "id": "E-005",
+    "kind": "ci",
+    "path": ".github/workflows/build-and-push-image-semver.yaml",
+    "line": 1,
+    "excerpt": "name: Publish AnythingLLM Docker image on Release (amd64 & arm64)"
+  },
+  {
+    "id": "E-006",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 227,
+    "excerpt": "make product and roadmap decisions, specifically:"
+  },
+  {
+    "id": "E-007",
+    "kind": "data",
+    "path": "README.md",
+    "line": 4,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-008",
+    "kind": "hardware",
+    "path": "README.md",
+    "line": 62,
+    "excerpt": "GPU"
+  },
+  {
+    "id": "E-009",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 65,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-010",
+    "kind": "cost",
+    "path": "README.md",
+    "line": 66,
+    "excerpt": "token usage"
+  },
+  {
+    "id": "E-011",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 88,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-012",
+    "kind": "model",
+    "path": "README.md",
+    "line": 62,
+    "excerpt": "llama"
+  },
+  {
+    "id": "E-013",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 165,
+    "excerpt": "Pinecone"
+  },
+  {
+    "id": "E-014",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 65,
+    "excerpt": "agent"
+  }
+]

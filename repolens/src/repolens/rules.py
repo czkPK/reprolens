@@ -93,8 +93,9 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     is_agent_fw = project_type == "agent_framework"
     is_memory_fw = project_type == "memory_framework"
     is_framework = is_agent_fw or is_memory_fw
-    model_agnostic = is_sdk or is_framework
-    data_applicable = not model_agnostic or snapshot.has("data_script") or snapshot.has("dataset_card")
+    model_agnostic = is_sdk or is_framework or (project_type == "application" and snapshot.has("model_agnostic"))
+    has_data_artifact = snapshot.has("data_script") or snapshot.has("dataset_card")
+    data_applicable = (not model_agnostic) or has_data_artifact
 
     add("ENV-01", "pass" if snapshot.has("deps") else "missing", "已发现依赖清单。" if snapshot.has("deps") else "依赖清单是复现的第一入口。", ev("deps"))
     if snapshot.has("lockfile") or snapshot.has("container"):
@@ -166,8 +167,8 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("EXP-01", "missing", "没有训练脚本或主运行命令。", applicable=(is_ml or is_llm) and not model_agnostic)
 
-    if model_agnostic and (snapshot.has("tests") or snapshot.has("ci")):
-        add("EXP-02", "pass", "SDK/框架仓库通过测试套件和 CI 提供可执行验证。", ev("tests", "ci"))
+    if project_type != "ml_project" and (snapshot.has("tests") or snapshot.has("ci")):
+        add("EXP-02", "pass", "软件项目通过测试套件和 CI 提供可执行验证。", ev("tests", "ci"))
     elif snapshot.has("eval_script"):
         add("EXP-02", "pass", "已发现评测脚本。", ev("eval_script"))
     elif snapshot.has("expected_results"):
@@ -225,13 +226,13 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     add("LLM-02",
         "pass" if llm02_pass else ("partial" if llm02_partial else "missing"),
         "已发现版本化 prompt/template。" if llm02_pass else ("有 prompt 文件或描述，但没有可核验的版本信息。" if llm02_partial else "没有 prompt/template 版本记录。"),
-        ev("prompt_files", "prompt_version", "prompt_mention"), applicable=is_llm and not is_sdk)
+        ev("prompt_files", "prompt_version", "prompt_mention"), applicable=is_llm and not is_sdk and (not model_agnostic or snapshot.has("prompt_files") or snapshot.has("prompt_mention")))
 
     llm03_partial = snapshot.has("sampling_params") or snapshot.has("config") or (model_agnostic and snapshot.has("prompt_files"))
     add("LLM-03",
         "pass" if concrete("sampling_params") and not model_agnostic else ("partial" if llm03_partial else "missing"),
         "已记录采样参数。" if concrete("sampling_params") and not model_agnostic else ("有采样参数或配置线索，但仍需补充可核验值。" if llm03_partial else "没有记录 temperature、top_p 等采样参数。"),
-        ev("sampling_params", "config", "prompt_files"), applicable=is_llm and not is_sdk)
+        ev("sampling_params", "config", "prompt_files"), applicable=is_llm and not is_sdk and (not model_agnostic or snapshot.has("sampling_params") or snapshot.has("config") or snapshot.has("prompt_files")))
 
     add("LLM-04",
         "pass" if concrete("tokenizer") else ("partial" if snapshot.has("tokenizer") or snapshot.has("sampling_params") else "missing"),

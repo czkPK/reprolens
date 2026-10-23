@@ -75,7 +75,7 @@ class RepoSnapshot:
         return "\n".join(self.texts.values())
 
     def deps_text(self) -> str:
-        names = {"requirements.txt", "pyproject.toml", "environment.yml", "environment.yaml", "pipfile"}
+        names = {"requirements.txt", "pyproject.toml", "environment.yml", "environment.yaml", "pipfile", "package.json"}
         parts = [text for path, text in self.texts.items() if Path(path).name.lower() in names]
         return "\n".join(parts)
 
@@ -150,17 +150,17 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 snapshot.mark_placeholder(flag)
 
     add_file_flag("readme", r"(^|/)readme(\.md|\.rst|\.txt)?$", "readme")
-    add_file_flag("deps", r"(^|/)requirements\.txt$|(^|/)pyproject\.toml$|(^|/)environment\.ya?ml$|(^|/)pipfile$", "dependency-manifest")
+    add_file_flag("deps", r"(^|/)requirements\.txt$|(^|/)pyproject\.toml$|(^|/)environment\.ya?ml$|(^|/)pipfile$|(^|/)package\.json$", "dependency-manifest")
     add_file_flag("lockfile", r"(^|/)(poetry\.lock|uv\.lock|requirements\.lock|pipfile\.lock|package-lock\.json)$", "lockfile")
     add_file_flag("container", r"(^|/)dockerfile$|(^|/)docker-compose\.ya?ml$", "container")
     add_file_flag("model_card", r"(^|/)model[_-]?card\.(md|txt|ya?ml)$", "model-card")
     add_file_flag("dataset_card", r"(^|/)dataset[_-]?card\.(md|txt|ya?ml)$", "dataset-card")
     add_file_flag("license", r"(^|/)(license|copying)(\.|$)", "license")
     add_file_flag("ci", r"(^|/)\.github/workflows/.*\.ya?ml$", "ci")
-    add_file_flag("tests", r"(^|/)tests?/.*\.py$|(^|/)test_.*\.py$", "tests")
+    add_file_flag("tests", r"(^|/)tests?/.*\.py$|(^|/)test_.*\.py$|\.spec\.ts$|\.test\.ts$|(^|/)playwright\.config\.ts$", "tests")
     add_file_flag("train_script", r"(^|/)(train|finetune|pretrain)[^/]*\.py$", "script")
     add_file_flag("eval_script", r"(^|/)(eval|evaluate|infer|predict)[^/]*\.py$", "script")
-    add_file_flag("data_script", r"(^|/)(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$", "script")
+    add_file_flag("data_script", r"(^|/)(data|scripts?)/.*(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$|^(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$", "script")
     add_file_flag("reproduce_script", r"(^|/)(reproduce|run|setup)[^/]*\.(sh|ps1)$|(^|/)makefile$", "script")
     add_file_flag("config", r"(^|/)(configs?|conf)/.*\.(ya?ml|json|toml)$|^config[^/]*\.(py|ya?ml|json)$", "config")
     add_file_flag("prompt_files", r"(^|/)prompts?/|^prompt[^/]*\.(txt|md|ya?ml|json)$", "prompt", exclude_github=True)
@@ -230,7 +230,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     find_text_scoped(r"prompt_version|template_version|prompt[^\n]*version|version[^\n]*prompt", "prompt_version", "prompt", is_prompt_or_config)
     find_text_scoped(r"temperature|top_p|top_k|max_tokens|presence_penalty|frequency_penalty", "sampling_params", "llm-config", is_config_or_script)
     find_text_scoped(r"tokenizer|context_window|context window|max_context|tiktoken|sentencepiece", "tokenizer", "llm-config", is_config_or_script)
-    find_text(r"\brag\b|retrieval|retriever|embedding|vector store|faiss|chroma|pinecone|weaviate|qdrant|milvus|langchain|llamaindex", "rag_project", "rag")
+    find_text(r"\brag\b|retrieval|retriever|vector store|faiss|chroma|pinecone|weaviate|qdrant|milvus", "rag_project", "rag")
     find_text_scoped(r"index_name|index_version|collection_name|vector_store|embedding_model|chunk_size|chunk_overlap|knowledge base", "rag_index", "rag", is_config_or_script)
     find_text(r"\bagent\b|tool_call|tool call|langgraph|autogen|crewai|mcp|function calling", "agent_project", "agent")
     find_text_scoped(r"trace|trajectory|tool_call|tool call|run_id|session_id", "agent_trace", "agent", is_config_or_script)
@@ -258,6 +258,11 @@ def scan_repo(root: Path) -> RepoSnapshot:
         text for rel_path, text in texts.items()
         if "/" not in rel_path and Path(rel_path).name.lower().startswith("readme")
     ).lower()
+    if any(phrase in root_readme_text for phrase in (
+        "any llm", "almost any llm", "choice of model", "models are discovered",
+        "multiple models", "model providers", "openai-compatible apis", "cloud and local",
+    )):
+        snapshot.mark("model_agnostic", snapshot.evidence_for("readme"))
     has_app_entry = any(
         "/" not in rel_path and Path(rel_path).name.lower() in {"app.py", "main.py"}
         for rel_path in texts
@@ -266,14 +271,21 @@ def scan_repo(root: Path) -> RepoSnapshot:
         phrase in root_readme_text
         for phrase in ("demo llm", "demo app", "web app", "chat app", "assistant app", "rag app")
     )
+    has_frontend_app = any(
+        rel_path.lower() in {"server.js", "vite.config.ts", "next.config.js", "svelte.config.js"}
+        for rel_path in texts
+    )
+    has_python_cli = any(rel_path.lower().endswith("/__main__.py") for rel_path in texts) and any(
+        token in root_readme_text for token in ("cli", "command line", "pair program")
+    )
     if "memory layer" in root_readme_text or "memory framework" in root_readme_text:
         snapshot.project_type = "memory_framework"
+    elif has_app_entry or has_frontend_app or has_python_cli or is_demo_app:
+        snapshot.project_type = "application"
+    elif snapshot.has("agent_project") and snapshot.has("prompt_files"):
+        snapshot.project_type = "agent_framework"
     elif "api library" in root_readme_text or "sdk" in root_readme_text or "client library" in root_readme_text:
         snapshot.project_type = "sdk"
-    elif has_app_entry or is_demo_app:
-        snapshot.project_type = "application"
-    elif snapshot.has("agent_project") and snapshot.has("prompt_files") and any(rel_path.lower().startswith("src/") for rel_path in texts):
-        snapshot.project_type = "agent_framework"
     elif snapshot.has("ml_project"):
         snapshot.project_type = "ml_project"
     else:

@@ -207,5 +207,51 @@
     "label_file": "benchmark/labels/chat-ui.json",
     "project_type": "llm_application",
     "split": "holdout"
+  },
+  {
+    "name": "anything-llm",
+    "path": "benchmark/repos/anything-llm",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "missing",
+      "LLM-05": "partial",
+      "LLM-06": "partial",
+      "LLM-07": "missing",
+      "LLM-08": "partial"
+    },
+    "split": "fresh_holdout",
+    "label_file": "benchmark/labels/anything-llm.json",
+    "project_type": "llm_application"
+  },
+  {
+    "name": "open-webui",
+    "path": "benchmark/repos/open-webui",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "partial",
+      "LLM-05": "partial",
+      "LLM-06": "partial",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "split": "fresh_holdout",
+    "label_file": "benchmark/labels/open-webui.json",
+    "project_type": "llm_application"
   }
 ]

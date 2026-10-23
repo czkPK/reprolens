@@ -1,0 +1,8 @@
+model:
+  provider: TODO
+  model_id: anythingllm
+  model_version: anythingllm
+sampling:
+  temperature: TODO
+  top_p: TODO
+  max_tokens: TODO

@@ -1,0 +1,23 @@
+{
+  "repo": "open-webui",
+  "project_type": "llm_application",
+  "split": "fresh_holdout",
+  "labeled_at": "2026-10-23",
+  "labeling_note": "Web chat/UI application with configurable models and RAG; project-owned model criteria are not applicable.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "package.json", "evidence_line": 1, "rationale": "Node dependencies are declared in package.json.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "package-lock.json", "evidence_line": null, "rationale": "package-lock.json and Docker Compose pin the environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Open WebUI is an application frontend, not a project-owned dataset pipeline.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 13, "rationale": "Models are supplied by external providers such as Ollama; the repository does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "The repository has a code license, but no project-owned model license.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "src/lib/components/workspace/common/versionDiff.test.ts", "evidence_line": 1, "rationale": "Vitest and CI workflows provide executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the UI application.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/backend.yaml", "evidence_line": 1, "rationale": "Tests, CI, Docker and Make targets are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "src/routes/(app)/workspace/prompts/+page.svelte", "evidence_line": null, "rationale": "Prompt management UI exists, but no prompt version or hash metadata is recorded.", "confidence": "medium"},
+    {"criterion_id": "LLM-03", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 68, "rationale": "Model configuration is exposed, but no fixed sampling configuration is documented for a project-owned experiment.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 58, "rationale": "RAG is supported, but index/embedding versions are not documented as a reproducible artifact.", "confidence": "medium"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 32, "rationale": "MCP tools and sessions are supported, but no durable tool-call trace artifact is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "backend/open_webui/main.py", "evidence_line": 1180, "rationale": "A split concept appears in code, but no evaluation dataset or contamination protocol is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 68, "rationale": "Cost is mentioned, but no reproducible project-level cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

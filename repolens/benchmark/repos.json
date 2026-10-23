@@ -58,5 +58,13 @@
   {
     "name": "chat-ui",
     "url": "https://github.com/huggingface/chat-ui.git"
+  },
+  {
+    "name": "anything-llm",
+    "url": "https://github.com/Mintplex-Labs/anything-llm.git"
+  },
+  {
+    "name": "open-webui",
+    "url": "https://github.com/open-webui/open-webui.git"
   }
 ]

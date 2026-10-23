@@ -1,0 +1,94 @@
+--- /dev/null
++++ b/reproduce.sh
+@@ -0,0 +1,6 @@
++#!/usr/bin/env bash
++set -euo pipefail
++if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
++if [ -f pyproject.toml ]; then python -m pip install -e .; fi
++python -m compileall -q .
++echo "Environment and syntax checks completed. Add the project-specific run command here."
+--- /dev/null
++++ b/data/download.sh
+@@ -0,0 +1,8 @@
++#!/usr/bin/env bash
++set -euo pipefail
++DATA_URL="${DATA_URL:-TODO}"
++if [ "$DATA_URL" = "TODO" ]; then
++  echo "Set DATA_URL before running this script." >&2
++  exit 2
++fi
++curl -L "$DATA_URL" -o data/raw.zip
+--- /dev/null
++++ b/prompts/prompt_metadata.json
+@@ -0,0 +1,60 @@
++{
++  "prompt_version": "1.0.0",
++  "versioning_method": "sha256 of current prompt files",
++  "prompt_files": {
++    "server/models/promptHistory.js": "a6a21f8d24b7e6e84b39f20600f70cccd68c097ccceb89d8672df4187f87903a",
++    "server/models/systemPromptVariables.js": "1098cfa291c3b770b5c3d6ea8e9457cc5e141776d298a31e4bbee58f1c84d024",
++    "server/__tests__/models/systemPromptVariables.test.js": "099513ea48c8b46105d6a97b638fdcc34dc94d004783150803bfe5c72ee95fb5",
++    "frontend/src/hooks/usePromptInputStorage.js": "32e55a0d3f5d203945ca3c8d0f7f559fa7fe2ab9b24d6064ed29d73757ff2ffa",
++    "frontend/src/models/promptHistory.js": "40dc32a3537d4daa00abe266870081f466694ea41c2a1d0a7caf96c3438a3ec5",
++    "frontend/src/models/systemPromptVariable.js": "08ca26cd269b35bf85ce93fc36fc9034a379ec3086fe31fb0c33ec646445f408",
++    "frontend/src/pages/WorkspaceSettings/ChatSettings/ChatPromptSettings/index.jsx": "b675eb1b4a2937d0179ec8936125f153e61d43a58fb42b18aa35e676e9b27b25",
++    "frontend/src/pages/WorkspaceSettings/ChatSettings/ChatPromptSettings/ChatPromptHistory/index.jsx": "0d58dff9a8951dd71e51d96ccf7510d184bc71e46700c1b96baccc45ef062dc3",
++    "frontend/src/pages/WorkspaceSettings/ChatSettings/ChatPromptSettings/ChatPromptHistory/PromptHistoryItem/index.jsx": "c9aa9969ada73a009fcb788f4ead69cea164e56793f6ba3b22b82b43940bbfbc",
++    "frontend/src/pages/GeneralSettings/CommunityHub/Trending/HubItems/HubItemCard/systemPrompt.jsx": "c5284cc101560f25dafd849c211ad5ef1ae7efe4a682ff448909a9379c823e82",
++    "frontend/src/pages/GeneralSettings/CommunityHub/ImportItem/Steps/PullAndReview/HubItem/SystemPrompt.jsx": "75b77559e18f6aef04767408a8b4f694e4b6afc07d7d3749ebe8b876796c5594",
++    "frontend/src/pages/Admin/DefaultSystemPrompt/index.jsx": "67cc00f7d262f0d070348239b998607ff14742a99b7739fdea89bdae7439f352",
++    "frontend/src/pages/Admin/SystemPromptVariables/index.jsx": "57f8979cffb567dd2e8ff573fc802f878b97e3bfa26d5526997082c774fcae88",
++    "frontend/src/pages/Admin/SystemPromptVariables/AddVariableModal/index.jsx": "dd9346cbd937348bfe4d7c49b4558d3de9ba7a57adc92f2070061d5d33a6a76e",
++    "frontend/src/pages/Admin/SystemPromptVariables/VariableRow/index.jsx": "4a88852baf5690d9022dd2db49812ed4bcfcee2fa1e0132d3597517072c9b542",
++    "frontend/src/pages/Admin/SystemPromptVariables/VariableRow/EditVariableModal/index.jsx": "f7c8a01144812d4c7c13cbebe886b363b48bfb85262a8977c7fb40e729a99c43",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/index.jsx": "a52578c2c714fc5ba202fadc6c1b342fac22cdccb73eaca289f6b2dc3eee57f3",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/AgentMenu/index.jsx": "a6586938d229b2366ecd6fb6fa55567abc18759dc61577475bfe7b7de2d77bb6",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/AttachItem/index.jsx": "46b2b828cfa119527339169d8d15ac15b4b8ebe78ec2d30bd84e7bc73a9c6083",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/Attachments/index.jsx": "af7d7121ca9e0f4e92081b4dfe31d869e35f6787b0e5e4c9ef2d96b2f7a555ea",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/action.jsx": "df0e4472f676e9bd42a769f036d34834ae94b2dbb792c415df4258f7b2e42a7e",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/index.jsx": "5c11b35cefa8a166dfb36dcf3e809f820d414f11e2e1263eac6935048bd9bf58",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/utils.js": "84b0aeda8e53fd0453d119c2049586972441d1ce25d7d4c31e7d646dc43f8c93",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ReasoningEffortButton/index.jsx": "b41f461f18072e601059dc546f92ef12c4251a5b8402d3e31ab226c7bd758951",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/SpeechToText/index.jsx": "3368ff1f291efe0b18c2756e37c41c0954090982e685b3fa1de9e6627c926d35",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/SpeechToText/useSilenceDetector.js": "b810d42e74c958814dd3357adbadca2477663c14a4a77c9829f55618ccb8cbc8",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/StopGenerationButton/index.jsx": "3af513ac529e68d1c60ca24aa89e37cbf12bad9ea641c3e6d01b6e16469730dd",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/StopGenerationButton/stop.svg": "db9bbde7b716eedbd29b0084edf4e4180ac5182e8e35c8368a0ff60b241d1ebf",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/TextSizeMenu/index.jsx": "1c13011ddfc3c6ccbf2fb102aa20b51ca841f9d8dac7d76b3f114efe7096d6d6",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/index.jsx": "478f0eca1e9f0a470d89cc7ed15039ddeb92547a2e844e9b1dbe4317885b9bea",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/useToolsMenuItems.js": "376ce1d0821acdf07b693acd8cbac5dad61d275000dcf576893824359ce50202",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/index.jsx": "4f0f5a67c48faf9f6562802a1ba738b3e1a69ee201f736c01e37cbafd3158725",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/skillRegistry.js": "71aeef43d4a910c2854aa7c29d404d5e2eab65570856d27dcae01713decd3bcc",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/useAgentSkillsState.js": "da69ffbafcebe013b930f967f506f4c53ab19a853df30a750ae2380caa2f3e75",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/useSkillSections.js": "b6fe8c72281a8d35e23455ea615b266d23d813e322217269627cfbe63e3ae8e2",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/useSubSkillPreferences.js": "e796b155bbb9fbfac6762819ef0db81ba432e64cdb4b016a3f8a1f3a8b4b2f9a",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/SlashCommands/index.jsx": "f0dfac316ca6487ee2b99f6060b7113b0e18baf3ee2a8f27878eeb969b93a9e5",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/SlashCommands/SlashCommandRow/index.jsx": "0f69b819b9d080cd59f77d612ae3f52648e86ecc42902edcfa27b5473ae575a6",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/SlashCommands/SlashPresets/AddPresetModal.jsx": "97470d8559842d0a8f249a1efdacab9f8954f35494a6d075d88d96fa31b8927a",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/SlashCommands/SlashPresets/constants.js": "f921cd0ae1ab35815d210c680127b61c279c25b1af20f243aabad7d4d40d45ae",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/SlashCommands/SlashPresets/EditPresetModal.jsx": "51f300250a86fbac1d58bb5b78420dc050f424d1a09e9f209c15d1e90de230b0",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/SkillRow/index.jsx": "c8fe15edc45a43aba7829159ebe77236c7e6d37319bccd9bbf1181240442ff60",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/ToolsMenu/Tabs/AgentSkills/SkillSection/index.jsx": "02600cf8f8835c765eff65de07c1b29e4fac11357300f1a443fe3e7dbf7e4011",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/SpeechToText/BrowserNative/index.jsx": "16d460176de372d4d916f16ab0ae738d7de1c9244d863b5719c252a08c3b8daa",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/SpeechToText/MicButton/index.jsx": "1d3b1faced3faba76473f024a30e37b3012f87c953537f168558bbfb7ba0e332",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/SpeechToText/ServerSTT/index.jsx": "9194bfc5a7b36eca37e12e425b6470918800b4463c2b75e5eae1eeb81c6783a2",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/ChatModelSelection/index.jsx": "9b825d501e6507299933ea088237b8db144e57a347b88c71a544c52bd4bf8c59",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/LLMSelector/index.jsx": "de03cbf8e7fe98c185a1bb9a796afe128c1ede35c3c3c4b489370b2c0223b9d9",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/RouterPickerSelection/index.jsx": "853bc541814ed9e0400e7f0e97808b3f5b14e3ac3b7cbe33136765b4b9b741ef",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/LLMSelector/SetupProvider/index.jsx": "13c62ac33b62d4a8a40b734662400d1aba405696638b180d6d6ae91586085f55",
++    "frontend/src/components/WorkspaceChat/ChatContainer/PromptInput/AttachItem/ParsedFilesMenu/index.jsx": "254dc2d8ee482348ff83d3414b9b2530f55d6f97db32c88707adb72a3d2f1de4",
++    "frontend/src/components/WorkspaceChat/ChatContainer/ChatHistory/PromptReply/index.jsx": "7115b8c2309cb3948fd2b1c8807caae0770cf2ebfa3c2331f54e35c18f2f9a39",
++    "frontend/src/components/CommunityHub/PublishEntityModal/SystemPrompts/index.jsx": "148e9a9a0e70b34816b958a4dd46ca0c719d9f562c0f88984a0c187bcb7b07a7"
++  },
++  "note": "Generated by ReproLens AutoFix. Review before publishing."
++}
+--- /dev/null
++++ b/configs/llm_metadata.yaml
+@@ -0,0 +1,8 @@
++model:
++  provider: TODO
++  model_id: anythingllm
++  model_version: anythingllm
++sampling:
++  temperature: TODO
++  top_p: TODO
++  max_tokens: TODO

@@ -1,0 +1,58 @@
+[
+  {
+    "finding_id": "F-003",
+    "action": "记录 tokenizer、上下文窗口和截断策略",
+    "rationale": "避免输入长度和分词差异导致结果变化。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 4.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-001",
+    "action": "将 prompt/template 版本化并记录在配置或模型卡中",
+    "rationale": "避免 prompt 漂移导致结果不可复现。",
+    "cost": "low",
+    "impact": "high",
+    "estimated_score_gain": 3.0,
+    "evidence_ids": [
+      "E-010",
+      "E-018"
+    ]
+  },
+  {
+    "finding_id": "F-004",
+    "action": "说明评测集、数据划分和污染/泄漏风险",
+    "rationale": "让指标具有可比性，避免高估效果。",
+    "cost": "low",
+    "impact": "high",
+    "estimated_score_gain": 3.0,
+    "evidence_ids": [
+      "E-019"
+    ]
+  },
+  {
+    "finding_id": "F-002",
+    "action": "记录 temperature、top_p、max_tokens 等采样参数",
+    "rationale": "让生成行为可以复现和比较。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 2.5,
+    "evidence_ids": [
+      "E-010"
+    ]
+  },
+  {
+    "finding_id": "F-005",
+    "action": "说明推理成本、延迟和 token 消耗",
+    "rationale": "让读者评估复现成本。",
+    "cost": "low",
+    "impact": "low",
+    "estimated_score_gain": 2.0,
+    "evidence_ids": [
+      "E-020",
+      "E-016",
+      "E-021"
+    ]
+  }
+]
