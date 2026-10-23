@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .autofix import generate_autofix
+from .llm import write_explanation
 from .models import AuditResult
 from .probes import run_probes
 from .remediation import plan_remediations
@@ -27,6 +28,7 @@ def _build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--format", choices=["markdown", "json"], default="markdown", help="Print a compact result.")
     audit.add_argument("--execute", action="store_true", help="Run repository scripts with --help and pytest collection probes. Only use on trusted repositories.")
     audit.add_argument("--autofix", action="store_true", help="Generate a conservative fix proposal and re-audit a staging copy.")
+    audit.add_argument("--explain", action="store_true", help="Generate an evidence-grounded explanation with offline fallback.")
     return parser
 
 
@@ -64,6 +66,9 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = Path(args.out_dir).expanduser().resolve()
     write_outputs(result, out_dir)
     autofix_result = None
+    explanation_path = None
+    if args.explain:
+        explanation_path = write_explanation(result, out_dir)
     if args.autofix:
         autofix_result = generate_autofix(root, result, out_dir / "autofix")
 
@@ -74,6 +79,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Score: {score:.1f}/100 ({result.readiness})")
         print(f"Findings: {len(findings)}; remediation actions: {len(remediations)}")
         print(f"Probes: {len(probes)}; execution evidence: {out_dir / 'execution.json'}")
+        if explanation_path is not None:
+            print(f"Explanation: {explanation_path}")
         if autofix_result is not None:
             print(f"AutoFix: {autofix_result['before_score']:.1f} -> {autofix_result['after_score']:.1f} (+{autofix_result['delta']:.1f})")
             print(f"Fix proposal: {out_dir / 'autofix' / 'FIX_PROPOSAL.md'}")

@@ -12,18 +12,21 @@ Given a local repository, ReproLens:
 4. runs a safe Python syntax probe by default; `--execute` enables `--help` and pytest collection probes on trusted repositories;
 5. reports gaps with evidence IDs;
 6. proposes a minimal remediation plan and estimates the score gain;
-7. with `--autofix`, generates a conservative fix proposal and re-audits a staging copy.
+7. with `--autofix`, generates a conservative fix proposal and re-audits a staging copy;
+8. with `--explain`, generates an evidence-grounded explanation, with an offline deterministic fallback.
 
 ## Quick start
 
 ```powershell
 $env:PYTHONPATH = "src"
 python -m unittest discover -s tests -v
-python -m repolens audit examples/demo-llm-app --out-dir reports/demo-llm-app --autofix
+python -m repolens audit examples/demo-llm-app --out-dir reports/demo-llm-app --autofix --explain
 python -m repolens.benchmark
 ```
 
-Outputs: `report.md`, `report.html`, `score.json`, `evidence.json`, `remediation.json`, `execution.json`, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
+Outputs: `report.md`, `report.html`, `score.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
+
+Optional LLM environment variables: `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, `REPROLENS_LLM_MODEL`.
 
 ## AutoFix
 

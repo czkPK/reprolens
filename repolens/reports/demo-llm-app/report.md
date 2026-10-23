@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-22T13:42:03.810057+00:00`
+- Generated at: `2026-10-23T14:20:48.770914+00:00`
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
 - Readiness: **At Risk**
@@ -40,7 +40,7 @@
 | DOC-03 | 文档可复现 | 提供测试、CI 或一键复现脚本 | MISSING | 0.0/6.0 | - |
 | LLM-01 | LLM 特有风险 | 记录模型/API 版本 | PASS | 6.0/6.0 | E-006, E-007 |
 | LLM-02 | LLM 特有风险 | prompt/template 有版本记录 | PARTIAL | 3.0/6.0 | E-004 |
-| LLM-03 | LLM 特有风险 | 记录采样参数 | PASS | 5.0/5.0 | E-008, E-003 |
+| LLM-03 | LLM 特有风险 | 记录采样参数 | PASS | 5.0/5.0 | E-008, E-003, E-004 |
 | LLM-04 | LLM 特有风险 | 记录 tokenizer/上下文窗口 | PARTIAL | 2.0/4.0 | E-008 |
 | LLM-05 | LLM 特有风险 | RAG 索引/知识库有版本记录 | PASS | 5.0/5.0 | E-010, E-009 |
 | LLM-06 | LLM 特有风险 | Agent 工具调用轨迹可追溯 | PARTIAL | 2.5/5.0 | E-011 |
@@ -142,14 +142,14 @@
 ### F-016 [MEDIUM] 说明推理成本或延迟
 
 - Criterion: `LLM-08`
-- Message: 有硬件/API 信息，但没有成本或延迟说明。
+- Message: 有成本/硬件线索，但仍需量化数据。
 - Evidence: `E-006`
 
 ## Execution Evidence
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.078s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.063s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

@@ -1,6 +1,6 @@
 {
   "repo_path": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\examples\\demo-llm-app",
-  "generated_at": "2026-10-22T13:42:03.810057+00:00",
+  "generated_at": "2026-10-23T14:20:48.770914+00:00",
   "total_score": 49.1,
   "readiness": "At Risk",
   "dimensions": [
@@ -286,7 +286,8 @@
       "note": "已记录采样参数。",
       "evidence_ids": [
         "E-008",
-        "E-003"
+        "E-003",
+        "E-004"
       ]
     },
     {
@@ -348,7 +349,7 @@
       "points": 2.0,
       "max_points": 4,
       "applicable": true,
-      "note": "有硬件/API 信息，但没有成本或延迟说明。",
+      "note": "有成本/硬件线索，但仍需量化数据。",
       "evidence_ids": [
         "E-006"
       ]
@@ -492,7 +493,7 @@
       "severity": "medium",
       "criterion_id": "LLM-08",
       "title": "说明推理成本或延迟",
-      "message": "有硬件/API 信息，但没有成本或延迟说明。",
+      "message": "有成本/硬件线索，但仍需量化数据。",
       "evidence_ids": [
         "E-006"
       ]
@@ -744,7 +745,7 @@
       "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
       "status": "pass",
       "returncode": 0,
-      "duration_seconds": 0.078,
+      "duration_seconds": 0.063,
       "stdout": "\n",
       "stderr": ""
     }
