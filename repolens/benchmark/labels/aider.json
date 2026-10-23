@@ -1,0 +1,23 @@
+{
+  "repo": "aider",
+  "project_type": "llm_agent_application",
+  "split": "holdout",
+  "labeled_at": "2026-10-23",
+  "labeling_note": "CLI pair-programming agent that supports many LLM providers; model-owned artifacts are not applicable.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "Project dependencies are declared in pyproject.toml.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "benchmark/Dockerfile", "evidence_line": 1, "rationale": "A Dockerfile provides a containerized environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Aider is a coding agent application, not a project-owned dataset pipeline.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 45, "rationale": "Aider supports many cloud and local LLMs and does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE.txt", "evidence_line": 1, "rationale": "The repository has a code license, but no project-owned model license.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "benchmark/test_benchmark.py", "evidence_line": 1, "rationale": "A benchmark/test suite provides executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Aider is not a training experiment and does not require a training seed.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/check_pypi_version.yml", "evidence_line": 1, "rationale": "Tests, CI and benchmark scripts are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "aider/main.py", "evidence_line": 19, "rationale": "Prompt construction exists in code, but no prompt version or hash metadata is recorded.", "confidence": "medium"},
+    {"criterion_id": "LLM-03", "expected_status": "partial", "evidence_path": "aider/main.py", "evidence_line": 777, "rationale": "Model parameters are configurable, but no fixed sampling configuration is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Aider is not a RAG application with a project-owned knowledge index.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "aider/main.py", "evidence_line": 6, "rationale": "Tracing hooks exist, but no durable tool-call trace artifact is required or documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 178, "rationale": "A benchmark is mentioned, but data splits and contamination analysis are not documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "aider/main.py", "evidence_line": 1121, "rationale": "Cost tracking is implemented, but no reproducible cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

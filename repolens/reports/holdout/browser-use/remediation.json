@@ -1,0 +1,34 @@
+[
+  {
+    "finding_id": "F-003",
+    "action": "添加快速开始和最小运行示例",
+    "rationale": "让新用户可以在几分钟内跑通。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 6.0,
+    "evidence_ids": []
+  },
+  {
+    "finding_id": "F-001",
+    "action": "在 README 中增加可复制的安装命令",
+    "rationale": "降低首次运行门槛。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 3.5,
+    "evidence_ids": [
+      "E-001"
+    ]
+  },
+  {
+    "finding_id": "F-002",
+    "action": "添加数据集卡或数据许可说明",
+    "rationale": "明确数据边界和再分发条件。",
+    "cost": "low",
+    "impact": "medium",
+    "estimated_score_gain": 3.0,
+    "evidence_ids": [
+      "E-004",
+      "E-010"
+    ]
+  }
+]

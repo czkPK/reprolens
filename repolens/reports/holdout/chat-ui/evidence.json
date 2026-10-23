@@ -1,0 +1,93 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "# Chat UI"
+  },
+  {
+    "id": "E-002",
+    "kind": "lockfile",
+    "path": "package-lock.json",
+    "line": null,
+    "excerpt": "package-lock.json"
+  },
+  {
+    "id": "E-003",
+    "kind": "container",
+    "path": "docker-compose.yml",
+    "line": 1,
+    "excerpt": "# For development only"
+  },
+  {
+    "id": "E-004",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "Copyright 2018- The Hugging Face team. All rights reserved."
+  },
+  {
+    "id": "E-005",
+    "kind": "ci",
+    "path": ".github/workflows/build-docs.yml",
+    "line": 1,
+    "excerpt": "name: Build documentation"
+  },
+  {
+    "id": "E-006",
+    "kind": "prompt",
+    "path": "src/routes/conversation/[id]/message/[messageId]/prompt/+server.ts",
+    "line": 1,
+    "excerpt": "import { buildPrompt } from \"$lib/buildPrompt\";"
+  },
+  {
+    "id": "E-007",
+    "kind": "data",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-008",
+    "kind": "model",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "huggingface"
+  },
+  {
+    "id": "E-009",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 42,
+    "excerpt": "template"
+  },
+  {
+    "id": "E-010",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "huggingface"
+  },
+  {
+    "id": "E-011",
+    "kind": "model",
+    "path": "README.md",
+    "line": 16,
+    "excerpt": "llama"
+  },
+  {
+    "id": "E-012",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 16,
+    "excerpt": "embedding"
+  },
+  {
+    "id": "E-013",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 130,
+    "excerpt": "MCP"
+  }
+]

@@ -42,6 +42,7 @@ DEFAULT_CASES = [
 @dataclass
 class BenchmarkResult:
     name: str
+    split: str
     score: float
     exact_matches: int
     total_expectations: int
@@ -84,6 +85,7 @@ def run_case(case: dict, base: Path) -> BenchmarkResult:
         details.append({"criterion_id": criterion_id, "expected": expected, "actual": actual, "match": ok})
     return BenchmarkResult(
         name=case["name"],
+        split=case.get("split", "development"),
         score=total_score(list(criteria.values())),
         exact_matches=exact,
         total_expectations=len(expected_map),
@@ -114,7 +116,7 @@ def _f1(precision: float, recall: float) -> float:
     return round(2 * precision * recall / (precision + recall), 3) if precision + recall else 0.0
 
 
-def render_markdown(results: list[BenchmarkResult]) -> str:
+def render_markdown(results: list[BenchmarkResult], title: str = "ReproLens Benchmark") -> str:
     labeled = [item for item in results if item.total_expectations > 0]
     unlabeled = [item for item in results if item.total_expectations == 0]
     total_exact = sum(item.exact_matches for item in labeled)
@@ -126,7 +128,7 @@ def render_markdown(results: list[BenchmarkResult]) -> str:
     recall = _recall(tp, fn)
     accuracy = f"{total_exact}/{total_expectations} ({total_exact / total_expectations * 100:.1f}%)" if total_expectations else "N/A"
     lines = [
-        "# ReproLens Benchmark",
+        f"# {title}",
         "",
         f"- Labeled exact status accuracy: **{accuracy}**",
         f"- Detection precision: **{precision:.3f}**",
@@ -168,7 +170,14 @@ def main() -> int:
     )
     markdown = render_markdown(results)
     (out_dir / "results.md").write_text(markdown, encoding="utf-8")
+    development = [item for item in results if item.split == "development"]
+    holdout = [item for item in results if item.split == "holdout"]
+    (out_dir / "development_results.md").write_text(render_markdown(development, "ReproLens Development Set"), encoding="utf-8")
+    (out_dir / "holdout_results.md").write_text(render_markdown(holdout, "ReproLens Holdout Set"), encoding="utf-8")
+    (out_dir / "holdout_results.json").write_text(json.dumps([item.__dict__ for item in holdout], ensure_ascii=False, indent=2), encoding="utf-8")
     print(markdown)
+    print("\n## Holdout Summary\n")
+    print(render_markdown(holdout, "ReproLens Holdout Set"))
     return 0
 
 

@@ -1,0 +1,23 @@
+{
+  "repo": "chat-ui",
+  "project_type": "llm_application",
+  "split": "holdout",
+  "labeled_at": "2026-10-23",
+  "labeling_note": "Open-source chat frontend with configurable OpenAI-compatible models; it does not own a model or dataset.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "package.json", "evidence_line": 1, "rationale": "Node dependencies are declared in package.json.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "package-lock.json", "evidence_line": null, "rationale": "package-lock.json and a Dockerfile pin the environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Chat UI is an application frontend, not a project-owned dataset pipeline.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 126, "rationale": "Models are discovered from an external OpenAI-compatible endpoint; the repository does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "The repository has a code license, but no project-owned model license.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "tests/smoke.spec.ts", "evidence_line": 1, "rationale": "Playwright smoke tests provide executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the UI application.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/build-docs.yml", "evidence_line": 1, "rationale": "Tests, CI, Docker and local run scripts are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "src/routes/conversation/[id]/message/[messageId]/prompt/+server.ts", "evidence_line": 1, "rationale": "Prompt-building code exists, but no prompt version or hash metadata is recorded.", "confidence": "medium"},
+    {"criterion_id": "LLM-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 126, "rationale": "The application discovers external models; it does not ship a fixed model sampling configuration.", "confidence": "high"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 16, "rationale": "The app is a chat frontend, not a project-owned RAG index.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 130, "rationale": "MCP tool calls are supported and displayed, but no durable agent trace artifact is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "missing", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No evaluation dataset, data split, or contamination protocol is documented.", "confidence": "high"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 126, "rationale": "Model routing is documented, but no quantified cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

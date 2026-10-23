@@ -45,7 +45,8 @@
       "LLM-08": "partial"
     },
     "label_file": "benchmark/labels/mem0.json",
-    "project_type": "llm_memory_framework"
+    "project_type": "llm_memory_framework",
+    "split": "development"
   },
   {
     "name": "haystack",
@@ -80,7 +81,25 @@
   {
     "name": "browser-use",
     "path": "benchmark/repos/browser-use",
-    "expected": {}
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "partial",
+      "LLM-05": "not_applicable",
+      "LLM-06": "partial",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "label_file": "benchmark/labels/browser-use.json",
+    "project_type": "agent_framework",
+    "split": "holdout"
   },
   {
     "name": "openai-python",
@@ -102,7 +121,8 @@
       "LLM-08": "not_applicable"
     },
     "label_file": "benchmark/labels/openai-python.json",
-    "project_type": "llm_sdk"
+    "project_type": "llm_sdk",
+    "split": "development"
   },
   {
     "name": "smolagents",
@@ -124,7 +144,8 @@
       "LLM-08": "partial"
     },
     "label_file": "benchmark/labels/smolagents.json",
-    "project_type": "llm_agent_framework"
+    "project_type": "llm_agent_framework",
+    "split": "development"
   },
   {
     "name": "embedchain",
@@ -135,5 +156,56 @@
     "name": "phoenix",
     "path": "benchmark/repos/phoenix",
     "expected": {}
+  },
+  {
+    "name": "aider",
+    "path": "benchmark/repos/aider",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "partial",
+      "LLM-05": "not_applicable",
+      "LLM-06": "partial",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "label_file": "benchmark/labels/aider.json",
+    "project_type": "llm_agent_application",
+    "split": "holdout"
+  },
+  {
+    "name": "open-interpreter",
+    "path": "benchmark/repos/open-interpreter",
+    "expected": {}
+  },
+  {
+    "name": "chat-ui",
+    "path": "benchmark/repos/chat-ui",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "not_applicable",
+      "LLM-05": "not_applicable",
+      "LLM-06": "partial",
+      "LLM-07": "missing",
+      "LLM-08": "partial"
+    },
+    "label_file": "benchmark/labels/chat-ui.json",
+    "project_type": "llm_application",
+    "split": "holdout"
   }
 ]

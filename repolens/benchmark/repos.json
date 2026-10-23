@@ -1,14 +1,62 @@
 [
-  {"name": "mem0", "url": "https://github.com/mem0ai/mem0.git"},
-  {"name": "haystack", "url": "https://github.com/deepset-ai/haystack.git"},
-  {"name": "llama_index", "url": "https://github.com/run-llama/llama_index.git"},
-  {"name": "autogen", "url": "https://github.com/microsoft/autogen.git"},
-  {"name": "crewAI", "url": "https://github.com/crewAIInc/crewAI.git"},
-  {"name": "dspy", "url": "https://github.com/stanfordnlp/dspy.git"},
-  {"name": "langflow", "url": "https://github.com/langflow-ai/langflow.git"},
-  {"name": "browser-use", "url": "https://github.com/browser-use/browser-use.git"},
-  {"name": "openai-python", "url": "https://github.com/openai/openai-python.git"},
-  {"name": "smolagents", "url": "https://github.com/huggingface/smolagents.git"},
-  {"name": "embedchain", "url": "https://github.com/embedchain/embedchain.git"},
-  {"name": "phoenix", "url": "https://github.com/Arize-ai/phoenix.git"}
+  {
+    "name": "mem0",
+    "url": "https://github.com/mem0ai/mem0.git"
+  },
+  {
+    "name": "haystack",
+    "url": "https://github.com/deepset-ai/haystack.git"
+  },
+  {
+    "name": "llama_index",
+    "url": "https://github.com/run-llama/llama_index.git"
+  },
+  {
+    "name": "autogen",
+    "url": "https://github.com/microsoft/autogen.git"
+  },
+  {
+    "name": "crewAI",
+    "url": "https://github.com/crewAIInc/crewAI.git"
+  },
+  {
+    "name": "dspy",
+    "url": "https://github.com/stanfordnlp/dspy.git"
+  },
+  {
+    "name": "langflow",
+    "url": "https://github.com/langflow-ai/langflow.git"
+  },
+  {
+    "name": "browser-use",
+    "url": "https://github.com/browser-use/browser-use.git"
+  },
+  {
+    "name": "openai-python",
+    "url": "https://github.com/openai/openai-python.git"
+  },
+  {
+    "name": "smolagents",
+    "url": "https://github.com/huggingface/smolagents.git"
+  },
+  {
+    "name": "embedchain",
+    "url": "https://github.com/embedchain/embedchain.git"
+  },
+  {
+    "name": "phoenix",
+    "url": "https://github.com/Arize-ai/phoenix.git"
+  },
+  {
+    "name": "aider",
+    "url": "https://github.com/Aider-AI/aider.git"
+  },
+  {
+    "name": "open-interpreter",
+    "url": "https://github.com/OpenInterpreter/open-interpreter.git"
+  },
+  {
+    "name": "chat-ui",
+    "url": "https://github.com/huggingface/chat-ui.git"
+  }
 ]

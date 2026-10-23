@@ -21,6 +21,7 @@ def main() -> int:
         }
         by_name[name]["label_file"] = path.relative_to(base).as_posix()
         by_name[name]["project_type"] = label.get("project_type")
+        by_name[name]["split"] = label.get("split", "development")
         print(f"merged {name}: {len(label['criteria'])} labels")
     cases_path.write_text(json.dumps(cases, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return 0

@@ -1,0 +1,142 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<p align=\"center\">"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "pyproject.toml",
+    "line": 1,
+    "excerpt": "[project]"
+  },
+  {
+    "id": "E-003",
+    "kind": "container",
+    "path": "benchmark/Dockerfile",
+    "line": 1,
+    "excerpt": "FROM buildpack-deps:jammy"
+  },
+  {
+    "id": "E-004",
+    "kind": "license",
+    "path": "LICENSE.txt",
+    "line": 1,
+    "excerpt": "Apache License"
+  },
+  {
+    "id": "E-005",
+    "kind": "ci",
+    "path": ".github/workflows/check_pypi_version.yml",
+    "line": 1,
+    "excerpt": "name: Check PyPI Version"
+  },
+  {
+    "id": "E-006",
+    "kind": "tests",
+    "path": "benchmark/test_benchmark.py",
+    "line": 1,
+    "excerpt": "# flake8: noqa: E501"
+  },
+  {
+    "id": "E-007",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 106,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-008",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 52,
+    "excerpt": "makes a map of your entire codebase, which helps it work well in larger projects."
+  },
+  {
+    "id": "E-009",
+    "kind": "data",
+    "path": "README.md",
+    "line": 2,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-010",
+    "kind": "metric",
+    "path": "README.md",
+    "line": 28,
+    "excerpt": "f1"
+  },
+  {
+    "id": "E-011",
+    "kind": "model",
+    "path": "aider/main.py",
+    "line": 777,
+    "excerpt": "model_name"
+  },
+  {
+    "id": "E-012",
+    "kind": "prompt",
+    "path": "aider/main.py",
+    "line": 19,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-013",
+    "kind": "evaluation",
+    "path": "aider/main.py",
+    "line": 283,
+    "excerpt": "split"
+  },
+  {
+    "id": "E-014",
+    "kind": "cost",
+    "path": "aider/main.py",
+    "line": 1121,
+    "excerpt": "Cost"
+  },
+  {
+    "id": "E-015",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 45,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-016",
+    "kind": "model",
+    "path": "README.md",
+    "line": 45,
+    "excerpt": "GPT-4"
+  },
+  {
+    "id": "E-017",
+    "kind": "rag",
+    "path": "aider/main.py",
+    "line": 443,
+    "excerpt": "index_version"
+  },
+  {
+    "id": "E-018",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 164,
+    "excerpt": "agent"
+  },
+  {
+    "id": "E-019",
+    "kind": "agent",
+    "path": "aider/main.py",
+    "line": 6,
+    "excerpt": "trace"
+  },
+  {
+    "id": "E-020",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 178,
+    "excerpt": "benchmark"
+  }
+]

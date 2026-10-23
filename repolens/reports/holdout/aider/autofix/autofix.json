@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-10-22T14:42:25.112439+00:00",
+  "before_score": 74.8,
+  "after_score": 81.0,
+  "delta": 6.2,
+  "accepted": true,
+  "generated_files": [
+    {
+      "path": "data/download.sh",
+      "reason": "DATA-02: 提供数据下载脚本入口；URL 需要维护者补充。"
+    },
+    {
+      "path": "prompts/prompt_metadata.json",
+      "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+    },
+    {
+      "path": "configs/llm_metadata.yaml",
+      "reason": "LLM-01/03: 增加模型和采样参数配置模板。"
+    }
+  ],
+  "rejected_files": [
+    {
+      "path": "dataset_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "model_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "eval/README.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    }
+  ],
+  "fixed_criteria": [
+    "DATA-01",
+    "LLM-02"
+  ],
+  "changed_criteria": [
+    "DATA-01",
+    "LLM-02",
+    "LLM-03"
+  ],
+  "remaining_gaps": [
+    "DATA-02",
+    "DATA-03",
+    "MODEL-03",
+    "EXP-02",
+    "EXP-03",
+    "LLM-03",
+    "LLM-04",
+    "LLM-07"
+  ],
+  "proposal_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\holdout\\aider\\autofix\\proposal",
+  "staging_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\holdout\\aider\\autofix\\staging",
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+}

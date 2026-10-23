@@ -1,0 +1,290 @@
+[
+  {
+    "name": "browser-use",
+    "split": "holdout",
+    "score": 85.1,
+    "exact_matches": 8,
+    "total_expectations": 14,
+    "positive_tp": 0,
+    "positive_fp": 0,
+    "positive_fn": 5,
+    "details": [
+      {
+        "criterion_id": "ENV-01",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "ENV-02",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "DATA-02",
+        "expected": "not_applicable",
+        "actual": "pass",
+        "match": false
+      },
+      {
+        "criterion_id": "MODEL-02",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      },
+      {
+        "criterion_id": "MODEL-03",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      },
+      {
+        "criterion_id": "EXP-02",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "EXP-03",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      },
+      {
+        "criterion_id": "DOC-03",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-02",
+        "expected": "partial",
+        "actual": "not_applicable",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-03",
+        "expected": "partial",
+        "actual": "not_applicable",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-05",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-06",
+        "expected": "partial",
+        "actual": "not_applicable",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-07",
+        "expected": "partial",
+        "actual": "not_applicable",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-08",
+        "expected": "partial",
+        "actual": "not_applicable",
+        "match": false
+      }
+    ]
+  },
+  {
+    "name": "aider",
+    "split": "holdout",
+    "score": 74.8,
+    "exact_matches": 6,
+    "total_expectations": 14,
+    "positive_tp": 3,
+    "positive_fp": 4,
+    "positive_fn": 2,
+    "details": [
+      {
+        "criterion_id": "ENV-01",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "ENV-02",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "DATA-02",
+        "expected": "not_applicable",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "MODEL-02",
+        "expected": "not_applicable",
+        "actual": "pass",
+        "match": false
+      },
+      {
+        "criterion_id": "MODEL-03",
+        "expected": "not_applicable",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "EXP-02",
+        "expected": "pass",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "EXP-03",
+        "expected": "not_applicable",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "DOC-03",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-02",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-03",
+        "expected": "partial",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-05",
+        "expected": "not_applicable",
+        "actual": "not_applicable",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-06",
+        "expected": "partial",
+        "actual": "pass",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-07",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-08",
+        "expected": "partial",
+        "actual": "pass",
+        "match": false
+      }
+    ]
+  },
+  {
+    "name": "chat-ui",
+    "split": "holdout",
+    "score": 44.1,
+    "exact_matches": 5,
+    "total_expectations": 14,
+    "positive_tp": 4,
+    "positive_fp": 8,
+    "positive_fn": 0,
+    "details": [
+      {
+        "criterion_id": "ENV-01",
+        "expected": "pass",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "ENV-02",
+        "expected": "pass",
+        "actual": "pass",
+        "match": true
+      },
+      {
+        "criterion_id": "DATA-02",
+        "expected": "not_applicable",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "MODEL-02",
+        "expected": "not_applicable",
+        "actual": "pass",
+        "match": false
+      },
+      {
+        "criterion_id": "MODEL-03",
+        "expected": "not_applicable",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "EXP-02",
+        "expected": "pass",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "EXP-03",
+        "expected": "not_applicable",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "DOC-03",
+        "expected": "pass",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-02",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-03",
+        "expected": "not_applicable",
+        "actual": "missing",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-05",
+        "expected": "not_applicable",
+        "actual": "partial",
+        "match": false
+      },
+      {
+        "criterion_id": "LLM-06",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-07",
+        "expected": "missing",
+        "actual": "missing",
+        "match": true
+      },
+      {
+        "criterion_id": "LLM-08",
+        "expected": "partial",
+        "actual": "partial",
+        "match": true
+      }
+    ]
+  }
+]

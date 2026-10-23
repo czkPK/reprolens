@@ -1,0 +1,23 @@
+{
+  "repo": "browser-use",
+  "project_type": "agent_framework",
+  "split": "holdout",
+  "labeled_at": "2026-10-23",
+  "labeling_note": "Browser-agent library/application supporting many LLM providers; model-owned artifacts are not applicable.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "pyproject.toml", "evidence_line": 1, "rationale": "Project dependencies are declared in pyproject.toml.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "Dockerfile", "evidence_line": 1, "rationale": "A Dockerfile provides a containerized environment.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The browser-agent project does not own a dataset pipeline.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 136, "rationale": "The framework supports many model providers and does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "MIT applies to the code; no project-owned model license is involved.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": "tests/ci/evaluate_tasks.py", "evidence_line": 1, "rationale": "The repository provides test and evaluation scripts for executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the browser-agent project.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/claude.yml", "evidence_line": 1, "rationale": "Tests, CI and setup scripts are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 62, "rationale": "Prompt examples are provided, but no prompt version or hash metadata is recorded.", "confidence": "medium"},
+    {"criterion_id": "LLM-03", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 136, "rationale": "Model and reasoning settings are shown in examples, but no fixed sampling configuration is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "This is a browser agent, not a RAG application with a project-owned index.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 1, "rationale": "Agent execution exists, but no mandatory tool-call trace artifact is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 50, "rationale": "A benchmark is mentioned, but data splits and contamination analysis are not documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 172, "rationale": "Pricing and benchmark cost are mentioned, but no reproducible project-level cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

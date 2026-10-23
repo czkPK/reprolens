@@ -1,0 +1,40 @@
+{
+  "generated_at": "2026-10-22T14:42:15.552358+00:00",
+  "before_score": 85.1,
+  "after_score": 85.1,
+  "delta": 0.0,
+  "accepted": false,
+  "generated_files": [],
+  "rejected_files": [
+    {
+      "path": "dataset_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "model_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "prompts/prompt_metadata.json",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "configs/llm_metadata.yaml",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "eval/README.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    }
+  ],
+  "fixed_criteria": [],
+  "changed_criteria": [],
+  "remaining_gaps": [
+    "ENV-03",
+    "DATA-03",
+    "DOC-02"
+  ],
+  "proposal_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\holdout\\browser-use\\autofix\\proposal",
+  "staging_dir": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\reports\\holdout\\browser-use\\autofix\\staging",
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "name": "python-syntax",
+    "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
+    "status": "pass",
+    "returncode": 0,
+    "duration_seconds": 0.868,
+    "stdout": "\n",
+    "stderr": ""
+  }
+]

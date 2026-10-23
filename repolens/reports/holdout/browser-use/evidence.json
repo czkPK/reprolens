@@ -1,0 +1,114 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<!-- mcp-name: com.browser-use/browser-use -->"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "pyproject.toml",
+    "line": 1,
+    "excerpt": "[project]"
+  },
+  {
+    "id": "E-003",
+    "kind": "container",
+    "path": "Dockerfile",
+    "line": 1,
+    "excerpt": "# syntax=docker/dockerfile:1"
+  },
+  {
+    "id": "E-004",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "MIT License"
+  },
+  {
+    "id": "E-005",
+    "kind": "ci",
+    "path": ".github/workflows/claude.yml",
+    "line": 1,
+    "excerpt": "name: Claude Code"
+  },
+  {
+    "id": "E-006",
+    "kind": "tests",
+    "path": "tests/ci/conftest.py",
+    "line": 1,
+    "excerpt": "\"\"\""
+  },
+  {
+    "id": "E-007",
+    "kind": "script",
+    "path": "tests/ci/evaluate_tasks.py",
+    "line": 1,
+    "excerpt": "\"\"\""
+  },
+  {
+    "id": "E-008",
+    "kind": "script",
+    "path": "examples/features/download_file.py",
+    "line": 1,
+    "excerpt": "import asyncio"
+  },
+  {
+    "id": "E-009",
+    "kind": "script",
+    "path": "bin/setup.sh",
+    "line": 1,
+    "excerpt": "#!/usr/bin/env bash"
+  },
+  {
+    "id": "E-010",
+    "kind": "data",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-011",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 62,
+    "excerpt": "prompt"
+  },
+  {
+    "id": "E-012",
+    "kind": "cost",
+    "path": "README.md",
+    "line": 172,
+    "excerpt": "cost"
+  },
+  {
+    "id": "E-013",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 115,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-014",
+    "kind": "model",
+    "path": "README.md",
+    "line": 136,
+    "excerpt": "gpt-5"
+  },
+  {
+    "id": "E-015",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "mcp"
+  },
+  {
+    "id": "E-016",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 50,
+    "excerpt": "benchmark"
+  }
+]
