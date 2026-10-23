@@ -157,7 +157,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     add_file_flag("dataset_card", r"(^|/)dataset[_-]?card\.(md|txt|ya?ml)$", "dataset-card")
     add_file_flag("license", r"(^|/)(license|copying)(\.|$)", "license")
     add_file_flag("ci", r"(^|/)\.github/workflows/.*\.ya?ml$", "ci")
-    add_file_flag("tests", r"(^|/)tests?/.*\.py$|(^|/)test_.*\.py$|\.spec\.ts$|\.test\.ts$|(^|/)playwright\.config\.ts$", "tests")
+    add_file_flag("tests", r"(^|/)tests?/.*\.py$|(^|/)test_.*\.py$|\.(test|spec)\.(js|jsx|ts|tsx)$|(^|/)__tests__/|(^|/)playwright\.config\.ts$", "tests")
     add_file_flag("train_script", r"(^|/)(train|finetune|pretrain)[^/]*\.py$", "script")
     add_file_flag("eval_script", r"(^|/)(eval|evaluate|infer|predict)[^/]*\.py$", "script")
     add_file_flag("data_script", r"(^|/)(data|scripts?)/.*(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$|^(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$", "script")
@@ -261,6 +261,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     if any(phrase in root_readme_text for phrase in (
         "any llm", "almost any llm", "choice of model", "models are discovered",
         "multiple models", "model providers", "openai-compatible apis", "cloud and local",
+        "local or cloud llm", "closed and open-source llm", "dynamic model routing", "all popular",
     )):
         snapshot.mark("model_agnostic", snapshot.evidence_for("readme"))
     has_app_entry = any(

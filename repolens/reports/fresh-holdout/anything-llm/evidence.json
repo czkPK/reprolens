@@ -36,62 +36,69 @@
   },
   {
     "id": "E-006",
+    "kind": "tests",
+    "path": "server/__tests__/endpoints/agentWebsocket.test.js",
+    "line": 1,
+    "excerpt": "/* eslint-env jest */"
+  },
+  {
+    "id": "E-007",
     "kind": "instruction",
     "path": "README.md",
     "line": 227,
     "excerpt": "make product and roadmap decisions, specifically:"
   },
   {
-    "id": "E-007",
+    "id": "E-008",
     "kind": "data",
     "path": "README.md",
     "line": 4,
     "excerpt": "https://"
   },
   {
-    "id": "E-008",
+    "id": "E-009",
     "kind": "hardware",
     "path": "README.md",
     "line": 62,
     "excerpt": "GPU"
   },
   {
-    "id": "E-009",
+    "id": "E-010",
     "kind": "prompt",
     "path": "README.md",
     "line": 65,
     "excerpt": "prompt"
   },
   {
-    "id": "E-010",
+    "id": "E-011",
     "kind": "cost",
     "path": "README.md",
     "line": 66,
     "excerpt": "token usage"
   },
   {
-    "id": "E-011",
+    "id": "E-012",
     "kind": "llm-provider",
     "path": "README.md",
     "line": 88,
     "excerpt": "OpenAI"
   },
   {
-    "id": "E-012",
+    "id": "E-013",
     "kind": "model",
     "path": "README.md",
     "line": 62,
     "excerpt": "llama"
   },
   {
-    "id": "E-013",
+    "id": "E-014",
     "kind": "rag",
     "path": "README.md",
     "line": 165,
     "excerpt": "Pinecone"
   },
   {
-    "id": "E-014",
+    "id": "E-015",
     "kind": "agent",
     "path": "README.md",
     "line": 65,

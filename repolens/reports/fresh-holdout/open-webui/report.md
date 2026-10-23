@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `C:\Users\86199\Documents\ChatGPT\全球校园人工智能算法精英大赛\repolens\benchmark\repos\open-webui`
-- Generated at: `2026-10-23T13:51:06.206255+00:00`
+- Generated at: `2026-10-23T14:41:18.162441+00:00`
 - Files scanned: **5182**
 - Overall score: **86.1 / 100**
 - Readiness: **Ready**
@@ -83,7 +83,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.968s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.837s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 
