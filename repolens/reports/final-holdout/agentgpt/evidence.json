@@ -1,0 +1,107 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<p align=\"center\">"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "cli/package.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-003",
+    "kind": "lockfile",
+    "path": "cli/package-lock.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-004",
+    "kind": "container",
+    "path": "docker-compose.yml",
+    "line": 1,
+    "excerpt": "version: '3.9'"
+  },
+  {
+    "id": "E-005",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "GNU GENERAL PUBLIC LICENSE"
+  },
+  {
+    "id": "E-006",
+    "kind": "ci",
+    "path": ".github/workflows/node.js.yml",
+    "line": 1,
+    "excerpt": "name: Node.js CI"
+  },
+  {
+    "id": "E-007",
+    "kind": "tests",
+    "path": "platform/reworkd_platform/tests/test_dependancies.py",
+    "line": 1,
+    "excerpt": "import pytest"
+  },
+  {
+    "id": "E-008",
+    "kind": "script",
+    "path": "scripts/prepare-sync.sh",
+    "line": 1,
+    "excerpt": "cd \"$(dirname \"$0\")\" || exit 1"
+  },
+  {
+    "id": "E-009",
+    "kind": "script",
+    "path": "setup.sh",
+    "line": 1,
+    "excerpt": "#!/usr/bin/env bash"
+  },
+  {
+    "id": "E-010",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 47,
+    "excerpt": "make sure you have the following installed:"
+  },
+  {
+    "id": "E-011",
+    "kind": "data",
+    "path": "README.md",
+    "line": 2,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-012",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 84,
+    "excerpt": "template"
+  },
+  {
+    "id": "E-013",
+    "kind": "evaluation",
+    "path": "README.md",
+    "line": 90,
+    "excerpt": "Validation"
+  },
+  {
+    "id": "E-014",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 53,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-015",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 5,
+    "excerpt": "Agent"
+  }
+]

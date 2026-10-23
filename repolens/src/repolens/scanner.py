@@ -197,6 +197,11 @@ def scan_repo(root: Path) -> RepoSnapshot:
             or name.endswith(('.yaml', '.yml', '.toml', '.json'))
         )
 
+    def is_config_only(rel_path: str) -> bool:
+        low = rel_path.lower()
+        name = Path(rel_path).name.lower()
+        return low.startswith(("configs/", "config/", "conf/")) or (name.startswith("config") and name.endswith((".yaml", ".yml", ".toml", ".json")))
+
     def find_text_scoped(pattern: str, flag: str, kind: str, predicate) -> None:
         for rel_path, text in preferred_text_items():
             if not predicate(rel_path):
@@ -234,6 +239,8 @@ def scan_repo(root: Path) -> RepoSnapshot:
     find_text_scoped(r"index_name|index_version|collection_name|vector_store|embedding_model|chunk_size|chunk_overlap|knowledge base", "rag_index", "rag", is_config_or_script)
     find_text(r"\bagent\b|tool_call|tool call|langgraph|autogen|crewai|mcp|function calling", "agent_project", "agent")
     find_text_scoped(r"trace|trajectory|tool_call|tool call|run_id|session_id", "agent_trace", "agent", is_config_or_script)
+    find_text_scoped(r"chunk_size|chunk_overlap|index_name|collection_name|index_version|embedding_model", "rag_config", "rag", is_config_only)
+    find_text_scoped(r"run_id|session_id|trace_id|trace_path|log_path", "agent_trace_artifact", "agent", lambda rel_path: is_config_only(rel_path) or "trace" in rel_path.lower() or "log" in rel_path.lower())
     find_text(r"eval dataset|evaluation set|benchmark|golden set|test set", "eval_dataset", "evaluation")
 
     deps_text = snapshot.deps_text().lower()
@@ -258,11 +265,14 @@ def scan_repo(root: Path) -> RepoSnapshot:
         text for rel_path, text in texts.items()
         if "/" not in rel_path and Path(rel_path).name.lower().startswith("readme")
     ).lower()
+    provider_names = ("openai", "anthropic", "google", "ollama", "huggingface", "azure", "cohere", "mistral", "groq", "together")
+    provider_count = sum(name in all_text for name in provider_names)
     if any(phrase in root_readme_text for phrase in (
         "any llm", "almost any llm", "choice of model", "models are discovered",
         "multiple models", "model providers", "openai-compatible apis", "cloud and local",
         "local or cloud llm", "closed and open-source llm", "dynamic model routing", "all popular",
-    )):
+        "external model api",
+    )) or provider_count >= 3:
         snapshot.mark("model_agnostic", snapshot.evidence_for("readme"))
     has_app_entry = any(
         "/" not in rel_path and Path(rel_path).name.lower() in {"app.py", "main.py"}
@@ -275,6 +285,9 @@ def scan_repo(root: Path) -> RepoSnapshot:
     has_frontend_app = any(
         rel_path.lower() in {"server.js", "vite.config.ts", "next.config.js", "svelte.config.js"}
         for rel_path in texts
+    ) or (
+        any(rel_path.lower() == "package.json" for rel_path in texts)
+        and any(rel_path.lower().startswith(("packages/ui/", "src/routes/", "src/lib/")) for rel_path in texts)
     )
     has_python_cli = any(rel_path.lower().endswith("/__main__.py") for rel_path in texts) and any(
         token in root_readme_text for token in ("cli", "command line", "pair program")

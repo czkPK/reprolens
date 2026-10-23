@@ -1,0 +1,67 @@
+--- /dev/null
++++ b/data/download.sh
+@@ -0,0 +1,8 @@
++#!/usr/bin/env bash
++set -euo pipefail
++DATA_URL="${DATA_URL:-TODO}"
++if [ "$DATA_URL" = "TODO" ]; then
++  echo "Set DATA_URL before running this script." >&2
++  exit 2
++fi
++curl -L "$DATA_URL" -o data/raw.zip
+--- /dev/null
++++ b/prompts/prompt_metadata.json
+@@ -0,0 +1,53 @@
++{
++  "prompt_version": "1.0.0",
++  "versioning_method": "sha256 of current prompt files",
++  "prompt_files": {
++    "packages/ui/src/api/prompt.js": "5e6bd7ab5f3e0114c06a62065a3688c2ddaa4623a669871b376352c76060f8b6",
++    "packages/ui/src/utils/usePrompt.js": "35a50d9d3077e91f98b3c5b2e7e76592c254e28abfe831323414f63972b00032",
++    "packages/ui/src/views/evaluators/evaluationPrompts.js": "64f00344436599f901fff8231f718fe07f516fe9ffb73dcd2beaca176882ae07",
++    "packages/ui/src/views/evaluators/SamplePromptDialog.jsx": "a40debd403d6eff1ea86ea9c16f8749989f00d593cacf5c06c2ed8c610f3909b",
++    "packages/ui/src/ui-component/cards/FollowUpPromptsCard.jsx": "0338fdb9054ae3edc694573d7fcc2ab5c10338723534d490b0e2067aa2377fa6",
++    "packages/ui/src/ui-component/cards/StarterPromptsCard.css": "603b1e34108d21f46b10e89ea9be79b2eb24e8efe20c9db2e97c060618ff31a8",
++    "packages/ui/src/ui-component/cards/StarterPromptsCard.jsx": "32acd8067e95b85b20cf2a7deaea83f7b350df7b463fe56932d049ce6556779b",
++    "packages/ui/src/ui-component/dialog/FormatPromptValuesDialog.jsx": "e28b2921b266731418e1ca5d6eee28d14121f19b7136fee15986eb73567bbf26",
++    "packages/ui/src/ui-component/dialog/PromptGeneratorDialog.jsx": "ad3549a1288cce4bfa2f45d8e4c52736426e2a84d21a0d88b7d638e387224d77",
++    "packages/ui/src/ui-component/dialog/PromptLangsmithHubDialog.jsx": "dfde4108f20d95f490870320533ecd906b1896bc8160d94b69a750af5c8e29f1",
++    "packages/ui/src/ui-component/dialog/StarterPromptsDialog.jsx": "a69126787faaed0327150dbfccd94894e32fe8b780aa89b6dd70ce2cd07c605f",
++    "packages/ui/src/ui-component/extended/FollowUpPrompts.jsx": "c756b12ae9f499800120067b5f8736bf4774d43a12c9cc11477d48dd1a558c8c",
++    "packages/ui/src/ui-component/extended/StarterPrompts.jsx": "476fd7043c3b7637393c7470013c21904f9d04debffaa6a24c29ce6f91d8ec1d",
++    "packages/ui/src/assets/images/prompt_empty.svg": "6da73809e3d03089d8642f05748251ff7181785da1973021b76ef012d798eac4",
++    "packages/server/src/utils/prompt.ts": "d760ab3d9aff36a34d391b3fd267200a23db71b42c0d44b485a0de92c48462f8",
++    "packages/server/src/services/agentflowv2-generator/prompt.ts": "5438e959d2b71e62e75e633b923b620a747a22d1606a4c55a32f944a821d5fe1",
++    "packages/server/src/services/load-prompts/index.ts": "af3eb091a653142b26a847287105936b2195f015e7af72f40637a8563ae9ddd1",
++    "packages/server/src/services/prompts-lists/index.ts": "b9c38e841b056890d085114c5ac1b06f0626a59f0d6b186ae1a3dddc988a90ff",
++    "packages/server/src/routes/load-prompts/index.ts": "16ab09dff42f2d7c0b356ed2a37f6b2d278e585e50b3d38a884ba8da39dc76e7",
++    "packages/server/src/routes/prompts-lists/index.ts": "f4fc7bb3fe04dce9d91681e6b265d71e437a62e058f471612fef37d7a90bca5f",
++    "packages/server/src/database/migrations/mariadb/1726666318346-AddFollowUpPrompts.ts": "3041d5f0aa8c526d743e655d170afd416103af6eb8de9cddba13662511146364",
++    "packages/server/src/database/migrations/mysql/1726666302024-AddFollowUpPrompts.ts": "49ad1e36a18695f54fb2fdcf25c3a1ea33a59f0a370bd8cdc8f7035af75c86b4",
++    "packages/server/src/database/migrations/postgres/1726666309552-AddFollowUpPrompts.ts": "edce6c857d0e168380bf10da3b0b641eac2ae4f3a34735dd38a362cc57a44608",
++    "packages/server/src/database/migrations/sqlite/1726666294213-AddFollowUpPrompts.ts": "c8a518e72013098359b62709fd4a6ebf254adcfc4825dbb93c5b01571ceaf6f5",
++    "packages/server/src/controllers/load-prompts/index.ts": "a100bf1abf921dd8757df5d39f0b1fc3fb73a733cfabee3ca51dda97891f4e56",
++    "packages/server/src/controllers/prompts-lists/index.ts": "f98494d76fecaa7dda954563fc85070a569a002deed9ac8592fcf76546186409",
++    "packages/server/marketplaces/agentflows/Prompt Engineering Team.json": "4e01149398007bc659d16b6c13dd7d52063960a155530b7071053915dfc8eb52",
++    "packages/server/marketplaces/chatflows/Prompt Chaining.json": "ad5f7b580f2c21e0fa2a7366bb9a1453972a45bcc5ca83cf55d3705f4c84ea7e",
++    "packages/components/src/followUpPrompts.ts": "cdf3d13e6703ba328517065afab59427b31b8c47359a89dfd86c4b3f805bb5a1",
++    "packages/components/nodes/agentflow/prompt.ts": "db8880f6e4c69277b07b2d3986d8ced32d577bec88686859c3da0aac533afcc4",
++    "packages/components/nodes/retrievers/PromptRetriever/promptretriever.svg": "d31d5f238a1198263feea40d2a1253b5eae75c125d5d8df4aaa84ba59724d8d4",
++    "packages/components/nodes/retrievers/PromptRetriever/PromptRetriever.ts": "adab0980e117cab42a1ee2afbfe8ce560bd2b751447f97e6e38785d89b866bcb",
++    "packages/components/nodes/prompts/ChatPromptTemplate/ChatPromptTemplate.ts": "d2e63f4c348c17cf6c7f2be4a227585c4bf3e9949d12e036f50920282d6a8e18",
++    "packages/components/nodes/prompts/ChatPromptTemplate/prompt.svg": "ffb9e7d621c8d6692ec3f7991cf086e9783c8991dbbaabad44295d8bdf432fd6",
++    "packages/components/nodes/prompts/FewShotPromptTemplate/FewShotPromptTemplate.ts": "168e5a242d10b9ff1fad8701fc941826bb6dc4fa022282211f7fa33f38846e13",
++    "packages/components/nodes/prompts/FewShotPromptTemplate/prompt.svg": "b3e2d46abecf5d30d982731573583474a18af342807e8713380fa80318614cd2",
++    "packages/components/nodes/prompts/PromptLangfuse/prompt.svg": "b3e2d46abecf5d30d982731573583474a18af342807e8713380fa80318614cd2",
++    "packages/components/nodes/prompts/PromptLangfuse/PromptLangfuse.ts": "37bc16be9daa822f9cf1f6012f972d606d853f363920ab81a7d72dd58a669bca",
++    "packages/components/nodes/prompts/PromptTemplate/prompt.svg": "b3e2d46abecf5d30d982731573583474a18af342807e8713380fa80318614cd2",
++    "packages/components/nodes/prompts/PromptTemplate/PromptTemplate.ts": "6d1e501a4c5f7ddc24be9eeb7011f63f154da5201a550442026e0db43880baf6",
++    "packages/components/nodes/moderation/SimplePromptModeration/moderation.svg": "9e23db54376f02e386c29af7919242c72524ee299c9d97a2b6d79a42e821c14b",
++    "packages/components/nodes/moderation/SimplePromptModeration/SimplePromptModeration.ts": "43209f76c8de98ed61b84ac69f3f1912cb75faf77055e443364d1b09578fb14a",
++    "packages/components/nodes/moderation/SimplePromptModeration/SimplePromptModerationRunner.ts": "fadd73fad80e1fe983adf7be489a6e900eab2a7d0ef5b24afd5abfe18c852dc8",
++    "packages/components/nodes/chains/ConversationalRetrievalQAChain/prompts.ts": "03290c9afa550b4d49daa06b9f04a988541d3d6c9f2300903e01f4b82936a6bf",
++    "packages/components/nodes/chains/MultiPromptChain/MultiPromptChain.ts": "761e60146defb548ffee9c213fcbc33adbe19b25d4d8114a98c73f539866186a",
++    "packages/components/nodes/chains/MultiPromptChain/prompt.svg": "75d63b51ac511f260ac955031e1f7aecee616817720630d12299249a7d27dd43"
++  },
++  "note": "Generated by ReproLens AutoFix. Review before publishing."
++}

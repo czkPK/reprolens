@@ -1,0 +1,93 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "<!-- markdownlint-disable MD030 -->"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "package.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-003",
+    "kind": "lockfile",
+    "path": "packages/observe/examples/package-lock.json",
+    "line": 1,
+    "excerpt": "{"
+  },
+  {
+    "id": "E-004",
+    "kind": "container",
+    "path": "Dockerfile",
+    "line": 1,
+    "excerpt": "# Build local monorepo image"
+  },
+  {
+    "id": "E-005",
+    "kind": "license",
+    "path": "LICENSE.md",
+    "line": 1,
+    "excerpt": "Copyright (c) 2023-present FlowiseAI, Inc."
+  },
+  {
+    "id": "E-006",
+    "kind": "ci",
+    "path": ".github/workflows/docker-image-dockerhub.yml",
+    "line": 1,
+    "excerpt": "name: Docker Image CI - Docker Hub"
+  },
+  {
+    "id": "E-007",
+    "kind": "tests",
+    "path": "packages/ui/src/utils/genericHelper.test.js",
+    "line": 1,
+    "excerpt": "import { applyVisibleInputDefaults, showHideInputs } from './genericHelper'"
+  },
+  {
+    "id": "E-008",
+    "kind": "prompt",
+    "path": "packages/components/nodes/prompts/ChatPromptTemplate/ChatPromptTemplate.ts",
+    "line": 1,
+    "excerpt": "import { ICommonObject, IDatabaseEntity, INode, INodeData, INodeParams } from '../../../src/Interface'"
+  },
+  {
+    "id": "E-009",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 71,
+    "excerpt": "docker build"
+  },
+  {
+    "id": "E-010",
+    "kind": "data",
+    "path": "README.md",
+    "line": 4,
+    "excerpt": "https://"
+  },
+  {
+    "id": "E-011",
+    "kind": "model",
+    "path": "README.md",
+    "line": 203,
+    "excerpt": "HuggingFace"
+  },
+  {
+    "id": "E-012",
+    "kind": "prompt",
+    "path": "README.md",
+    "line": 193,
+    "excerpt": "template"
+  },
+  {
+    "id": "E-013",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 203,
+    "excerpt": "HuggingFace"
+  }
+]

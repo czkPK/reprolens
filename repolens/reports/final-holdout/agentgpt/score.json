@@ -1,0 +1,791 @@
+{
+  "repo_path": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\benchmark\\repos\\agentgpt",
+  "generated_at": "2026-10-23T14:56:38.864011+00:00",
+  "total_score": 63.9,
+  "readiness": "At Risk",
+  "dimensions": [
+    {
+      "name": "环境可复现",
+      "points": 21.5,
+      "max_points": 25,
+      "percent": 86.0
+    },
+    {
+      "name": "数据可复现",
+      "points": 19.0,
+      "max_points": 22,
+      "percent": 86.4
+    },
+    {
+      "name": "模型可复现",
+      "points": 11.0,
+      "max_points": 22,
+      "percent": 50.0
+    },
+    {
+      "name": "实验可复现",
+      "points": 20.0,
+      "max_points": 33,
+      "percent": 60.6
+    },
+    {
+      "name": "文档可复现",
+      "points": 14.0,
+      "max_points": 17,
+      "percent": 82.4
+    },
+    {
+      "name": "LLM 特有风险",
+      "points": 13.5,
+      "max_points": 36,
+      "percent": 37.5
+    }
+  ],
+  "criteria": [
+    {
+      "id": "ENV-01",
+      "dimension": "环境可复现",
+      "title": "存在依赖清单",
+      "status": "pass",
+      "points": 10,
+      "max_points": 10,
+      "applicable": true,
+      "note": "已发现依赖清单。",
+      "evidence_ids": [
+        "E-002"
+      ]
+    },
+    {
+      "id": "ENV-02",
+      "dimension": "环境可复现",
+      "title": "依赖版本锁定或容器化",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "已发现锁定文件或容器配置。",
+      "evidence_ids": [
+        "E-003",
+        "E-004"
+      ]
+    },
+    {
+      "id": "ENV-03",
+      "dimension": "环境可复现",
+      "title": "提供安装步骤",
+      "status": "partial",
+      "points": 3.5,
+      "max_points": 7,
+      "applicable": true,
+      "note": "有 README，但没有明显安装命令。",
+      "evidence_ids": [
+        "E-001"
+      ]
+    },
+    {
+      "id": "DATA-01",
+      "dimension": "数据可复现",
+      "title": "说明数据来源和获取方式",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "已发现数据来源，并配有脚本或数据集卡。",
+      "evidence_ids": [
+        "E-011",
+        "E-008"
+      ]
+    },
+    {
+      "id": "DATA-02",
+      "dimension": "数据可复现",
+      "title": "提供数据下载或预处理脚本",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "已发现数据下载或预处理脚本。",
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "id": "DATA-03",
+      "dimension": "数据可复现",
+      "title": "提供数据集卡或数据许可说明",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有许可证和数据说明，但没有独立数据集卡。",
+      "evidence_ids": [
+        "E-005",
+        "E-011"
+      ]
+    },
+    {
+      "id": "MODEL-01",
+      "dimension": "模型可复现",
+      "title": "提供模型权重、API 或获取方式",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "有模型说明，但没有发现权重、下载地址或明确 API 模型版本。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "MODEL-02",
+      "dimension": "模型可复现",
+      "title": "提供模型卡或版本说明",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "有模型卡、版本或提供方信息，但仍需补充完整。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "MODEL-03",
+      "dimension": "模型可复现",
+      "title": "说明模型许可和来源",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "id": "EXP-01",
+      "dimension": "实验可复现",
+      "title": "提供训练或主运行脚本",
+      "status": "pass",
+      "points": 7,
+      "max_points": 7,
+      "applicable": true,
+      "note": "已发现训练脚本或主运行命令。",
+      "evidence_ids": [
+        "E-010"
+      ]
+    },
+    {
+      "id": "EXP-02",
+      "dimension": "实验可复现",
+      "title": "提供评测脚本或评测命令",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "软件项目通过测试套件和 CI 提供可执行验证。",
+      "evidence_ids": [
+        "E-007",
+        "E-006"
+      ]
+    },
+    {
+      "id": "EXP-03",
+      "dimension": "实验可复现",
+      "title": "设置并说明随机种子",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "没有随机种子或确定性设置。",
+      "evidence_ids": []
+    },
+    {
+      "id": "EXP-04",
+      "dimension": "实验可复现",
+      "title": "说明硬件或 API 环境要求",
+      "status": "pass",
+      "points": 5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "已发现硬件或 API 环境说明。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "EXP-05",
+      "dimension": "实验可复现",
+      "title": "给出预期结果和指标",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 7,
+      "applicable": true,
+      "note": "没有预期结果或指标。",
+      "evidence_ids": []
+    },
+    {
+      "id": "DOC-01",
+      "dimension": "文档可复现",
+      "title": "存在 README",
+      "status": "pass",
+      "points": 5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "已发现 README。",
+      "evidence_ids": [
+        "E-001"
+      ]
+    },
+    {
+      "id": "DOC-02",
+      "dimension": "文档可复现",
+      "title": "提供快速开始和运行示例",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "只有安装或运行说明中的一项。",
+      "evidence_ids": [
+        "E-010"
+      ]
+    },
+    {
+      "id": "DOC-03",
+      "dimension": "文档可复现",
+      "title": "提供测试、CI 或一键复现脚本",
+      "status": "pass",
+      "points": 6,
+      "max_points": 6,
+      "applicable": true,
+      "note": "已有测试、CI 或一键复现脚本中的至少两项。",
+      "evidence_ids": [
+        "E-007",
+        "E-006",
+        "E-009"
+      ]
+    },
+    {
+      "id": "LLM-01",
+      "dimension": "LLM 特有风险",
+      "title": "记录模型/API 版本",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "只记录了模型提供方/版本，或仍有待补充字段。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "LLM-02",
+      "dimension": "LLM 特有风险",
+      "title": "prompt/template 有版本记录",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有 prompt 文件或描述，但没有可核验的版本信息。",
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "id": "LLM-03",
+      "dimension": "LLM 特有风险",
+      "title": "记录采样参数",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 5,
+      "applicable": true,
+      "note": "没有记录 temperature、top_p 等采样参数。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-04",
+      "dimension": "LLM 特有风险",
+      "title": "记录 tokenizer/上下文窗口",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 4,
+      "applicable": true,
+      "note": "没有记录 tokenizer 或上下文窗口。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-05",
+      "dimension": "LLM 特有风险",
+      "title": "RAG 索引/知识库有版本记录",
+      "status": "not_applicable",
+      "points": 0.0,
+      "max_points": 5,
+      "applicable": false,
+      "note": "不适用。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-06",
+      "dimension": "LLM 特有风险",
+      "title": "Agent 工具调用轨迹可追溯",
+      "status": "partial",
+      "points": 2.5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "检测到 Agent 项目，但完整调用轨迹仍需补充。",
+      "evidence_ids": [
+        "E-015"
+      ]
+    },
+    {
+      "id": "LLM-07",
+      "dimension": "LLM 特有风险",
+      "title": "说明评测集、数据划分和污染风险",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "只覆盖了评测集/划分/污染中的一部分，或仍有占位内容。",
+      "evidence_ids": [
+        "E-013"
+      ]
+    },
+    {
+      "id": "LLM-08",
+      "dimension": "LLM 特有风险",
+      "title": "说明推理成本或延迟",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 4,
+      "applicable": true,
+      "note": "有成本/硬件线索，但仍需量化数据。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "medium",
+      "criterion_id": "ENV-03",
+      "title": "提供安装步骤",
+      "message": "有 README，但没有明显安装命令。",
+      "evidence_ids": [
+        "E-001"
+      ]
+    },
+    {
+      "id": "F-002",
+      "severity": "medium",
+      "criterion_id": "DATA-03",
+      "title": "提供数据集卡或数据许可说明",
+      "message": "有许可证和数据说明，但没有独立数据集卡。",
+      "evidence_ids": [
+        "E-005",
+        "E-011"
+      ]
+    },
+    {
+      "id": "F-003",
+      "severity": "medium",
+      "criterion_id": "MODEL-01",
+      "title": "提供模型权重、API 或获取方式",
+      "message": "有模型说明，但没有发现权重、下载地址或明确 API 模型版本。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "F-004",
+      "severity": "medium",
+      "criterion_id": "MODEL-02",
+      "title": "提供模型卡或版本说明",
+      "message": "有模型卡、版本或提供方信息，但仍需补充完整。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "F-005",
+      "severity": "medium",
+      "criterion_id": "MODEL-03",
+      "title": "说明模型许可和来源",
+      "message": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "id": "F-006",
+      "severity": "medium",
+      "criterion_id": "EXP-03",
+      "title": "设置并说明随机种子",
+      "message": "没有随机种子或确定性设置。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-007",
+      "severity": "high",
+      "criterion_id": "EXP-05",
+      "title": "给出预期结果和指标",
+      "message": "没有预期结果或指标。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-008",
+      "severity": "medium",
+      "criterion_id": "DOC-02",
+      "title": "提供快速开始和运行示例",
+      "message": "只有安装或运行说明中的一项。",
+      "evidence_ids": [
+        "E-010"
+      ]
+    },
+    {
+      "id": "F-009",
+      "severity": "medium",
+      "criterion_id": "LLM-01",
+      "title": "记录模型/API 版本",
+      "message": "只记录了模型提供方/版本，或仍有待补充字段。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "id": "F-010",
+      "severity": "medium",
+      "criterion_id": "LLM-02",
+      "title": "prompt/template 有版本记录",
+      "message": "有 prompt 文件或描述，但没有可核验的版本信息。",
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "id": "F-011",
+      "severity": "medium",
+      "criterion_id": "LLM-03",
+      "title": "记录采样参数",
+      "message": "没有记录 temperature、top_p 等采样参数。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-012",
+      "severity": "medium",
+      "criterion_id": "LLM-04",
+      "title": "记录 tokenizer/上下文窗口",
+      "message": "没有记录 tokenizer 或上下文窗口。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-013",
+      "severity": "medium",
+      "criterion_id": "LLM-06",
+      "title": "Agent 工具调用轨迹可追溯",
+      "message": "检测到 Agent 项目，但完整调用轨迹仍需补充。",
+      "evidence_ids": [
+        "E-015"
+      ]
+    },
+    {
+      "id": "F-014",
+      "severity": "medium",
+      "criterion_id": "LLM-07",
+      "title": "说明评测集、数据划分和污染风险",
+      "message": "只覆盖了评测集/划分/污染中的一部分，或仍有占位内容。",
+      "evidence_ids": [
+        "E-013"
+      ]
+    },
+    {
+      "id": "F-015",
+      "severity": "medium",
+      "criterion_id": "LLM-08",
+      "title": "说明推理成本或延迟",
+      "message": "有成本/硬件线索，但仍需量化数据。",
+      "evidence_ids": [
+        "E-014"
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "finding_id": "F-007",
+      "action": "补充预期指标、日志样例和可接受误差范围",
+      "rationale": "让读者知道结果是否正确。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 7.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-006",
+      "action": "固定并记录随机种子、框架确定性和硬件差异",
+      "rationale": "降低结果不可重复的随机性。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 6.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-011",
+      "action": "记录 temperature、top_p、max_tokens 等采样参数",
+      "rationale": "让生成行为可以复现和比较。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 5.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-004",
+      "action": "添加模型卡，记录模型版本、结构、超参数和训练数据",
+      "rationale": "让模型行为可追溯。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "finding_id": "F-012",
+      "action": "记录 tokenizer、上下文窗口和截断策略",
+      "rationale": "避免输入长度和分词差异导致结果变化。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-003",
+      "action": "提供模型权重下载地址或权重大小、文件名说明",
+      "rationale": "让读者能够获得与结果对应的模型。",
+      "cost": "medium",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "finding_id": "F-001",
+      "action": "在 README 中增加可复制的安装命令",
+      "rationale": "降低首次运行门槛。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.5,
+      "evidence_ids": [
+        "E-001"
+      ]
+    },
+    {
+      "finding_id": "F-002",
+      "action": "添加数据集卡或数据许可说明",
+      "rationale": "明确数据边界和再分发条件。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-005",
+        "E-011"
+      ]
+    },
+    {
+      "finding_id": "F-005",
+      "action": "在模型卡中说明模型许可和来源",
+      "rationale": "避免模型使用和再分发风险。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "finding_id": "F-008",
+      "action": "添加快速开始和最小运行示例",
+      "rationale": "让新用户可以在几分钟内跑通。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-010"
+      ]
+    },
+    {
+      "finding_id": "F-009",
+      "action": "记录模型提供方、模型 ID 和 API 版本",
+      "rationale": "避免模型漂移导致输出不可复现。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-014"
+      ]
+    },
+    {
+      "finding_id": "F-010",
+      "action": "将 prompt/template 版本化并记录在配置或模型卡中",
+      "rationale": "避免 prompt 漂移导致结果不可复现。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "finding_id": "F-014",
+      "action": "说明评测集、数据划分和污染/泄漏风险",
+      "rationale": "让指标具有可比性，避免高估效果。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-013"
+      ]
+    },
+    {
+      "finding_id": "F-013",
+      "action": "保存 Agent 工具调用轨迹、run_id 和关键日志",
+      "rationale": "让多步调用过程可以审计。",
+      "cost": "medium",
+      "impact": "high",
+      "estimated_score_gain": 2.5,
+      "evidence_ids": [
+        "E-015"
+      ]
+    },
+    {
+      "finding_id": "F-015",
+      "action": "说明推理成本、延迟和 token 消耗",
+      "rationale": "让读者评估复现成本。",
+      "cost": "low",
+      "impact": "low",
+      "estimated_score_gain": 2.0,
+      "evidence_ids": [
+        "E-014"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-001",
+      "kind": "readme",
+      "path": "README.md",
+      "line": 1,
+      "excerpt": "<p align=\"center\">"
+    },
+    {
+      "id": "E-002",
+      "kind": "dependency-manifest",
+      "path": "cli/package.json",
+      "line": 1,
+      "excerpt": "{"
+    },
+    {
+      "id": "E-003",
+      "kind": "lockfile",
+      "path": "cli/package-lock.json",
+      "line": 1,
+      "excerpt": "{"
+    },
+    {
+      "id": "E-004",
+      "kind": "container",
+      "path": "docker-compose.yml",
+      "line": 1,
+      "excerpt": "version: '3.9'"
+    },
+    {
+      "id": "E-005",
+      "kind": "license",
+      "path": "LICENSE",
+      "line": 1,
+      "excerpt": "GNU GENERAL PUBLIC LICENSE"
+    },
+    {
+      "id": "E-006",
+      "kind": "ci",
+      "path": ".github/workflows/node.js.yml",
+      "line": 1,
+      "excerpt": "name: Node.js CI"
+    },
+    {
+      "id": "E-007",
+      "kind": "tests",
+      "path": "platform/reworkd_platform/tests/test_dependancies.py",
+      "line": 1,
+      "excerpt": "import pytest"
+    },
+    {
+      "id": "E-008",
+      "kind": "script",
+      "path": "scripts/prepare-sync.sh",
+      "line": 1,
+      "excerpt": "cd \"$(dirname \"$0\")\" || exit 1"
+    },
+    {
+      "id": "E-009",
+      "kind": "script",
+      "path": "setup.sh",
+      "line": 1,
+      "excerpt": "#!/usr/bin/env bash"
+    },
+    {
+      "id": "E-010",
+      "kind": "instruction",
+      "path": "README.md",
+      "line": 47,
+      "excerpt": "make sure you have the following installed:"
+    },
+    {
+      "id": "E-011",
+      "kind": "data",
+      "path": "README.md",
+      "line": 2,
+      "excerpt": "https://"
+    },
+    {
+      "id": "E-012",
+      "kind": "prompt",
+      "path": "README.md",
+      "line": 84,
+      "excerpt": "template"
+    },
+    {
+      "id": "E-013",
+      "kind": "evaluation",
+      "path": "README.md",
+      "line": 90,
+      "excerpt": "Validation"
+    },
+    {
+      "id": "E-014",
+      "kind": "llm-provider",
+      "path": "README.md",
+      "line": 53,
+      "excerpt": "OpenAI"
+    },
+    {
+      "id": "E-015",
+      "kind": "agent",
+      "path": "README.md",
+      "line": 5,
+      "excerpt": "Agent"
+    }
+  ],
+  "files_scanned": 571,
+  "probes": [
+    {
+      "name": "python-syntax",
+      "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
+      "status": "pass",
+      "returncode": 0,
+      "duration_seconds": 0.118,
+      "stdout": "\n",
+      "stderr": ""
+    }
+  ]
+}

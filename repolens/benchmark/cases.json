@@ -253,5 +253,51 @@
     "split": "fresh_holdout",
     "label_file": "benchmark/labels/open-webui.json",
     "project_type": "llm_application"
+  },
+  {
+    "name": "flowise",
+    "path": "benchmark/repos/flowise",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "missing",
+      "LLM-05": "not_applicable",
+      "LLM-06": "not_applicable",
+      "LLM-07": "missing",
+      "LLM-08": "partial"
+    },
+    "split": "final_holdout",
+    "label_file": "benchmark/labels/flowise.json",
+    "project_type": "llm_application"
+  },
+  {
+    "name": "agentgpt",
+    "path": "benchmark/repos/agentgpt",
+    "expected": {
+      "ENV-01": "pass",
+      "ENV-02": "pass",
+      "DATA-02": "not_applicable",
+      "MODEL-02": "not_applicable",
+      "MODEL-03": "not_applicable",
+      "EXP-02": "pass",
+      "EXP-03": "not_applicable",
+      "DOC-03": "pass",
+      "LLM-02": "partial",
+      "LLM-03": "missing",
+      "LLM-05": "not_applicable",
+      "LLM-06": "partial",
+      "LLM-07": "partial",
+      "LLM-08": "partial"
+    },
+    "split": "final_holdout",
+    "label_file": "benchmark/labels/agentgpt.json",
+    "project_type": "llm_application"
   }
 ]

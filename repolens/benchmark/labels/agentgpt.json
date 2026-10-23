@@ -1,0 +1,23 @@
+{
+  "repo": "agentgpt",
+  "project_type": "llm_application",
+  "split": "final_holdout",
+  "labeled_at": "2026-10-23",
+  "labeling_note": "Agent web application using external model APIs; it does not own a model or dataset.",
+  "criteria": [
+    {"criterion_id": "ENV-01", "expected_status": "pass", "evidence_path": "cli/package.json", "evidence_line": 1, "rationale": "Node dependencies are declared in package.json.", "confidence": "high"},
+    {"criterion_id": "ENV-02", "expected_status": "pass", "evidence_path": "docker-compose.yml", "evidence_line": 1, "rationale": "A Docker Compose environment is provided.", "confidence": "high"},
+    {"criterion_id": "DATA-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "AgentGPT is an application, not a project-owned dataset pipeline.", "confidence": "high"},
+    {"criterion_id": "MODEL-02", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 53, "rationale": "The app uses external model APIs and does not own a model card.", "confidence": "high"},
+    {"criterion_id": "MODEL-03", "expected_status": "not_applicable", "evidence_path": "LICENSE", "evidence_line": 1, "rationale": "The repository has a code license, but no project-owned model license.", "confidence": "high"},
+    {"criterion_id": "EXP-02", "expected_status": "pass", "evidence_path": ".github/workflows/node.js.yml", "evidence_line": 1, "rationale": "Tests and CI workflows provide executable verification.", "confidence": "medium"},
+    {"criterion_id": "EXP-03", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No training experiment is conducted by the application.", "confidence": "high"},
+    {"criterion_id": "DOC-03", "expected_status": "pass", "evidence_path": ".github/workflows/node.js.yml", "evidence_line": 1, "rationale": "Tests and CI are present.", "confidence": "high"},
+    {"criterion_id": "LLM-02", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 84, "rationale": "Prompt templates are mentioned, but no prompt version or hash metadata is recorded.", "confidence": "medium"},
+    {"criterion_id": "LLM-03", "expected_status": "missing", "evidence_path": "README.md", "evidence_line": 1, "rationale": "No fixed sampling configuration is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-05", "expected_status": "not_applicable", "evidence_path": "README.md", "evidence_line": 1, "rationale": "The app does not own a reproducible RAG index artifact.", "confidence": "high"},
+    {"criterion_id": "LLM-06", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 5, "rationale": "Agent functionality exists, but no durable tool-call trace artifact is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-07", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 90, "rationale": "Validation is mentioned, but no evaluation dataset, split, or contamination protocol is documented.", "confidence": "medium"},
+    {"criterion_id": "LLM-08", "expected_status": "partial", "evidence_path": "README.md", "evidence_line": 53, "rationale": "Model setup is documented, but no reproducible cost or latency measurement is provided.", "confidence": "medium"}
+  ]
+}

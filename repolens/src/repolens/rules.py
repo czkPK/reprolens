@@ -241,14 +241,14 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
 
     llm05_applicable = is_rag and not is_agent_fw and not is_sdk
     add("LLM-05",
-        "pass" if concrete("rag_index") and not is_memory_fw else ("partial" if is_rag else "missing"),
-        "已记录 RAG 索引/知识库版本。" if concrete("rag_index") and not is_memory_fw else ("检测到 RAG 项目，但索引/embedding 版本仍需补充。" if is_rag else "不适用。"),
-        ev("rag_index", "rag_project"), applicable=llm05_applicable)
+        "pass" if concrete("rag_config") else ("partial" if is_rag else "missing"),
+        "已记录 RAG 索引/知识库的可复现配置。" if concrete("rag_config") else ("检测到 RAG 项目，但索引/embedding 版本仍需补充。" if is_rag else "不适用。"),
+        ev("rag_config", "rag_index", "rag_project"), applicable=llm05_applicable)
 
     add("LLM-06",
-        "pass" if concrete("agent_trace") else ("partial" if is_agent else "missing"),
-        "已记录 Agent 工具调用轨迹。" if concrete("agent_trace") else ("检测到 Agent 项目，但调用轨迹仍需补充。" if is_agent else "不适用。"),
-        ev("agent_trace", "agent_project"), applicable=is_agent and not is_memory_fw and not is_sdk)
+        "pass" if concrete("agent_trace_artifact") else ("partial" if is_agent else "missing"),
+        "已记录可追溯的 Agent 工具调用轨迹。" if concrete("agent_trace_artifact") else ("检测到 Agent 项目，但完整调用轨迹仍需补充。" if is_agent else "不适用。"),
+        ev("agent_trace_artifact", "agent_trace", "agent_project"), applicable=is_agent and not is_memory_fw and not is_sdk)
 
     llm07_pass = concrete("eval_dataset") and concrete("eval_split") and concrete("contamination")
     llm07_partial = snapshot.has("eval_dataset") or snapshot.has("eval_split") or snapshot.has("contamination")
