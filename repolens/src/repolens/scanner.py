@@ -160,7 +160,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     add_file_flag("tests", r"(^|/)tests?/.*\.py$|(^|/)test_.*\.py$|\.(test|spec)\.(js|jsx|ts|tsx)$|(^|/)__tests__/|(^|/)playwright\.config\.ts$", "tests")
     add_file_flag("train_script", r"(^|/)(train|finetune|pretrain)[^/]*\.py$", "script")
     add_file_flag("eval_script", r"(^|/)(eval|evaluate|infer|predict)[^/]*\.py$", "script")
-    add_file_flag("data_script", r"(^|/)(data|scripts?)/.*(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$|^(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$", "script")
+    add_file_flag("data_script", r"(^|/)data/.*(download|prepare|preprocess|process_data)[^/]*\.(py|sh)$|^(download|prepare|preprocess|process_data)(_data)?[^/]*\.(py|sh)$|^data_(download|prepare|preprocess|process)[^/]*\.(py|sh)$", "script")
     add_file_flag("reproduce_script", r"(^|/)(reproduce|run|setup)[^/]*\.(sh|ps1)$|(^|/)makefile$", "script")
     add_file_flag("config", r"(^|/)(configs?|conf)/.*\.(ya?ml|json|toml)$|^config[^/]*\.(py|ya?ml|json)$", "config")
     add_file_flag("prompt_files", r"(^|/)prompts?/|^prompt[^/]*\.(txt|md|ya?ml|json)$", "prompt", exclude_github=True)

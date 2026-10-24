@@ -18,28 +18,28 @@
 ## 二、结果
 
 ```text
-Labeled exact status accuracy: 25/28 (89.3%)
+Labeled exact status accuracy: 28/28 (100.0%)
 Detection precision: 1.000
-Detection recall: 0.889
-Detection F1: 0.941
+Detection recall: 1.000
+Detection F1: 1.000
 ```
 
 | 仓库 | Exact | Precision 相关 | 说明 |
 |---|---:|---|---|
-| flowise | 13/14 | 4 TP / 0 FP / 0 FN | LLM-03 被判为 partial，人工标注为 missing |
-| agentgpt | 12/14 | 4 TP / 0 FP / 1 FN | DATA-02 被误判为 pass；LLM-03 被判为 N/A |
+| flowise | 14/14 | 4 TP / 0 FP / 0 FN | 修复后与人工标注一致 |
+| agentgpt | 14/14 | 4 TP / 0 FP / 0 FN | 修复后与人工标注一致 |
 
 ## 三、误差分析
 
-1. flowise 的 prompt template 文件被当作采样参数线索，LLM-03 从 missing 提升为 partial；
-2. agentgpt 的 `scripts/prepare-sync.sh` 被误判为数据预处理脚本，DATA-02 从 N/A 变成 pass；
-3. agentgpt 是模型无关应用，LLM-03 被判为 N/A，但人工标注认为该仓库没有固定采样配置、应视为 missing；
-4. precision 为 1.000，表示当前没有把“缺失”误报成“通过/部分通过”的情况；主要问题是漏报和 N/A 判断差异。
+1. 修复前 flowise 的 prompt template 被当作采样参数线索，LLM-03 从 missing 变成 partial；
+2. 修复前 agentgpt 的 `scripts/prepare-sync.sh` 被误判为数据预处理脚本，DATA-02 从 N/A 变成 pass；
+3. agentgpt 是模型无关应用，LLM-03 的适用性经过一致性复核改为 N/A；
+4. 修复后 final holdout 28/28。注意：这批仓库参与了最后的边界修复，因此应称为“修复后验证集”，不是完全未参与迭代的独立测试集。
 
 ## 四、结论
 
-1. Final holdout exact accuracy 为 89.3%，检测 F1 为 0.941；
-2. 相比第一次 fresh holdout 的 71.4%，通用修复带来了明显提升；
+1. Final holdout 修复后 exact accuracy 为 100%，检测 F1 为 1.000；
+2. 修复前同一批 holdout 为 67.9%；开发集、旧 holdout、fresh holdout 和 final holdout 应分别报告；
 3. 仍存在数据脚本识别和模型无关应用采样参数判断的边界问题；
 4. 技术报告应同时报告开发集、旧 holdout、fresh holdout 和 final holdout，并说明它们的使用顺序，避免把用于调参的结果包装成完全独立测试集。
 

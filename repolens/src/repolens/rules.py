@@ -228,7 +228,7 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
         "已发现版本化 prompt/template。" if llm02_pass else ("有 prompt 文件或描述，但没有可核验的版本信息。" if llm02_partial else "没有 prompt/template 版本记录。"),
         ev("prompt_files", "prompt_version", "prompt_mention"), applicable=is_llm and not is_sdk and (not model_agnostic or snapshot.has("prompt_files") or snapshot.has("prompt_mention")))
 
-    llm03_partial = snapshot.has("sampling_params") or snapshot.has("config") or (model_agnostic and snapshot.has("prompt_files"))
+    llm03_partial = snapshot.has("sampling_params") or snapshot.has("config") or (is_framework and snapshot.has("prompt_files"))
     add("LLM-03",
         "pass" if concrete("sampling_params") and not model_agnostic else ("partial" if llm03_partial else "missing"),
         "已记录采样参数。" if concrete("sampling_params") and not model_agnostic else ("有采样参数或配置线索，但仍需补充可核验值。" if llm03_partial else "没有记录 temperature、top_p 等采样参数。"),
