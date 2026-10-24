@@ -2,6 +2,17 @@
 
 Evidence-constrained reproduction readiness auditor for open-source LLM / RAG / Agent repositories.
 
+## Simplest way to use it
+
+1. Double-click `Start-ReproLens.cmd`.
+2. Select the repository folder.
+3. Wait for the audit to finish.
+4. The HTML report opens automatically.
+
+You do not need to set `PYTHONPATH` or type any command.
+
+To try the built-in example, double-click `Run-Demo.cmd`.
+
 ## What it does
 
 Given a local repository, ReproLens:
