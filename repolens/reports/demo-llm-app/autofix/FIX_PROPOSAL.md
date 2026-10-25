@@ -1,8 +1,8 @@
 # ReproLens AutoFix Proposal
 
 - Before score: **49.1**
-- After score: **63.4**
-- Estimated gain: **+14.3**
+- After score: **68.4**
+- Estimated gain: **+19.3**
 - Accepted: **True**
 
 ## Generated Files
@@ -28,6 +28,7 @@
 - `DATA-02`
 - `DATA-03`
 - `MODEL-03`
+- `EXP-02`
 - `DOC-03`
 - `LLM-02`
 
@@ -38,7 +39,6 @@
 - `DATA-03`
 - `MODEL-03`
 - `EXP-01`
-- `EXP-02`
 - `EXP-03`
 - `EXP-05`
 - `DOC-02`

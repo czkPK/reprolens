@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .autofix import generate_autofix
+from .claims import build_claim_matrix, evidence_coverage
 from .llm import write_explanation
 from .models import AuditResult
 from .probes import run_probes
@@ -49,6 +50,7 @@ def main(argv: list[str] | None = None) -> int:
     remediations = plan_remediations(findings, criteria)
     dimensions = score_dimensions(criteria)
     score = total_score(criteria)
+    covered, coverage_total, coverage_percent = evidence_coverage(criteria)
     result = AuditResult(
         repo_path=str(root),
         generated_at=datetime.now(timezone.utc).isoformat(),
@@ -61,7 +63,13 @@ def main(argv: list[str] | None = None) -> int:
         evidence=snapshot.evidence,
         files_scanned=len(snapshot.files),
         probes=probes,
+        evidence_coverage={
+            "covered": covered,
+            "total": coverage_total,
+            "percent": coverage_percent,
+        },
     )
+    result.claim_matrix = build_claim_matrix(result)
 
     out_dir = Path(args.out_dir).expanduser().resolve()
     write_outputs(result, out_dir)
@@ -78,6 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"ReproLens audited {len(snapshot.files)} files.")
         print(f"Score: {score:.1f}/100 ({result.readiness})")
         print(f"Findings: {len(findings)}; remediation actions: {len(remediations)}")
+        print(f"Claims: {len(result.claim_matrix)}; evidence coverage: {covered}/{coverage_total} ({coverage_percent:.1f}%)")
         print(f"Probes: {len(probes)}; execution evidence: {out_dir / 'execution.json'}")
         if explanation_path is not None:
             print(f"Explanation: {explanation_path}")

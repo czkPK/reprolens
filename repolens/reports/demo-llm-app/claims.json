@@ -1,0 +1,55 @@
+[
+  {
+    "claim_id": "E-013",
+    "claim": "A small retrieval-augmented agent demo.",
+    "criteria": [
+      "LLM-05"
+    ],
+    "status": "verified",
+    "gaps": [],
+    "evidence_ids": [
+      "E-012",
+      "E-010",
+      "E-009"
+    ]
+  },
+  {
+    "claim_id": "E-014",
+    "claim": "pip install -r requirements.txt",
+    "criteria": [
+      "DOC-02",
+      "ENV-01",
+      "ENV-03"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "DOC-02"
+    ],
+    "evidence_ids": [
+      "E-005",
+      "E-002"
+    ]
+  },
+  {
+    "claim_id": "E-015",
+    "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
+    "criteria": [
+      "LLM-01",
+      "LLM-03",
+      "LLM-05",
+      "MODEL-02"
+    ],
+    "status": "verified",
+    "gaps": [],
+    "evidence_ids": [
+      "E-006",
+      "E-007",
+      "E-008",
+      "E-003",
+      "E-004",
+      "E-012",
+      "E-010",
+      "E-009"
+    ]
+  }
+]

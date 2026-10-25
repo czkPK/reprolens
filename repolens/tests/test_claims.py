@@ -1,0 +1,56 @@
+import unittest
+
+from repolens.claims import _claim_criteria, claim_status, criterion_confidence, evidence_coverage
+from repolens.models import CriterionResult
+from repolens.scanner import _clean_claim_line
+
+
+def criterion(status: str, evidence_ids: list[str] | None = None, applicable: bool = True) -> CriterionResult:
+    return CriterionResult(
+        id="TEST-01",
+        dimension="test",
+        title="test",
+        status=status,
+        points=0.0,
+        max_points=1.0,
+        applicable=applicable,
+        note="",
+        evidence_ids=evidence_ids or [],
+    )
+
+
+class ClaimTests(unittest.TestCase):
+    def test_claim_status_summarizes_mapped_criteria(self):
+        self.assertEqual(claim_status([criterion("pass")]), "verified")
+        self.assertEqual(claim_status([criterion("pass"), criterion("partial")]), "partially_verified")
+        self.assertEqual(claim_status([criterion("pass"), criterion("missing")]), "unverified")
+        self.assertEqual(claim_status([criterion("not_applicable", applicable=False)]), "not_applicable")
+
+    def test_criterion_confidence_uses_status_and_evidence_count(self):
+        self.assertEqual(criterion_confidence(criterion("pass", ["E-1", "E-2"])), "high")
+        self.assertEqual(criterion_confidence(criterion("pass", ["E-1"])), "medium")
+        self.assertEqual(criterion_confidence(criterion("missing")), "low")
+        self.assertEqual(criterion_confidence(criterion("not_applicable", applicable=False)), "N/A")
+
+    def test_evidence_coverage_ignores_not_applicable_criteria(self):
+        covered, total, percent = evidence_coverage(
+            [
+                criterion("pass", ["E-1"]),
+                criterion("partial", ["E-2"]),
+                criterion("missing"),
+                criterion("not_applicable", ["E-3"], applicable=False),
+            ]
+        )
+        self.assertEqual((covered, total, percent), (2, 3, 66.7))
+
+    def test_agent_claim_requires_trace_specific_evidence(self):
+        self.assertNotIn("LLM-06", _claim_criteria("A memory layer for AI agents."))
+        self.assertIn("LLM-06", _claim_criteria("The agent records tool call traces."))
+
+    def test_claim_cleaner_removes_markdown_and_html_noise(self):
+        claim = _clean_claim_line('<a href="https://example.com"><strong>See the [benchmark guide](https://example.com)</strong></a>')
+        self.assertEqual(claim, "See the benchmark guide")
+
+
+if __name__ == "__main__":
+    unittest.main()

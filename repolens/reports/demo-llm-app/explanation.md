@@ -1,8 +1,15 @@
 # ReproLens Explanation
 
 当前复现就绪度为 **49.1/100（At Risk）**。
+证据覆盖率为 **16/25（64.0%）**，共抽取 **3** 条 README 声明。
 
 以下结论只基于仓库中已抽取到的证据，没有证据的内容不会被当作已验证事实。
+
+## 声明验证
+
+- `E-013` [已验证] A small retrieval-augmented agent demo.（缺口：无）
+- `E-014` [部分验证] pip install -r requirements.txt（缺口：DOC-02）
+- `E-015` [已验证] This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.（缺口：无）
 
 ## 主要缺口
 

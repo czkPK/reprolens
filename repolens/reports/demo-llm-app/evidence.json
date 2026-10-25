@@ -75,5 +75,33 @@
     "path": "README.md",
     "line": 3,
     "excerpt": "agent"
+  },
+  {
+    "id": "E-012",
+    "kind": "rag",
+    "path": "configs/app.yaml",
+    "line": 9,
+    "excerpt": "embedding_model"
+  },
+  {
+    "id": "E-013",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "A small retrieval-augmented agent demo."
+  },
+  {
+    "id": "E-014",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 8,
+    "excerpt": "pip install -r requirements.txt"
+  },
+  {
+    "id": "E-015",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 17,
+    "excerpt": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/."
   }
 ]

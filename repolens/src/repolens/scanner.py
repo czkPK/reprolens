@@ -20,6 +20,9 @@ SPECIAL_NAMES = {
 IGNORE_DIRS = {".git", ".venv", "venv", "node_modules", "__pycache__", ".mypy_cache", ".pytest_cache", "dist", "build"}
 MAX_TEXT_BYTES = 400_000
 PLACEHOLDER_RE = re.compile(r"TODO|PLACEHOLDER|CHANGE[_ -]?ME|YOUR_[A-Z_]+|REPLACE_ME|unversioned|not specified|TBD", re.IGNORECASE)
+HTML_TAG_RE = re.compile(r"<[^>]+>")
+MARKDOWN_IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]+\)")
+MARKDOWN_LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]+\)")
 
 
 @dataclass
@@ -86,6 +89,15 @@ def _line_number(text: str, offset: int) -> int:
 
 def _first_match(text: str, pattern: str) -> re.Match[str] | None:
     return re.search(pattern, text, flags=re.IGNORECASE | re.MULTILINE)
+
+
+def _clean_claim_line(value: str) -> str:
+    value = MARKDOWN_IMAGE_RE.sub("", value)
+    value = MARKDOWN_LINK_RE.sub(r"\1", value)
+    value = HTML_TAG_RE.sub(" ", value)
+    value = value.replace("**", "").replace("__", "").replace("`", "")
+    value = re.sub(r"^[#>*\-\s]+", "", value)
+    return re.sub(r"\s+", " ", value).strip()
 
 
 def scan_repo(root: Path) -> RepoSnapshot:
@@ -304,6 +316,35 @@ def scan_repo(root: Path) -> RepoSnapshot:
         snapshot.project_type = "ml_project"
     else:
         snapshot.project_type = "unknown"
+
+    claim_keywords = (
+        "reproduce", "benchmark", "accuracy", "f1", "bleu", "rouge",
+        "install", "quickstart", "docker", "pytest", "dataset", "seed",
+        "rag", "retrieval", "vector store", "embedding", "tool call",
+        "trace", "prompt version", "model version", "model provider",
+        "api version", "openai", "huggingface", "evaluation dataset",
+    )
+    claim_count = 0
+    seen_claims: set[str] = set()
+    for rel_path, text in texts.items():
+        if "/" in rel_path or not Path(rel_path).name.lower().startswith("readme"):
+            continue
+        for line_no, line in enumerate(text.splitlines(), start=1):
+            stripped = line.strip()
+            if len(stripped) < 30 or stripped.startswith(("[![", "<img", "<!--", "|", "```")):
+                continue
+            if any(keyword in stripped.lower() for keyword in claim_keywords):
+                cleaned = _clean_claim_line(stripped)
+                key = cleaned.lower()
+                if len(cleaned) < 24 or key in seen_claims:
+                    continue
+                seen_claims.add(key)
+                snapshot.add_evidence("claim", root / rel_path, line_no, cleaned)
+                claim_count += 1
+                if claim_count >= 8:
+                    break
+        if claim_count >= 8:
+            break
 
     return snapshot
 

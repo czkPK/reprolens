@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 from pathlib import Path
 
-from repolens.llm import offline_explanation
+from repolens.llm import build_evidence_context, offline_explanation
 from repolens.models import AuditResult
 from repolens.probes import run_probes
 from repolens.remediation import plan_remediations
@@ -35,6 +35,8 @@ class LLMTests(unittest.TestCase):
         self.assertIn("ReproLens Explanation", text)
         self.assertIn("证据", text)
         self.assertIn("Evidence Missing", text)
+        self.assertIn("声明验证", text)
+        self.assertIn("Claims:", build_evidence_context(result))
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ import os
 import urllib.request
 from pathlib import Path
 
+from .claims import build_claim_matrix, evidence_coverage
 from .models import AuditResult
 
 
@@ -17,6 +18,12 @@ def build_evidence_context(result: AuditResult) -> str:
     for item in result.criteria:
         lines.append(
             f"- {item.id} | {item.dimension} | {item.title} | {item.status} | evidence={','.join(item.evidence_ids) or 'none'} | {item.note}"
+        )
+    claims = result.claim_matrix or build_claim_matrix(result)
+    lines.append("Claims:")
+    for row in claims:
+        lines.append(
+            f"- {row['claim_id']} | {row['status']} | criteria={','.join(row['criteria']) or 'none'} | gaps={','.join(row['gaps']) or 'none'} | evidence={','.join(row['evidence_ids']) or 'none'} | {row['claim']}"
         )
     lines.append("Evidence:")
     for evidence in result.evidence:
@@ -31,16 +38,36 @@ def build_evidence_context(result: AuditResult) -> str:
 def offline_explanation(result: AuditResult) -> str:
     gaps = [item for item in result.criteria if item.status in {"missing", "partial"} and item.applicable]
     gaps.sort(key=lambda item: (item.status != "missing", -item.max_points))
+    claims = result.claim_matrix or build_claim_matrix(result)
+    covered, total, percent = evidence_coverage(result.criteria)
+    claim_labels = {
+        "verified": "已验证",
+        "partially_verified": "部分验证",
+        "unverified": "未验证",
+        "not_applicable": "不适用",
+    }
     lines = [
         "# ReproLens Explanation",
         "",
         f"当前复现就绪度为 **{result.total_score:.1f}/100（{result.readiness}）**。",
+        f"证据覆盖率为 **{covered}/{total}（{percent:.1f}%）**，共抽取 **{len(claims)}** 条 README 声明。",
         "",
         "以下结论只基于仓库中已抽取到的证据，没有证据的内容不会被当作已验证事实。",
         "",
-        "## 主要缺口",
+        "## 声明验证",
         "",
     ]
+    if not claims:
+        lines.append("- 未从根 README 抽取到可验证声明。")
+    for row in claims[:8]:
+        status = claim_labels.get(row["status"], row["status"])
+        gaps_text = "、".join(row["gaps"]) if row["gaps"] else "无"
+        lines.append(f"- `{row['claim_id']}` [{status}] {row['claim']}（缺口：{gaps_text}）")
+    lines.extend([
+        "",
+        "## 主要缺口",
+        "",
+    ])
     if not gaps:
         lines.append("- 当前检查范围内没有发现明显缺口。")
     for item in gaps[:8]:

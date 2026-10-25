@@ -1,6 +1,6 @@
 {
-  "repo_path": "C:\\Users\\86199\\Documents\\ChatGPT\\全球校园人工智能算法精英大赛\\repolens\\examples\\demo-llm-app",
-  "generated_at": "2026-10-23T14:20:48.770914+00:00",
+  "repo_path": "D:\\CODEX\\ReproLens\\repolens\\examples\\demo-llm-app",
+  "generated_at": "2026-10-25T13:45:01.788795+00:00",
   "total_score": 49.1,
   "readiness": "At Risk",
   "dimensions": [
@@ -311,8 +311,9 @@
       "points": 5,
       "max_points": 5,
       "applicable": true,
-      "note": "已记录 RAG 索引/知识库版本。",
+      "note": "已记录 RAG 索引/知识库的可复现配置。",
       "evidence_ids": [
+        "E-012",
         "E-010",
         "E-009"
       ]
@@ -325,7 +326,7 @@
       "points": 2.5,
       "max_points": 5,
       "applicable": true,
-      "note": "检测到 Agent 项目，但调用轨迹仍需补充。",
+      "note": "检测到 Agent 项目，但完整调用轨迹仍需补充。",
       "evidence_ids": [
         "E-011"
       ]
@@ -475,7 +476,7 @@
       "severity": "medium",
       "criterion_id": "LLM-06",
       "title": "Agent 工具调用轨迹可追溯",
-      "message": "检测到 Agent 项目，但调用轨迹仍需补充。",
+      "message": "检测到 Agent 项目，但完整调用轨迹仍需补充。",
       "evidence_ids": [
         "E-011"
       ]
@@ -736,6 +737,34 @@
       "path": "README.md",
       "line": 3,
       "excerpt": "agent"
+    },
+    {
+      "id": "E-012",
+      "kind": "rag",
+      "path": "configs/app.yaml",
+      "line": 9,
+      "excerpt": "embedding_model"
+    },
+    {
+      "id": "E-013",
+      "kind": "claim",
+      "path": "README.md",
+      "line": 3,
+      "excerpt": "A small retrieval-augmented agent demo."
+    },
+    {
+      "id": "E-014",
+      "kind": "claim",
+      "path": "README.md",
+      "line": 8,
+      "excerpt": "pip install -r requirements.txt"
+    },
+    {
+      "id": "E-015",
+      "kind": "claim",
+      "path": "README.md",
+      "line": 17,
+      "excerpt": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/."
     }
   ],
   "files_scanned": 6,
@@ -745,9 +774,69 @@
       "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
       "status": "pass",
       "returncode": 0,
-      "duration_seconds": 0.063,
+      "duration_seconds": 0.056,
       "stdout": "\n",
       "stderr": ""
     }
-  ]
+  ],
+  "claim_matrix": [
+    {
+      "claim_id": "E-013",
+      "claim": "A small retrieval-augmented agent demo.",
+      "criteria": [
+        "LLM-05"
+      ],
+      "status": "verified",
+      "gaps": [],
+      "evidence_ids": [
+        "E-012",
+        "E-010",
+        "E-009"
+      ]
+    },
+    {
+      "claim_id": "E-014",
+      "claim": "pip install -r requirements.txt",
+      "criteria": [
+        "DOC-02",
+        "ENV-01",
+        "ENV-03"
+      ],
+      "status": "partially_verified",
+      "gaps": [
+        "DOC-02"
+      ],
+      "evidence_ids": [
+        "E-005",
+        "E-002"
+      ]
+    },
+    {
+      "claim_id": "E-015",
+      "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
+      "criteria": [
+        "LLM-01",
+        "LLM-03",
+        "LLM-05",
+        "MODEL-02"
+      ],
+      "status": "verified",
+      "gaps": [],
+      "evidence_ids": [
+        "E-006",
+        "E-007",
+        "E-008",
+        "E-003",
+        "E-004",
+        "E-012",
+        "E-010",
+        "E-009"
+      ]
+    }
+  ],
+  "evidence_coverage": {
+    "covered": 16,
+    "total": 25,
+    "percent": 64.0
+  }
 }

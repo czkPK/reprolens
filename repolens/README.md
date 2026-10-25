@@ -22,9 +22,11 @@ Given a local repository, ReproLens:
 3. adds LLM-specific checks: model/API version, prompt/template version, sampling parameters, tokenizer/context window, RAG index version, agent trace, evaluation contamination and inference cost;
 4. runs a safe Python syntax probe by default; `--execute` enables `--help` and pytest collection probes on trusted repositories;
 5. reports gaps with evidence IDs;
-6. proposes a minimal remediation plan and estimates the score gain;
-7. with `--autofix`, generates a conservative fix proposal and re-audits a staging copy;
-8. with `--explain`, generates an evidence-grounded explanation, with an offline deterministic fallback.
+6. maps README claims to verification criteria and reports verified, partially verified and unverified claims;
+7. assigns high/medium/low evidence confidence and reports evidence coverage;
+8. proposes a minimal remediation plan and estimates the score gain;
+9. with `--autofix`, generates a conservative fix proposal and re-audits a staging copy;
+10. with `--explain`, generates an evidence-grounded explanation, with an offline deterministic fallback.
 
 ## Quick start
 
@@ -35,7 +37,7 @@ python -m repolens audit examples/demo-llm-app --out-dir reports/demo-llm-app --
 python -m repolens.benchmark
 ```
 
-Outputs: `report.md`, `report.html`, `score.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
+Outputs: `report.md`, `report.html`, `claims.md`, `claims.json`, `score.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
 
 Optional LLM environment variables: `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, `REPROLENS_LLM_MODEL`.
 
@@ -49,8 +51,8 @@ Demo result:
 
 ```text
 before: 49.1
-after:  63.4
-delta:  +14.3
+after:  68.4
+delta:  +19.3
 ```
 
 ## Benchmark
@@ -71,6 +73,8 @@ See `.github/workflows/repolens.yml`. It audits the repository and uploads the r
 - Python LLM/RAG/Agent repository scanning
 - static evidence extraction
 - applicability-aware criteria
+- README claim-evidence matrix with gap tracing
+- evidence confidence and coverage metrics
 - five general dimensions plus LLM-specific checks
 - safe syntax probe + optional execution probes
 - HTML and Markdown reports

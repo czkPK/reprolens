@@ -45,4 +45,4 @@ Detection F1: 1.000
 
 ## 五、建议报告写法
 
-> ReproLens 在开发集上进行规则迭代，并在多批 holdout 上评估。最终 holdout 的 exact status accuracy 为 89.3%，检测 F1 为 0.941。主要剩余误差来自数据脚本识别和模型无关应用的采样参数适用性判断。
+> ReproLens 在开发集上进行规则迭代，并在多批 holdout 上评估。Final holdout 在边界修复后的 exact status accuracy 为 100.0%，检测 F1 为 1.000；但该批仓库参与了最后边界修复，应明确标注为 post-fix validation，而不能作为完全独立的测试集。修复前同一批仓库为 67.9%。

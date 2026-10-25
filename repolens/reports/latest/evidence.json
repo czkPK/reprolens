@@ -1,0 +1,107 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "# Demo LLM RAG App"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "requirements.txt",
+    "line": 1,
+    "excerpt": "openai>=1.0"
+  },
+  {
+    "id": "E-003",
+    "kind": "config",
+    "path": "configs/app.yaml",
+    "line": 1,
+    "excerpt": "model:"
+  },
+  {
+    "id": "E-004",
+    "kind": "prompt",
+    "path": "prompts/system.txt",
+    "line": 1,
+    "excerpt": "You are a helpful assistant. Answer using the retrieved context."
+  },
+  {
+    "id": "E-005",
+    "kind": "instruction",
+    "path": "README.md",
+    "line": 8,
+    "excerpt": "pip install"
+  },
+  {
+    "id": "E-006",
+    "kind": "llm-provider",
+    "path": "README.md",
+    "line": 17,
+    "excerpt": "OpenAI"
+  },
+  {
+    "id": "E-007",
+    "kind": "model",
+    "path": "configs/app.yaml",
+    "line": 3,
+    "excerpt": "gpt-4"
+  },
+  {
+    "id": "E-008",
+    "kind": "llm-config",
+    "path": "configs/app.yaml",
+    "line": 4,
+    "excerpt": "temperature"
+  },
+  {
+    "id": "E-009",
+    "kind": "rag",
+    "path": "README.md",
+    "line": 1,
+    "excerpt": "RAG"
+  },
+  {
+    "id": "E-010",
+    "kind": "rag",
+    "path": "configs/app.yaml",
+    "line": 8,
+    "excerpt": "vector_store"
+  },
+  {
+    "id": "E-011",
+    "kind": "agent",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "agent"
+  },
+  {
+    "id": "E-012",
+    "kind": "rag",
+    "path": "configs/app.yaml",
+    "line": 9,
+    "excerpt": "embedding_model"
+  },
+  {
+    "id": "E-013",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 3,
+    "excerpt": "A small retrieval-augmented agent demo."
+  },
+  {
+    "id": "E-014",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 8,
+    "excerpt": "pip install -r requirements.txt"
+  },
+  {
+    "id": "E-015",
+    "kind": "claim",
+    "path": "README.md",
+    "line": 17,
+    "excerpt": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/."
+  }
+]
