@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
 from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
-from .html_report import render_html
+from .html_report import render_claims_html, render_html
 from .models import AuditResult
 
 
@@ -239,6 +239,7 @@ def write_outputs(result: AuditResult, out_dir: Path) -> None:
     claim_rows = _claim_rows(result)
     (out_dir / "report.md").write_text(render_markdown(result), encoding="utf-8")
     (out_dir / "report.html").write_text(render_html(result), encoding="utf-8")
+    (out_dir / "claims.html").write_text(render_claims_html(result), encoding="utf-8")
     (out_dir / "claims.md").write_text(render_claims_markdown(result), encoding="utf-8")
     (out_dir / "claims.json").write_text(
         json.dumps(claim_rows, ensure_ascii=False, indent=2), encoding="utf-8"

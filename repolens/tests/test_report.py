@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from repolens.html_report import render_html
+from repolens.html_report import render_claims_html, render_html
 from repolens.models import AuditResult
 from repolens.probes import run_probes
 from repolens.remediation import plan_remediations
@@ -44,6 +44,10 @@ class ReportTests(unittest.TestCase):
         self.assertIn("证据说明", html)
         self.assertIn("是否存在依赖清单", html)
         self.assertIn("已验证", render_claims_markdown(result))
+        claims_html = render_claims_html(result)
+        self.assertIn("声明验证矩阵", claims_html)
+        self.assertIn("README 声明", claims_html)
+        self.assertIn("验证说明", claims_html)
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"
@@ -68,10 +72,12 @@ class ReportTests(unittest.TestCase):
             write_outputs(result, Path(tmp))
             self.assertTrue((Path(tmp) / "claims.json").exists())
             self.assertTrue((Path(tmp) / "claims.md").exists())
+            self.assertTrue((Path(tmp) / "claims.html").exists())
             self.assertTrue((Path(tmp) / "badge.svg").exists())
             self.assertTrue((Path(tmp) / "badge.json").exists())
             self.assertIn("ReproLens", (Path(tmp) / "badge.svg").read_text(encoding="utf-8"))
             self.assertIn("Claim-Evidence Matrix", (Path(tmp) / "report.md").read_text(encoding="utf-8"))
+            self.assertIn("声明验证矩阵", (Path(tmp) / "claims.html").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

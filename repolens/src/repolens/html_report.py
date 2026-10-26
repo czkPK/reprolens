@@ -160,3 +160,96 @@ small {{ color: #697386; }}
 <h2>Minimal Remediation Plan</h2><ul>{remediation_items}</ul>
 <h2>Scope and Limitations</h2><ul><li>This is static reproduction readiness analysis, not proof that the project reproduces successfully.</li><li>No untrusted repository code is executed by default.</li><li>Execution probes run repository scripts only with <code>--execute</code>.</li><li>AI-generated explanations must be reviewed by the team before release.</li></ul>
 </main></body></html>"""
+
+
+def render_claims_html(result: AuditResult) -> str:
+    def e(value: object) -> str:
+        return escape(str(value))
+
+    claims = result.claim_matrix or build_claim_matrix(result)
+    counts = {key: 0 for key in CLAIM_STATUS_LABELS}
+    for row in claims:
+        status = str(row.get("status", ""))
+        counts[status] = counts.get(status, 0) + 1
+    coverage = result.evidence_coverage or {}
+    if not coverage:
+        covered, total, percent = evidence_coverage(result.criteria)
+        coverage = {"covered": covered, "total": total, "percent": percent}
+
+    def evidence_links(ids: list[str]) -> str:
+        if not ids:
+            return "-"
+        return " ".join(
+            f'<a href="report.html#evidence-{e(evidence_id)}"><code>{e(evidence_id)}</code></a>'
+            for evidence_id in ids
+        )
+
+    cards = (
+        f'<div class="card"><div class="label">README 声明</div><div class="value">{len(claims)}</div><div class="sub">从根 README 抽取</div></div>'
+        f'<div class="card"><div class="label">已验证</div><div class="value">{counts.get("verified", 0)}</div><div class="sub">相关检查项全部通过</div></div>'
+        f'<div class="card"><div class="label">部分验证</div><div class="value">{counts.get("partially_verified", 0)}</div><div class="sub">有证据但仍有缺口</div></div>'
+        f'<div class="card"><div class="label">证据覆盖</div><div class="value">{coverage.get("percent", 0):.1f}%</div><div class="sub">{coverage.get("covered", 0)}/{coverage.get("total", 0)} 个适用检查项</div></div>'
+    )
+    rows = "".join(
+        '<tr>'
+        f'<td><a href="report.html#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td>'
+        f'<td>{e(row.get("claim", ""))}</td>'
+        f'<td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td>'
+        f'<td>{e(", ".join(row.get("criteria", [])) or "-")}</td>'
+        f'<td>{e(", ".join(row.get("gaps", [])) or "-")}</td>'
+        f'<td>{evidence_links(row.get("evidence_ids", []))}</td>'
+        f'<td class="note">{e(claim_verification_note(row))}</td>'
+        '</tr>'
+        for row in claims
+    ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
+
+    return f'''<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReproLens 声明验证矩阵</title>
+<style>
+body {{ margin:0; background:#f4f7fc; color:#172033; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif; }}
+main {{ max-width:1380px; margin:0 auto; padding:38px 22px 70px; }}
+h1 {{ margin:0 0 8px; font-size:32px; }}
+h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
+.meta {{ color:#64748b; line-height:1.7; }}
+.cards {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin:22px 0; }}
+.card {{ background:white; border-radius:14px; padding:16px; box-shadow:0 5px 18px rgba(23,32,51,.07); }}
+.label,.sub {{ color:#64748b; font-size:13px; }}
+.value {{ color:#2457d6; font-size:28px; font-weight:800; margin:5px 0; }}
+.guide {{ background:#eef3fb; border:1px solid #dbe4f0; border-radius:14px; padding:16px 20px; line-height:1.75; }}
+table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); }}
+th,td {{ padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; }}
+th {{ background:#eaf0fa; color:#40506a; }}
+.status {{ display:inline-block; border-radius:999px; padding:4px 9px; font-weight:700; white-space:nowrap; }}
+.status.verified {{ background:#e4f7ec; color:#167a3a; }}
+.status.partially_verified {{ background:#fff4db; color:#9a6500; }}
+.status.unverified {{ background:#ffe5e8; color:#b42336; }}
+.status.not_applicable {{ background:#edf0f4; color:#697386; }}
+.note {{ min-width:260px; color:#526175; }}
+td:first-child {{ white-space:nowrap; }}
+code {{ background:#f1f4f9; border-radius:4px; padding:2px 5px; word-break:break-all; }}
+a {{ color:#2457d6; text-decoration:none; }}
+a:hover {{ text-decoration:underline; }}
+.back {{ display:inline-block; margin-top:24px; font-weight:700; }}
+</style>
+</head>
+<body><main>
+<h1>ReproLens 声明验证矩阵</h1>
+<div class="meta">仓库：{e(result.repo_path)}<br>生成时间：{e(result.generated_at)}</div>
+<div class="cards">{cards}</div>
+<div class="guide"><strong>怎么看这张表：</strong><br>
+先看“README 声明”项目声称了什么；再看“验证状态”是否可信；<br>
+“需要检查的项”是验证这句话所依据的复现检查项；“缺口”是还没有满足的部分；<br>
+“支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
+<h2>声明列表</h2>
+<table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>需要检查的项</th><th>缺口</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table>
+<h2>状态说明</h2>
+<div class="guide"><strong>已验证</strong>：相关检查项全部通过，并且有证据支持。<br>
+<strong>部分验证</strong>：找到部分证据，但仍有缺口。<br>
+<strong>未验证</strong>：关键证据缺失，当前声明不能视为已验证。<br>
+<strong>不适用</strong>：相关检查项不适用于当前项目类型，证据只作为识别线索。</div>
+<a class="back" href="report.html">返回完整报告</a>
+</main></body></html>'''

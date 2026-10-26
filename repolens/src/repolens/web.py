@@ -211,7 +211,7 @@ def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -
             "autofix_ran": autofix_ran,
             "autofix": autofix_summary,
             "report_url": f"/reports/{run_id}/report.html",
-            "claims_url": f"/reports/{run_id}/claims.md",
+            "claims_url": f"/reports/{run_id}/claims.html",
             "score_url": f"/reports/{run_id}/score.json",
             "badge_url": f"/reports/{run_id}/badge.svg",
         }
