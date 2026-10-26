@@ -1,6 +1,6 @@
 import unittest
 
-from repolens.claims import _claim_criteria, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
+from repolens.claims import _claim_criteria, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
 from repolens.models import CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
@@ -68,6 +68,15 @@ class ClaimTests(unittest.TestCase):
         note = claim_verification_note({"status": "partially_verified", "gaps": ["LLM-03"]})
         self.assertIn("部分证据", note)
         self.assertIn("LLM-03", note)
+
+    def test_criterion_references_include_chinese_titles(self):
+        item = criterion("pass")
+        item.id = "LLM-01"
+        item.title = "是否记录模型/API 版本"
+        self.assertEqual(
+            format_criterion_references(["LLM-01"], [item]),
+            "LLM-01（是否记录模型/API 版本）",
+        )
 
 
 if __name__ == "__main__":

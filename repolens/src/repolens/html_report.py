@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from html import escape
 
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
 from .models import AuditResult
 
 
@@ -60,7 +60,7 @@ def render_html(result: AuditResult) -> str:
         for item in result.criteria
     )
     claim_rows = "".join(
-        f'<tr><td><a class="evidence-link" href="#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(", ".join(row.get("criteria", [])) or "-")}</td><td>{e(", ".join(row.get("gaps", [])) or "-")}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row))}</td></tr>'
+        f'<tr><td><a class="evidence-link" href="#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
@@ -161,7 +161,7 @@ small {{ color: #697386; }}
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
 <h2>Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。</p><div class="table-scroll"><table><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号</th><th>证据说明</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
 <h2>Evidence Appendix（证据附录）</h2><p class="meta">证据编号链接到对应文件、行号和原文摘录。</p><table><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table>
 <h2>Findings</h2><ul>{finding_items}</ul>
 <h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
@@ -203,10 +203,10 @@ def render_claims_html(result: AuditResult) -> str:
         f'<td><a href="report.html#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td>'
         f'<td>{e(row.get("claim", ""))}</td>'
         f'<td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td>'
-        f'<td>{e(", ".join(row.get("criteria", [])) or "-")}</td>'
-        f'<td>{e(", ".join(row.get("gaps", [])) or "-")}</td>'
+        f'<td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td>'
+        f'<td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td>'
         f'<td>{evidence_links(row.get("evidence_ids", []))}</td>'
-        f'<td class="note">{e(claim_verification_note(row))}</td>'
+        f'<td class="note">{e(claim_verification_note(row, result.criteria))}</td>'
         '</tr>'
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
@@ -257,7 +257,7 @@ a:hover {{ text-decoration:underline; }}
 <div class="cards">{cards}</div>
 <div class="guide"><strong>怎么看这张表：</strong><br>
 先看“README 声明”项目声称了什么；再看“验证状态”是否可信；<br>
-“检查依据”是验证这句话必须检查的规则；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
+“检查依据”是验证这句话必须检查的规则，编号后的括号是中文含义；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
 “支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
 <h2>声明列表</h2>
 <table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table>

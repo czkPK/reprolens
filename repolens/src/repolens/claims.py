@@ -106,10 +106,16 @@ def evidence_explanation(item: CriterionResult, evidence: list[Evidence]) -> str
     return prefix + "；".join(snippets) + suffix
 
 
-def claim_verification_note(row: dict) -> str:
+def format_criterion_references(ids: list[str], criteria: list[CriterionResult]) -> str:
+    by_id = {item.id: item.title for item in criteria}
+    labels = [f"{criterion_id}（{by_id[criterion_id]}）" if criterion_id in by_id else criterion_id for criterion_id in ids]
+    return "；".join(labels) if labels else "-"
+
+
+def claim_verification_note(row: dict, criteria: list[CriterionResult] | None = None) -> str:
     status = str(row.get("status", ""))
     gaps = row.get("gaps", [])
-    gap_text = "、".join(gaps)
+    gap_text = format_criterion_references(gaps, criteria) if criteria else "、".join(gaps)
     if status == "verified":
         return "相关检查项均通过，这条 README 声明有证据支持。"
     if status == "partially_verified":

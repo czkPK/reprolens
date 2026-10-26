@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
 from .html_report import render_claims_html, render_html
 from .models import AuditResult
 
@@ -103,21 +103,21 @@ def render_markdown(result: AuditResult) -> str:
             "",
             "## Claim-Evidence Matrix",
             "",
-            "**读表方法：** 每一行先看 README 说了什么，再看验证状态、需要检查的项、缺口和支持证据。",
+            "**读表方法：** 每一行先看 README 说了什么，再看验证状态、检查依据、缺口和支持证据。括号内是内部编号对应的中文含义。",
             "",
-            "| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |",
+            "| 声明编号 | README 声明 | 验证状态 | 检查依据（需要检查的项） | 还缺什么（缺口） | 支持证据 | 验证说明 |",
             "|---|---|---|---|---|---|---|",
         ]
     )
     if not claim_rows:
         lines.append("| - | 未抽取到 README 声明 | 不适用 | - | - | - | 未发现可验证声明。 |")
     for row in claim_rows:
-        criteria = ", ".join(row.get("criteria", [])) or "-"
-        gaps = ", ".join(row.get("gaps", [])) or "-"
+        criteria = format_criterion_references(row.get("criteria", []), result.criteria)
+        gaps = format_criterion_references(row.get("gaps", []), result.criteria)
         evidence = ", ".join(row.get("evidence_ids", [])) or "-"
         status = CLAIM_STATUS_LABELS.get(row.get("status", ""), str(row.get("status", "")))
         lines.append(
-            f"| {_md(row.get('claim_id', '-'))} | {_md(row.get('claim', ''))} | {status} | {_md(criteria)} | {_md(gaps)} | {_md(evidence)} | {_md(claim_verification_note(row))} |"
+            f"| {_md(row.get('claim_id', '-'))} | {_md(row.get('claim', ''))} | {status} | {_md(criteria)} | {_md(gaps)} | {_md(evidence)} | {_md(claim_verification_note(row, result.criteria))} |"
         )
 
     lines.extend(["", "## Findings", ""])
@@ -200,7 +200,7 @@ def render_claims_markdown(result: AuditResult) -> str:
         "",
         "## Matrix",
         "",
-        "| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |",
+        "| 声明编号 | README 声明 | 验证状态 | 检查依据（需要检查的项） | 还缺什么（缺口） | 支持证据 | 验证说明 |",
         "|---|---|---|---|---|---|---|",
     ]
     if not rows:
@@ -212,10 +212,10 @@ def render_claims_markdown(result: AuditResult) -> str:
                 claim_id=_md(row.get("claim_id", "-")),
                 claim=_md(row.get("claim", "")),
                 status=status,
-                criteria=_md(", ".join(row.get("criteria", [])) or "-"),
-                gaps=_md(", ".join(row.get("gaps", [])) or "-"),
+                criteria=_md(format_criterion_references(row.get("criteria", []), result.criteria)),
+                gaps=_md(format_criterion_references(row.get("gaps", []), result.criteria)),
                 evidence=_md(", ".join(row.get("evidence_ids", [])) or "-"),
-                note=_md(claim_verification_note(row)),
+                note=_md(claim_verification_note(row, result.criteria)),
             )
         )
     lines.extend(

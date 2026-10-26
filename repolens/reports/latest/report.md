@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `D:\CODEX\ReproLens\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-26T14:47:13.625377+00:00`
+- Generated at: `2026-10-26T14:52:20.180279+00:00`
 - Semantic claim mapping: **rules**
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
@@ -61,12 +61,12 @@
 
 ## Claim-Evidence Matrix
 
-**读表方法：** 每一行先看 README 说了什么，再看验证状态、需要检查的项、缺口和支持证据。
+**读表方法：** 每一行先看 README 说了什么，再看验证状态、检查依据、缺口和支持证据。括号内是内部编号对应的中文含义。
 
-| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |
+| 声明编号 | README 声明 | 验证状态 | 检查依据（需要检查的项） | 还缺什么（缺口） | 支持证据 | 验证说明 |
 |---|---|---|---|---|---|---|
-| E-013 | A small retrieval-augmented agent demo. | 已验证 | LLM-05 | - | E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
-| E-014 | This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/. | 已验证 | LLM-01, LLM-03, LLM-05, MODEL-02 | - | E-006, E-007, E-008, E-003, E-004, E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
+| E-013 | A small retrieval-augmented agent demo. | 已验证 | LLM-05（是否记录 RAG 索引/知识库版本） | - | E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
+| E-014 | This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/. | 已验证 | LLM-01（是否记录模型/API 版本）；LLM-03（是否记录采样参数）；LLM-05（是否记录 RAG 索引/知识库版本）；MODEL-02（是否提供模型卡或版本说明） | - | E-006, E-007, E-008, E-003, E-004, E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
 
 ## Findings
 
@@ -170,7 +170,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.066s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.057s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

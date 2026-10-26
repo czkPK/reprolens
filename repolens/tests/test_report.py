@@ -43,6 +43,8 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Top 3 Priority Actions", html)
         self.assertIn("证据说明", html)
         self.assertIn("是否存在依赖清单", html)
+        self.assertIn("LLM-01（是否记录模型/API 版本）", html)
+        self.assertIn("MODEL-02（是否提供模型卡或版本说明）", html)
         self.assertIn("已验证", render_claims_markdown(result))
         claims_html = render_claims_html(result)
         self.assertIn("声明验证矩阵", claims_html)
