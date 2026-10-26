@@ -137,6 +137,14 @@ tr:target {{ background: #fff8dc; }}
 .table-scroll {{ overflow-x: auto; }}
 .evidence-explanation {{ min-width: 300px; color: #526175; line-height: 1.55; }}
 .table-help {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
+.claim-table {{ table-layout: fixed; min-width: 1180px; }}
+.claim-table th:nth-child(1), .claim-table td:nth-child(1) {{ width: 92px; white-space: nowrap; }}
+.claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 31%; }}
+.claim-table th:nth-child(3), .claim-table td:nth-child(3) {{ width: 98px; }}
+.claim-table th:nth-child(4), .claim-table td:nth-child(4) {{ width: 165px; }}
+.claim-table th:nth-child(5), .claim-table td:nth-child(5) {{ width: 105px; }}
+.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width: 180px; }}
+.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width: 270px; }}
 ul {{ background: white; border-radius: 12px; padding: 18px 24px 18px 42px; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 .priority {{ background: linear-gradient(135deg,#eef3fb,#f8faff); border: 1px solid #dbe4f0; border-radius: 12px; padding: 18px 22px; }}
 .priority li {{ margin: 10px 0; }}
@@ -153,7 +161,7 @@ small {{ color: #697386; }}
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
 <h2>Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。</p><div class="table-scroll"><table><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号</th><th>证据说明</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2>Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、需要检查的项、缺口和支持证据。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>需要检查的项</th><th>缺口</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
 <h2>Evidence Appendix（证据附录）</h2><p class="meta">证据编号链接到对应文件、行号和原文摘录。</p><table><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table>
 <h2>Findings</h2><ul>{finding_items}</ul>
 <h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
@@ -220,7 +228,7 @@ h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
 .label,.sub {{ color:#64748b; font-size:13px; }}
 .value {{ color:#2457d6; font-size:28px; font-weight:800; margin:5px 0; }}
 .guide {{ background:#eef3fb; border:1px solid #dbe4f0; border-radius:14px; padding:16px 20px; line-height:1.75; }}
-table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); }}
+table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1100px; }}
 th,td {{ padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; }}
 th {{ background:#eaf0fa; color:#40506a; }}
 .status {{ display:inline-block; border-radius:999px; padding:4px 9px; font-weight:700; white-space:nowrap; }}
@@ -230,6 +238,13 @@ th {{ background:#eaf0fa; color:#40506a; }}
 .status.not_applicable {{ background:#edf0f4; color:#697386; }}
 .note {{ min-width:260px; color:#526175; }}
 td:first-child {{ white-space:nowrap; }}
+th:nth-child(1), td:nth-child(1) {{ width:92px; }}
+th:nth-child(2), td:nth-child(2) {{ width:31%; }}
+th:nth-child(3), td:nth-child(3) {{ width:98px; }}
+th:nth-child(4), td:nth-child(4) {{ width:165px; }}
+th:nth-child(5), td:nth-child(5) {{ width:105px; }}
+th:nth-child(6), td:nth-child(6) {{ width:180px; }}
+th:nth-child(7), td:nth-child(7) {{ width:270px; }}
 code {{ background:#f1f4f9; border-radius:4px; padding:2px 5px; word-break:break-all; }}
 a {{ color:#2457d6; text-decoration:none; }}
 a:hover {{ text-decoration:underline; }}
@@ -242,10 +257,10 @@ a:hover {{ text-decoration:underline; }}
 <div class="cards">{cards}</div>
 <div class="guide"><strong>怎么看这张表：</strong><br>
 先看“README 声明”项目声称了什么；再看“验证状态”是否可信；<br>
-“需要检查的项”是验证这句话所依据的复现检查项；“缺口”是还没有满足的部分；<br>
+“检查依据”是验证这句话必须检查的规则；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
 “支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
 <h2>声明列表</h2>
-<table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>需要检查的项</th><th>缺口</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table>
+<table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table>
 <h2>状态说明</h2>
 <div class="guide"><strong>已验证</strong>：相关检查项全部通过，并且有证据支持。<br>
 <strong>部分验证</strong>：找到部分证据，但仍有缺口。<br>
