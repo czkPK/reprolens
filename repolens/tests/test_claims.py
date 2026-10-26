@@ -1,7 +1,7 @@
 import unittest
 
-from repolens.claims import _claim_criteria, claim_status, criterion_confidence, evidence_coverage
-from repolens.models import CriterionResult
+from repolens.claims import _claim_criteria, claim_status, criterion_confidence, evidence_coverage, evidence_explanation
+from repolens.models import CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
 
@@ -50,6 +50,19 @@ class ClaimTests(unittest.TestCase):
     def test_claim_cleaner_removes_markdown_and_html_noise(self):
         claim = _clean_claim_line('<a href="https://example.com"><strong>See the [benchmark guide](https://example.com)</strong></a>')
         self.assertEqual(claim, "See the benchmark guide")
+
+    def test_evidence_explanation_contains_location_and_excerpt(self):
+        item = criterion("pass", ["E-1"])
+        evidence = [Evidence("E-1", "dependency-manifest", "requirements.txt", 1, "openai>=1.0")]
+        explanation = evidence_explanation(item, evidence)
+        self.assertIn("requirements.txt:1", explanation)
+        self.assertIn("openai>=1.0", explanation)
+        self.assertTrue(explanation.startswith("支持证据"))
+
+    def test_not_applicable_explanation_does_not_claim_evidence_support(self):
+        item = criterion("not_applicable", ["E-1"], applicable=False)
+        evidence = [Evidence("E-1", "readme", "README.md", 1, "demo")]
+        self.assertIn("不参与评分", evidence_explanation(item, evidence))
 
 
 if __name__ == "__main__":

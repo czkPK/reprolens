@@ -32,56 +32,56 @@
     "kind": "instruction",
     "path": "README.md",
     "line": 8,
-    "excerpt": "pip install"
+    "excerpt": "pip install -r requirements.txt"
   },
   {
     "id": "E-006",
     "kind": "llm-provider",
     "path": "README.md",
     "line": 17,
-    "excerpt": "OpenAI"
+    "excerpt": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under `data/`."
   },
   {
     "id": "E-007",
     "kind": "model",
     "path": "configs/app.yaml",
     "line": 3,
-    "excerpt": "gpt-4"
+    "excerpt": "name: gpt-4o-mini"
   },
   {
     "id": "E-008",
     "kind": "llm-config",
     "path": "configs/app.yaml",
     "line": 4,
-    "excerpt": "temperature"
+    "excerpt": "temperature: 0.2"
   },
   {
     "id": "E-009",
     "kind": "rag",
     "path": "README.md",
     "line": 1,
-    "excerpt": "RAG"
+    "excerpt": "# Demo LLM RAG App"
   },
   {
     "id": "E-010",
     "kind": "rag",
     "path": "configs/app.yaml",
     "line": 8,
-    "excerpt": "vector_store"
+    "excerpt": "vector_store: faiss"
   },
   {
     "id": "E-011",
     "kind": "agent",
     "path": "README.md",
     "line": 3,
-    "excerpt": "agent"
+    "excerpt": "A small retrieval-augmented agent demo."
   },
   {
     "id": "E-012",
     "kind": "rag",
     "path": "configs/app.yaml",
     "line": 9,
-    "excerpt": "embedding_model"
+    "excerpt": "embedding_model: text-embedding-3-small"
   },
   {
     "id": "E-013",
@@ -92,13 +92,6 @@
   },
   {
     "id": "E-014",
-    "kind": "claim",
-    "path": "README.md",
-    "line": 8,
-    "excerpt": "pip install -r requirements.txt"
-  },
-  {
-    "id": "E-015",
     "kind": "claim",
     "path": "README.md",
     "line": 17,

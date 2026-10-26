@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use ReproLens in research or teaching, please cite this repository."
+title: "ReproLens: Evidence-Constrained Reproduction Readiness Auditing for Open-Source AI Repositories"
+type: software
+version: 0.1.0
+date-released: 2026-10-26
+url: https://github.com/czkPK/reprolens
+license: MIT
+authors:
+  - name: "ReproLens contributors"
+keywords:
+  - reproducible research
+  - open-source AI
+  - RAG
+  - agents
+  - evidence tracing
+  - software audit

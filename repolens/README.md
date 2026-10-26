@@ -4,6 +4,16 @@ Evidence-constrained reproduction readiness auditor for open-source LLM / RAG / 
 
 ## Simplest way to use it
 
+### Analyze any public GitHub repository in the browser
+
+1. Double-click `Start-ReproLens-Web.cmd`.
+2. Paste a URL such as `https://github.com/huggingface/smolagents`.
+3. Wait for the report to open.
+
+The web runner pins the report to a commit SHA, uses a shallow clone with a GitHub archive fallback, and does not execute repository code.
+
+### Analyze a local repository
+
 1. Double-click `Start-ReproLens.cmd`.
 2. Select the repository folder.
 3. Wait for the audit to finish.
@@ -34,12 +44,13 @@ Given a local repository, ReproLens:
 $env:PYTHONPATH = "src"
 python -m unittest discover -s tests -v
 python -m repolens audit examples/demo-llm-app --out-dir reports/demo-llm-app --autofix --explain
+python -m repolens.web --open
 python -m repolens.benchmark
 ```
 
-Outputs: `report.md`, `report.html`, `claims.md`, `claims.json`, `score.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
+Outputs: `report.md`, `report.html`, `claims.md`, `claims.json`, `ai-review.json`, `score.json`, `badge.svg`, `badge.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
 
-Optional LLM environment variables: `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, `REPROLENS_LLM_MODEL`.
+Optional LLM environment variables: `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, `REPROLENS_LLM_MODEL`. With these variables, `--ai-review` performs evidence-constrained semantic claim mapping. Without them, the tool falls back to deterministic rules.
 
 ## AutoFix
 
@@ -66,7 +77,7 @@ The repository list is in `benchmark/repos.json`; labeled expectations are in `b
 
 ## GitHub Action
 
-See `.github/workflows/repolens.yml`. It audits the repository and uploads the report as an artifact.
+The repository root contains a reusable composite Action (`action.yml`). See `docs/GitHub-Action使用指南.md` for a workflow example. It audits the current repository, writes a concise Job Summary, outputs the score and badge path, and can upload the generated report as an artifact.
 
 ## Current MVP
 
@@ -74,7 +85,9 @@ See `.github/workflows/repolens.yml`. It audits the repository and uploads the r
 - static evidence extraction
 - applicability-aware criteria
 - README claim-evidence matrix with gap tracing
+- optional LLM-assisted semantic claim mapping with evidence-ID validation
 - evidence confidence and coverage metrics
+- web analysis for any public GitHub repository, pinned to commit SHA
 - five general dimensions plus LLM-specific checks
 - safe syntax probe + optional execution probes
 - HTML and Markdown reports

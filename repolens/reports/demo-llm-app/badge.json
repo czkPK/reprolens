@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "label": "ReproLens",
+  "message": "49.1/100 At Risk",
+  "color": "#b66a06",
+  "score": 49.1,
+  "readiness": "At Risk",
+  "evidence_coverage": {
+    "covered": 16,
+    "total": 25,
+    "percent": 64.0
+  },
+  "source_url": null,
+  "source_commit": null,
+  "generated_at": "2026-10-26T13:50:53.788732+00:00"
+}

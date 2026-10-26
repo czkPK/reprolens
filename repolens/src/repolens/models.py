@@ -81,6 +81,9 @@ class AuditResult:
     probes: list[ProbeResult] = field(default_factory=list)
     claim_matrix: list[dict[str, Any]] = field(default_factory=list)
     evidence_coverage: dict[str, Any] = field(default_factory=dict)
+    source_url: str | None = None
+    source_commit: str | None = None
+    ai_metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

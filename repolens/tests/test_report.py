@@ -38,6 +38,11 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Execution Evidence", html)
         self.assertIn("Claim-Evidence Matrix", html)
         self.assertIn("Evidence coverage", html)
+        self.assertIn("Evidence Appendix", html)
+        self.assertIn('href="#evidence-E-', html)
+        self.assertIn("Top 3 Priority Actions", html)
+        self.assertIn("Evidence Explanation", html)
+        self.assertIn("是否存在依赖清单", html)
         self.assertIn("VERIFIED", render_claims_markdown(result))
 
     def test_write_outputs_creates_claim_files(self):
@@ -63,6 +68,9 @@ class ReportTests(unittest.TestCase):
             write_outputs(result, Path(tmp))
             self.assertTrue((Path(tmp) / "claims.json").exists())
             self.assertTrue((Path(tmp) / "claims.md").exists())
+            self.assertTrue((Path(tmp) / "badge.svg").exists())
+            self.assertTrue((Path(tmp) / "badge.json").exists())
+            self.assertIn("ReproLens", (Path(tmp) / "badge.svg").read_text(encoding="utf-8"))
             self.assertIn("Claim-Evidence Matrix", (Path(tmp) / "report.md").read_text(encoding="utf-8"))
 
 

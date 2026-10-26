@@ -1,6 +1,6 @@
 {
   "repo_path": "D:\\CODEX\\ReproLens\\repolens\\examples\\demo-llm-app",
-  "generated_at": "2026-10-25T13:45:01.788795+00:00",
+  "generated_at": "2026-10-26T13:50:53.788732+00:00",
   "total_score": 49.1,
   "readiness": "At Risk",
   "dimensions": [
@@ -45,7 +45,7 @@
     {
       "id": "ENV-01",
       "dimension": "环境可复现",
-      "title": "存在依赖清单",
+      "title": "是否存在依赖清单",
       "status": "pass",
       "points": 10,
       "max_points": 10,
@@ -58,7 +58,7 @@
     {
       "id": "ENV-02",
       "dimension": "环境可复现",
-      "title": "依赖版本锁定或容器化",
+      "title": "是否锁定依赖版本或提供容器化配置",
       "status": "partial",
       "points": 4.0,
       "max_points": 8,
@@ -71,7 +71,7 @@
     {
       "id": "ENV-03",
       "dimension": "环境可复现",
-      "title": "提供安装步骤",
+      "title": "是否提供安装步骤",
       "status": "pass",
       "points": 7,
       "max_points": 7,
@@ -84,7 +84,7 @@
     {
       "id": "DATA-01",
       "dimension": "数据可复现",
-      "title": "说明数据来源和获取方式",
+      "title": "是否说明数据来源和获取方式",
       "status": "missing",
       "points": 0.0,
       "max_points": 8,
@@ -95,7 +95,7 @@
     {
       "id": "DATA-02",
       "dimension": "数据可复现",
-      "title": "提供数据下载或预处理脚本",
+      "title": "是否提供数据下载或预处理脚本",
       "status": "missing",
       "points": 0.0,
       "max_points": 8,
@@ -106,7 +106,7 @@
     {
       "id": "DATA-03",
       "dimension": "数据可复现",
-      "title": "提供数据集卡或数据许可说明",
+      "title": "是否提供数据集卡或数据许可说明",
       "status": "missing",
       "points": 0.0,
       "max_points": 6,
@@ -117,7 +117,7 @@
     {
       "id": "MODEL-01",
       "dimension": "模型可复现",
-      "title": "提供模型权重、API 或获取方式",
+      "title": "是否提供模型权重、API 或获取方式",
       "status": "pass",
       "points": 8,
       "max_points": 8,
@@ -131,7 +131,7 @@
     {
       "id": "MODEL-02",
       "dimension": "模型可复现",
-      "title": "提供模型卡或版本说明",
+      "title": "是否提供模型卡或版本说明",
       "status": "pass",
       "points": 8,
       "max_points": 8,
@@ -144,7 +144,7 @@
     {
       "id": "MODEL-03",
       "dimension": "模型可复现",
-      "title": "说明模型许可和来源",
+      "title": "是否说明模型许可和来源",
       "status": "missing",
       "points": 0.0,
       "max_points": 6,
@@ -155,7 +155,7 @@
     {
       "id": "EXP-01",
       "dimension": "实验可复现",
-      "title": "提供训练或主运行脚本",
+      "title": "是否提供训练或主运行脚本",
       "status": "missing",
       "points": 0.0,
       "max_points": 7,
@@ -166,7 +166,7 @@
     {
       "id": "EXP-02",
       "dimension": "实验可复现",
-      "title": "提供评测脚本或评测命令",
+      "title": "是否提供评测脚本或评测命令",
       "status": "missing",
       "points": 0.0,
       "max_points": 8,
@@ -177,7 +177,7 @@
     {
       "id": "EXP-03",
       "dimension": "实验可复现",
-      "title": "设置并说明随机种子",
+      "title": "是否设置并说明随机种子",
       "status": "partial",
       "points": 3.0,
       "max_points": 6,
@@ -190,7 +190,7 @@
     {
       "id": "EXP-04",
       "dimension": "实验可复现",
-      "title": "说明硬件或 API 环境要求",
+      "title": "是否说明硬件或 API 环境要求",
       "status": "pass",
       "points": 5,
       "max_points": 5,
@@ -203,7 +203,7 @@
     {
       "id": "EXP-05",
       "dimension": "实验可复现",
-      "title": "给出预期结果和指标",
+      "title": "是否给出预期结果和指标",
       "status": "missing",
       "points": 0.0,
       "max_points": 7,
@@ -214,7 +214,7 @@
     {
       "id": "DOC-01",
       "dimension": "文档可复现",
-      "title": "存在 README",
+      "title": "是否存在 README",
       "status": "pass",
       "points": 5,
       "max_points": 5,
@@ -227,7 +227,7 @@
     {
       "id": "DOC-02",
       "dimension": "文档可复现",
-      "title": "提供快速开始和运行示例",
+      "title": "是否提供快速开始和运行示例",
       "status": "partial",
       "points": 3.0,
       "max_points": 6,
@@ -240,7 +240,7 @@
     {
       "id": "DOC-03",
       "dimension": "文档可复现",
-      "title": "提供测试、CI 或一键复现脚本",
+      "title": "是否提供测试、CI 或一键复现脚本",
       "status": "missing",
       "points": 0.0,
       "max_points": 6,
@@ -251,7 +251,7 @@
     {
       "id": "LLM-01",
       "dimension": "LLM 特有风险",
-      "title": "记录模型/API 版本",
+      "title": "是否记录模型/API 版本",
       "status": "pass",
       "points": 6,
       "max_points": 6,
@@ -265,7 +265,7 @@
     {
       "id": "LLM-02",
       "dimension": "LLM 特有风险",
-      "title": "prompt/template 有版本记录",
+      "title": "是否对 prompt/template 进行版本记录",
       "status": "partial",
       "points": 3.0,
       "max_points": 6,
@@ -278,7 +278,7 @@
     {
       "id": "LLM-03",
       "dimension": "LLM 特有风险",
-      "title": "记录采样参数",
+      "title": "是否记录采样参数",
       "status": "pass",
       "points": 5,
       "max_points": 5,
@@ -293,7 +293,7 @@
     {
       "id": "LLM-04",
       "dimension": "LLM 特有风险",
-      "title": "记录 tokenizer/上下文窗口",
+      "title": "是否记录 tokenizer/上下文窗口",
       "status": "partial",
       "points": 2.0,
       "max_points": 4,
@@ -306,7 +306,7 @@
     {
       "id": "LLM-05",
       "dimension": "LLM 特有风险",
-      "title": "RAG 索引/知识库有版本记录",
+      "title": "是否记录 RAG 索引/知识库版本",
       "status": "pass",
       "points": 5,
       "max_points": 5,
@@ -321,7 +321,7 @@
     {
       "id": "LLM-06",
       "dimension": "LLM 特有风险",
-      "title": "Agent 工具调用轨迹可追溯",
+      "title": "是否记录 Agent 工具调用轨迹",
       "status": "partial",
       "points": 2.5,
       "max_points": 5,
@@ -334,7 +334,7 @@
     {
       "id": "LLM-07",
       "dimension": "LLM 特有风险",
-      "title": "说明评测集、数据划分和污染风险",
+      "title": "是否说明评测集、数据划分和污染风险",
       "status": "missing",
       "points": 0.0,
       "max_points": 6,
@@ -345,7 +345,7 @@
     {
       "id": "LLM-08",
       "dimension": "LLM 特有风险",
-      "title": "说明推理成本或延迟",
+      "title": "是否说明推理成本或延迟",
       "status": "partial",
       "points": 2.0,
       "max_points": 4,
@@ -361,7 +361,7 @@
       "id": "F-001",
       "severity": "medium",
       "criterion_id": "ENV-02",
-      "title": "依赖版本锁定或容器化",
+      "title": "是否锁定依赖版本或提供容器化配置",
       "message": "有依赖清单，但没有锁定文件或容器配置。",
       "evidence_ids": [
         "E-002"
@@ -371,7 +371,7 @@
       "id": "F-002",
       "severity": "high",
       "criterion_id": "DATA-01",
-      "title": "说明数据来源和获取方式",
+      "title": "是否说明数据来源和获取方式",
       "message": "没有数据来源说明。",
       "evidence_ids": []
     },
@@ -379,7 +379,7 @@
       "id": "F-003",
       "severity": "high",
       "criterion_id": "DATA-02",
-      "title": "提供数据下载或预处理脚本",
+      "title": "是否提供数据下载或预处理脚本",
       "message": "没有数据下载或预处理脚本。",
       "evidence_ids": []
     },
@@ -387,7 +387,7 @@
       "id": "F-004",
       "severity": "medium",
       "criterion_id": "DATA-03",
-      "title": "提供数据集卡或数据许可说明",
+      "title": "是否提供数据集卡或数据许可说明",
       "message": "没有数据集卡或明确的数据许可说明。",
       "evidence_ids": []
     },
@@ -395,7 +395,7 @@
       "id": "F-005",
       "severity": "medium",
       "criterion_id": "MODEL-03",
-      "title": "说明模型许可和来源",
+      "title": "是否说明模型许可和来源",
       "message": "没有模型许可或来源说明。",
       "evidence_ids": []
     },
@@ -403,7 +403,7 @@
       "id": "F-006",
       "severity": "high",
       "criterion_id": "EXP-01",
-      "title": "提供训练或主运行脚本",
+      "title": "是否提供训练或主运行脚本",
       "message": "没有训练脚本或主运行命令。",
       "evidence_ids": []
     },
@@ -411,7 +411,7 @@
       "id": "F-007",
       "severity": "high",
       "criterion_id": "EXP-02",
-      "title": "提供评测脚本或评测命令",
+      "title": "是否提供评测脚本或评测命令",
       "message": "没有评测脚本或评测命令。",
       "evidence_ids": []
     },
@@ -419,7 +419,7 @@
       "id": "F-008",
       "severity": "medium",
       "criterion_id": "EXP-03",
-      "title": "设置并说明随机种子",
+      "title": "是否设置并说明随机种子",
       "message": "有采样参数，但没有明确随机种子或确定性设置。",
       "evidence_ids": [
         "E-008"
@@ -429,7 +429,7 @@
       "id": "F-009",
       "severity": "high",
       "criterion_id": "EXP-05",
-      "title": "给出预期结果和指标",
+      "title": "是否给出预期结果和指标",
       "message": "没有预期结果或指标。",
       "evidence_ids": []
     },
@@ -437,7 +437,7 @@
       "id": "F-010",
       "severity": "medium",
       "criterion_id": "DOC-02",
-      "title": "提供快速开始和运行示例",
+      "title": "是否提供快速开始和运行示例",
       "message": "只有安装或运行说明中的一项。",
       "evidence_ids": [
         "E-005"
@@ -447,7 +447,7 @@
       "id": "F-011",
       "severity": "medium",
       "criterion_id": "DOC-03",
-      "title": "提供测试、CI 或一键复现脚本",
+      "title": "是否提供测试、CI 或一键复现脚本",
       "message": "没有测试、CI 或一键复现脚本。",
       "evidence_ids": []
     },
@@ -455,7 +455,7 @@
       "id": "F-012",
       "severity": "medium",
       "criterion_id": "LLM-02",
-      "title": "prompt/template 有版本记录",
+      "title": "是否对 prompt/template 进行版本记录",
       "message": "有 prompt 文件或描述，但没有可核验的版本信息。",
       "evidence_ids": [
         "E-004"
@@ -465,7 +465,7 @@
       "id": "F-013",
       "severity": "medium",
       "criterion_id": "LLM-04",
-      "title": "记录 tokenizer/上下文窗口",
+      "title": "是否记录 tokenizer/上下文窗口",
       "message": "有相关配置，但 tokenizer/上下文窗口仍需补充。",
       "evidence_ids": [
         "E-008"
@@ -475,7 +475,7 @@
       "id": "F-014",
       "severity": "medium",
       "criterion_id": "LLM-06",
-      "title": "Agent 工具调用轨迹可追溯",
+      "title": "是否记录 Agent 工具调用轨迹",
       "message": "检测到 Agent 项目，但完整调用轨迹仍需补充。",
       "evidence_ids": [
         "E-011"
@@ -485,7 +485,7 @@
       "id": "F-015",
       "severity": "medium",
       "criterion_id": "LLM-07",
-      "title": "说明评测集、数据划分和污染风险",
+      "title": "是否说明评测集、数据划分和污染风险",
       "message": "没有说明评测集、数据划分或污染风险。",
       "evidence_ids": []
     },
@@ -493,7 +493,7 @@
       "id": "F-016",
       "severity": "medium",
       "criterion_id": "LLM-08",
-      "title": "说明推理成本或延迟",
+      "title": "是否说明推理成本或延迟",
       "message": "有成本/硬件线索，但仍需量化数据。",
       "evidence_ids": [
         "E-006"
@@ -694,56 +694,56 @@
       "kind": "instruction",
       "path": "README.md",
       "line": 8,
-      "excerpt": "pip install"
+      "excerpt": "pip install -r requirements.txt"
     },
     {
       "id": "E-006",
       "kind": "llm-provider",
       "path": "README.md",
       "line": 17,
-      "excerpt": "OpenAI"
+      "excerpt": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under `data/`."
     },
     {
       "id": "E-007",
       "kind": "model",
       "path": "configs/app.yaml",
       "line": 3,
-      "excerpt": "gpt-4"
+      "excerpt": "name: gpt-4o-mini"
     },
     {
       "id": "E-008",
       "kind": "llm-config",
       "path": "configs/app.yaml",
       "line": 4,
-      "excerpt": "temperature"
+      "excerpt": "temperature: 0.2"
     },
     {
       "id": "E-009",
       "kind": "rag",
       "path": "README.md",
       "line": 1,
-      "excerpt": "RAG"
+      "excerpt": "# Demo LLM RAG App"
     },
     {
       "id": "E-010",
       "kind": "rag",
       "path": "configs/app.yaml",
       "line": 8,
-      "excerpt": "vector_store"
+      "excerpt": "vector_store: faiss"
     },
     {
       "id": "E-011",
       "kind": "agent",
       "path": "README.md",
       "line": 3,
-      "excerpt": "agent"
+      "excerpt": "A small retrieval-augmented agent demo."
     },
     {
       "id": "E-012",
       "kind": "rag",
       "path": "configs/app.yaml",
       "line": 9,
-      "excerpt": "embedding_model"
+      "excerpt": "embedding_model: text-embedding-3-small"
     },
     {
       "id": "E-013",
@@ -754,13 +754,6 @@
     },
     {
       "id": "E-014",
-      "kind": "claim",
-      "path": "README.md",
-      "line": 8,
-      "excerpt": "pip install -r requirements.txt"
-    },
-    {
-      "id": "E-015",
       "kind": "claim",
       "path": "README.md",
       "line": 17,
@@ -796,23 +789,6 @@
     },
     {
       "claim_id": "E-014",
-      "claim": "pip install -r requirements.txt",
-      "criteria": [
-        "DOC-02",
-        "ENV-01",
-        "ENV-03"
-      ],
-      "status": "partially_verified",
-      "gaps": [
-        "DOC-02"
-      ],
-      "evidence_ids": [
-        "E-005",
-        "E-002"
-      ]
-    },
-    {
-      "claim_id": "E-015",
       "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
       "criteria": [
         "LLM-01",
@@ -838,5 +814,12 @@
     "covered": 16,
     "total": 25,
     "percent": 64.0
+  },
+  "source_url": null,
+  "source_commit": null,
+  "ai_metadata": {
+    "mode": "rules",
+    "enabled": false,
+    "reason": "AI review not requested"
   }
 }

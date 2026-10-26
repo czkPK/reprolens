@@ -1,0 +1,139 @@
+[
+  {
+    "claim_id": "E-022",
+    "claim": "🧑‍💻 First-class support for Code Agents. Our CodeAgent writes its actions in code (as opposed to \"agents being used to write code\"). To make it secure, we support executing in sandboxed environments via Blaxel, E2B, Modal, or Docker.",
+    "criteria": [
+      "DOC-02",
+      "ENV-01",
+      "ENV-03"
+    ],
+    "status": "verified",
+    "gaps": [],
+    "evidence_ids": [
+      "E-008",
+      "E-009",
+      "E-002"
+    ]
+  },
+  {
+    "claim_id": "E-023",
+    "claim": "🌐 Model-agnostic: smolagents supports any LLM. It can be a local transformers or ollama model, one of many providers on the Hub, or any model from OpenAI, Anthropic and many others via our LiteLLM integration.",
+    "criteria": [
+      "LLM-01",
+      "LLM-03",
+      "MODEL-02"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "LLM-03"
+    ],
+    "evidence_ids": [
+      "E-017",
+      "E-013",
+      "E-018",
+      "E-007"
+    ]
+  },
+  {
+    "claim_id": "E-024",
+    "claim": "OpenAI-compatible servers: Together AI",
+    "criteria": [
+      "LLM-01",
+      "LLM-03",
+      "MODEL-02"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "LLM-03"
+    ],
+    "evidence_ids": [
+      "E-017",
+      "E-013",
+      "E-018",
+      "E-007"
+    ]
+  },
+  {
+    "claim_id": "E-025",
+    "claim": "OpenAI-compatible servers: OpenRouter",
+    "criteria": [
+      "LLM-01",
+      "LLM-03",
+      "MODEL-02"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "LLM-03"
+    ],
+    "evidence_ids": [
+      "E-017",
+      "E-013",
+      "E-018",
+      "E-007"
+    ]
+  },
+  {
+    "claim_id": "E-026",
+    "claim": "Actions are now Python code snippets. Hence, tool calls will be performed as Python function calls. For instance, here is how the agent can perform web search over several websites in one single action:",
+    "criteria": [
+      "LLM-06"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "LLM-06"
+    ],
+    "evidence_ids": [
+      "E-020"
+    ]
+  },
+  {
+    "claim_id": "E-027",
+    "claim": "Docker — self-hosted container isolation",
+    "criteria": [
+      "DOC-02",
+      "ENV-01",
+      "ENV-03"
+    ],
+    "status": "verified",
+    "gaps": [],
+    "evidence_ids": [
+      "E-008",
+      "E-009",
+      "E-002"
+    ]
+  },
+  {
+    "claim_id": "E-028",
+    "claim": "Still, we implement several types of agents: CodeAgent writes its actions as Python code snippets, and the more classic ToolCallingAgent leverages built-in tool calling methods. We also have multi-agent hierarchies, import from tool collect",
+    "criteria": [
+      "LLM-05",
+      "LLM-06"
+    ],
+    "status": "partially_verified",
+    "gaps": [
+      "LLM-06"
+    ],
+    "evidence_ids": [
+      "E-019",
+      "E-020"
+    ]
+  },
+  {
+    "claim_id": "E-029",
+    "claim": "By the way, why use a framework at all? Well, because a big part of this stuff is non-trivial. For instance, the code agent has to keep a consistent format for code throughout its system prompt, its parser, the execution. So our framework h",
+    "criteria": [
+      "DOC-02",
+      "DOC-03",
+      "EXP-02"
+    ],
+    "status": "verified",
+    "gaps": [],
+    "evidence_ids": [
+      "E-008",
+      "E-009",
+      "E-005",
+      "E-004",
+      "E-006"
+    ]
+  }
+]

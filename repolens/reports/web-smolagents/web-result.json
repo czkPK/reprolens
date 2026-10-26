@@ -1,0 +1,75 @@
+{
+  "run_id": "20261026-131825-48f8aa92",
+  "source_url": "https://github.com/huggingface/smolagents",
+  "source_commit": "96f33faaf028479119ec8d34507b47694cf14e34",
+  "score": 78.8,
+  "readiness": "Partially Ready",
+  "files_scanned": 185,
+  "claims": 8,
+  "evidence_coverage": {
+    "covered": 15,
+    "total": 16,
+    "percent": 93.8
+  },
+  "ai_mode": "rules-fallback",
+  "autofix_ran": true,
+  "autofix": {
+    "generated_at": "2026-10-26T13:19:45.241680+00:00",
+    "before_score": 78.8,
+    "after_score": 85.9,
+    "delta": 7.1,
+    "accepted": true,
+    "generated_files": [
+      {
+        "path": "Dockerfile",
+        "reason": "ENV-02: 增加容器化入口，固定 Python 与依赖安装方式。"
+      },
+      {
+        "path": "prompts/prompt_metadata.json",
+        "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+      }
+    ],
+    "rejected_files": [
+      {
+        "path": "data/download.sh",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "dataset_card.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "model_card.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "configs/llm_metadata.yaml",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "eval/README.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      }
+    ],
+    "fixed_criteria": [
+      "ENV-02",
+      "LLM-02"
+    ],
+    "changed_criteria": [
+      "ENV-02",
+      "LLM-02"
+    ],
+    "remaining_gaps": [
+      "LLM-03",
+      "LLM-04",
+      "LLM-06",
+      "LLM-07",
+      "LLM-08"
+    ],
+    "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+  },
+  "report_url": "/reports/20261026-131825-48f8aa92/report.html",
+  "claims_url": "/reports/20261026-131825-48f8aa92/claims.md",
+  "score_url": "/reports/20261026-131825-48f8aa92/score.json",
+  "badge_url": "/reports/20261026-131825-48f8aa92/badge.svg"
+}

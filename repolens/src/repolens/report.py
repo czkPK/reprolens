@@ -3,7 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .claims import build_claim_matrix, criterion_confidence, evidence_coverage
+from .badge import badge_payload, render_badge_svg
+from .claims import build_claim_matrix, criterion_confidence, evidence_coverage, evidence_explanation
 from .html_report import render_html
 from .models import AuditResult
 
@@ -57,22 +58,44 @@ def render_markdown(result: AuditResult) -> str:
         "| Dimension | Points | Max | Percent |",
         "|---|---:|---:|---:|",
     ]
+    if result.source_url:
+        source_lines = [f"- Source: [{result.source_url}]({result.source_url})"]
+        if result.source_commit:
+            source_lines.append(f"- Source commit: `{result.source_commit}`")
+        lines[4:4] = source_lines
+    if result.ai_metadata:
+        lines.insert(4, f"- Semantic claim mapping: **{result.ai_metadata.get('mode', 'rules')}**")
     for dim in result.dimensions:
         lines.append(f"| {dim.name} | {dim.points:.1f} | {dim.max_points:.1f} | {dim.percent:.1f}% |")
+
+    lines.extend(["", "## Top 3 Priority Actions", ""])
+    top_actions = sorted(result.remediations, key=lambda item: item.estimated_score_gain, reverse=True)[:3]
+    if not top_actions:
+        lines.append("No remediation actions generated.")
+    for index, item in enumerate(top_actions, 1):
+        lines.append(f"{index}. **{item.action}** — expected gain **+{item.estimated_score_gain:.1f}**; {item.rationale}")
 
     lines.extend(
         [
             "",
             "## Criteria",
             "",
-            "| ID | Dimension | Criterion | Status | Confidence | Points | Evidence |",
-            "|---|---|---|---|---|---:|---|",
+            "| ID | Dimension | Criterion | Status | Confidence | Points | Evidence | Evidence Explanation |",
+            "|---|---|---|---|---|---:|---|---|",
+        ]
+    )
+    lines.extend(
+        [
+            "",
+            "**读表说明：** PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。",
+            "",
         ]
     )
     for item in result.criteria:
         evidence = ", ".join(item.evidence_ids) if item.evidence_ids else "-"
+        explanation = evidence_explanation(item, result.evidence)
         lines.append(
-            f"| {item.id} | {item.dimension} | {item.title} | {STATUS_LABELS.get(item.status, item.status)} | {criterion_confidence(item).upper()} | {item.points:.1f}/{item.max_points:.1f} | {evidence} |"
+            f"| {item.id} | {item.dimension} | {item.title} | {STATUS_LABELS.get(item.status, item.status)} | {criterion_confidence(item).upper()} | {item.points:.1f}/{item.max_points:.1f} | {evidence} | {_md(explanation)} |"
         )
 
     lines.extend(
@@ -218,6 +241,13 @@ def write_outputs(result: AuditResult, out_dir: Path) -> None:
     (out_dir / "claims.md").write_text(render_claims_markdown(result), encoding="utf-8")
     (out_dir / "claims.json").write_text(
         json.dumps(claim_rows, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (out_dir / "ai-review.json").write_text(
+        json.dumps(result.ai_metadata, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    (out_dir / "badge.svg").write_text(render_badge_svg(result), encoding="utf-8")
+    (out_dir / "badge.json").write_text(
+        json.dumps(badge_payload(result), ensure_ascii=False, indent=2), encoding="utf-8"
     )
     (out_dir / "score.json").write_text(
         json.dumps(result.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8"

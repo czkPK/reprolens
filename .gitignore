@@ -4,3 +4,7 @@ __pycache__/
 .pytest_cache/
 tmp/
 **/autofix/staging/
+repolens/web-runs*/
+repolens/web-runs-test/
+repolens/web-runs-final*/
+*.wav

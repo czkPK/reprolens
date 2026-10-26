@@ -79,3 +79,28 @@ def evidence_coverage(criteria: list[CriterionResult]) -> tuple[int, int, float]
     covered = sum(1 for item in applicable if item.evidence_ids)
     total = len(applicable)
     return covered, total, round(covered / total * 100, 1) if total else 0.0
+
+
+def evidence_explanation(item: CriterionResult, evidence: list[Evidence]) -> str:
+    by_id = {entry.id: entry for entry in evidence}
+    if not item.applicable:
+        if item.evidence_ids:
+            return "该项不适用于当前项目类型；列出的证据只用于说明识别线索，不参与评分。"
+        return "该项不适用于当前项目类型，不需要提供证据。"
+    if not item.evidence_ids:
+        return "未找到可引用证据，因此该项不能判定为通过。"
+    snippets: list[str] = []
+    for evidence_id in item.evidence_ids:
+        entry = by_id.get(evidence_id)
+        if entry is None:
+            continue
+        location = f"{entry.path}:{entry.line}" if entry.line else entry.path
+        excerpt = entry.excerpt.replace("\n", " ").strip()
+        if len(excerpt) > 90:
+            excerpt = excerpt[:87] + "..."
+        snippets.append(f"{evidence_id}（{location}）：“{excerpt}”")
+    if not snippets:
+        return "证据编号存在，但未找到对应原文，需要人工复核。"
+    prefix = "支持证据：" if item.status == "pass" else "部分证据："
+    suffix = "。" if item.status == "pass" else "；现有证据不足以完全满足该项。"
+    return prefix + "；".join(snippets) + suffix

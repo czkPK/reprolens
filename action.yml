@@ -1,0 +1,90 @@
+name: ReproLens Audit
+description: Evidence-constrained reproduction readiness audit for open-source AI repositories.
+author: ReproLens contributors
+branding:
+  icon: search
+  color: blue
+inputs:
+  path:
+    description: Repository path to audit, relative to the GitHub workspace.
+    required: false
+    default: "."
+  out-dir:
+    description: Directory where the report artifacts will be written.
+    required: false
+    default: "repolens-report"
+  autofix:
+    description: Generate and re-test repair proposals in an isolated staging copy.
+    required: false
+    default: "false"
+  explain:
+    description: Generate an evidence-grounded explanation with offline fallback.
+    required: false
+    default: "true"
+outputs:
+  report-path:
+    description: Path to the generated HTML report.
+    value: ${{ steps.audit.outputs.report-path }}
+  score:
+    description: Overall reproduction readiness score.
+    value: ${{ steps.summary.outputs.score }}
+  badge-path:
+    description: Path to the generated SVG badge.
+    value: ${{ steps.summary.outputs.badge-path }}
+runs:
+  using: composite
+  steps:
+    - name: Install ReproLens
+      shell: bash
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install -e "${{ github.action_path }}/repolens"
+    - name: Run ReproLens audit
+      id: audit
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_OUT_DIR: ${{ inputs.out-dir }}
+        INPUT_AUTOFIX: ${{ inputs.autofix }}
+        INPUT_EXPLAIN: ${{ inputs.explain }}
+      run: |
+        set -euo pipefail
+        cd "$GITHUB_WORKSPACE"
+        args=(audit "$INPUT_PATH" --out-dir "$INPUT_OUT_DIR")
+        if [[ "$INPUT_AUTOFIX" == "true" ]]; then args+=(--autofix); fi
+        if [[ "$INPUT_EXPLAIN" == "true" ]]; then args+=(--explain); fi
+        repolens "${args[@]}"
+        echo "report-path=$INPUT_OUT_DIR/report.html" >> "$GITHUB_OUTPUT"
+    - name: Publish job summary
+      id: summary
+      shell: bash
+      env:
+        INPUT_OUT_DIR: ${{ inputs.out-dir }}
+      run: |
+        python - <<'PY'
+        import json, os
+        from pathlib import Path
+
+        out = Path(os.environ["INPUT_OUT_DIR"])
+        data = json.loads((out / "score.json").read_text(encoding="utf-8"))
+        coverage = data.get("evidence_coverage", {})
+        findings = data.get("findings", [])[:5]
+        lines = [
+            "## ReproLens Audit",
+            "",
+            f"- Score: **{data['total_score']:.1f} / 100**",
+            f"- Readiness: **{data['readiness']}**",
+            f"- Evidence coverage: **{coverage.get('covered', 0)}/{coverage.get('total', 0)} ({coverage.get('percent', 0):.1f}%)**",
+            f"- README claims: **{len(data.get('claim_matrix', []))}**",
+            "",
+            "### Top findings",
+        ]
+        lines.extend(f"- [{item['severity'].upper()}] {item['title']} ({item['criterion_id']})" for item in findings)
+        lines.extend(["", "Open the uploaded `repolens-report` artifact for the full HTML report."])
+        summary = "\n".join(lines) + "\n"
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as stream:
+            stream.write(summary)
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
+            stream.write(f"score={data['total_score']:.1f}\n")
+            stream.write(f"badge-path={out.as_posix()}/badge.svg\n")
+        PY

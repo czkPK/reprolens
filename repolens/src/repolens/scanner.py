@@ -23,6 +23,7 @@ PLACEHOLDER_RE = re.compile(r"TODO|PLACEHOLDER|CHANGE[_ -]?ME|YOUR_[A-Z_]+|REPLA
 HTML_TAG_RE = re.compile(r"<[^>]+>")
 MARKDOWN_IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]+\)")
 MARKDOWN_LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]+\)")
+PLAIN_URL_RE = re.compile(r"https?://\S+")
 
 
 @dataclass
@@ -87,6 +88,14 @@ def _line_number(text: str, offset: int) -> int:
     return text.count("\n", 0, offset) + 1
 
 
+def _line_excerpt(text: str, offset: int) -> str:
+    start = text.rfind("\n", 0, offset) + 1
+    end = text.find("\n", offset)
+    if end < 0:
+        end = len(text)
+    return text[start:end].strip()
+
+
 def _first_match(text: str, pattern: str) -> re.Match[str] | None:
     return re.search(pattern, text, flags=re.IGNORECASE | re.MULTILINE)
 
@@ -95,6 +104,7 @@ def _clean_claim_line(value: str) -> str:
     value = MARKDOWN_IMAGE_RE.sub("", value)
     value = MARKDOWN_LINK_RE.sub(r"\1", value)
     value = HTML_TAG_RE.sub(" ", value)
+    value = PLAIN_URL_RE.sub("", value)
     value = value.replace("**", "").replace("__", "").replace("`", "")
     value = re.sub(r"^[#>*\-\s]+", "", value)
     return re.sub(r"\s+", " ", value).strip()
@@ -187,7 +197,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 continue
             path = root / rel_path
             line = _line_number(text, match.start())
-            evidence_id = snapshot.add_evidence(kind, path, line, match.group(0))
+            evidence_id = snapshot.add_evidence(kind, path, line, _line_excerpt(text, match.start()))
             around = text[max(0, match.start() - 80):match.end() + 80]
             if PLACEHOLDER_RE.search(around):
                 snapshot.mark_placeholder(flag)
@@ -223,7 +233,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 continue
             path = root / rel_path
             line = _line_number(text, match.start())
-            evidence_id = snapshot.add_evidence(kind, path, line, match.group(0))
+            evidence_id = snapshot.add_evidence(kind, path, line, _line_excerpt(text, match.start()))
             around = text[max(0, match.start() - 80):match.end() + 80]
             if PLACEHOLDER_RE.search(around):
                 snapshot.mark_placeholder(flag)
@@ -324,17 +334,34 @@ def scan_repo(root: Path) -> RepoSnapshot:
         "trace", "prompt version", "model version", "model provider",
         "api version", "openai", "huggingface", "evaluation dataset",
     )
+    claim_excludes = (
+        "copyright", "all rights reserved", "full documentation",
+        "documentation can be found", "changelog", "contributing",
+        "check out", "learn more", "read the docs", "for more information",
+        "install the package", "launch blog",
+    )
     claim_count = 0
     seen_claims: set[str] = set()
+    in_code_block = False
     for rel_path, text in texts.items():
         if "/" in rel_path or not Path(rel_path).name.lower().startswith("readme"):
             continue
         for line_no, line in enumerate(text.splitlines(), start=1):
             stripped = line.strip()
+            if stripped.startswith("```"):
+                in_code_block = not in_code_block
+                continue
+            if in_code_block:
+                continue
             if len(stripped) < 30 or stripped.startswith(("[![", "<img", "<!--", "|", "```")):
                 continue
-            if any(keyword in stripped.lower() for keyword in claim_keywords):
-                cleaned = _clean_claim_line(stripped)
+            cleaned = _clean_claim_line(stripped)
+            cleaned_lower = cleaned.lower()
+            if any(excluded in cleaned_lower for excluded in claim_excludes):
+                continue
+            if cleaned.startswith(("$", ">", "{", "}", "pip ", "python ", "from ", "import ", "api_base=")):
+                continue
+            if any(keyword in cleaned_lower for keyword in claim_keywords):
                 key = cleaned.lower()
                 if len(cleaned) < 24 or key in seen_claims:
                     continue

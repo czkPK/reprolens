@@ -15,23 +15,6 @@
   },
   {
     "claim_id": "E-014",
-    "claim": "pip install -r requirements.txt",
-    "criteria": [
-      "DOC-02",
-      "ENV-01",
-      "ENV-03"
-    ],
-    "status": "partially_verified",
-    "gaps": [
-      "DOC-02"
-    ],
-    "evidence_ids": [
-      "E-005",
-      "E-002"
-    ]
-  },
-  {
-    "claim_id": "E-015",
     "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
     "criteria": [
       "LLM-01",

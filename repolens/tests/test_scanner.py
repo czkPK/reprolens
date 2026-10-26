@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -34,6 +35,22 @@ class ScannerTests(unittest.TestCase):
         self.assertFalse(snapshot.has("prompt_version"))
         self.assertFalse(snapshot.has("agent_trace"))
         self.assertFalse(snapshot.has("eval_dataset"))
+
+    def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "Copyright 2024 Example Team. All rights reserved.\n"
+                "Full documentation can be found here: https://example.com/model\n"
+                "```bash\n"
+                "pip install example-package\n"
+                "```\n"
+                "The project supports benchmark reproduction with a fixed seed and evaluation dataset.\n",
+                encoding="utf-8",
+            )
+            claims = [item.excerpt for item in scan_repo(root).evidence if item.kind == "claim"]
+        self.assertEqual(len(claims), 1)
+        self.assertIn("benchmark reproduction", claims[0])
 
 
 if __name__ == "__main__":
