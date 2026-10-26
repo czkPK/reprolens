@@ -41,9 +41,9 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Evidence Appendix", html)
         self.assertIn('href="#evidence-E-', html)
         self.assertIn("Top 3 Priority Actions", html)
-        self.assertIn("Evidence Explanation", html)
+        self.assertIn("证据说明", html)
         self.assertIn("是否存在依赖清单", html)
-        self.assertIn("VERIFIED", render_claims_markdown(result))
+        self.assertIn("已验证", render_claims_markdown(result))
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"

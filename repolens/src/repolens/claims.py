@@ -104,3 +104,16 @@ def evidence_explanation(item: CriterionResult, evidence: list[Evidence]) -> str
     prefix = "支持证据：" if item.status == "pass" else "部分证据："
     suffix = "。" if item.status == "pass" else "；现有证据不足以完全满足该项。"
     return prefix + "；".join(snippets) + suffix
+
+
+def claim_verification_note(row: dict) -> str:
+    status = str(row.get("status", ""))
+    gaps = row.get("gaps", [])
+    gap_text = "、".join(gaps)
+    if status == "verified":
+        return "相关检查项均通过，这条 README 声明有证据支持。"
+    if status == "partially_verified":
+        return f"找到部分证据，但仍有缺口：{gap_text}。"
+    if status == "unverified":
+        return f"缺少关键证据，当前声明不能视为已验证；缺口：{gap_text}。"
+    return "相关检查项不适用于当前项目类型，证据只作为识别线索。"

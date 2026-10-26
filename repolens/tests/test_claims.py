@@ -1,6 +1,6 @@
 import unittest
 
-from repolens.claims import _claim_criteria, claim_status, criterion_confidence, evidence_coverage, evidence_explanation
+from repolens.claims import _claim_criteria, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
 from repolens.models import CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
@@ -63,6 +63,11 @@ class ClaimTests(unittest.TestCase):
         item = criterion("not_applicable", ["E-1"], applicable=False)
         evidence = [Evidence("E-1", "readme", "README.md", 1, "demo")]
         self.assertIn("不参与评分", evidence_explanation(item, evidence))
+
+    def test_claim_verification_note_explains_gaps(self):
+        note = claim_verification_note({"status": "partially_verified", "gaps": ["LLM-03"]})
+        self.assertIn("部分证据", note)
+        self.assertIn("LLM-03", note)
 
 
 if __name__ == "__main__":

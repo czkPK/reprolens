@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `D:\CODEX\ReproLens\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-26T13:50:53.788732+00:00`
+- Generated at: `2026-10-26T14:33:21.387169+00:00`
 - Semantic claim mapping: **rules**
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
@@ -28,7 +28,7 @@
 
 ## Criteria
 
-| ID | Dimension | Criterion | Status | Confidence | Points | Evidence | Evidence Explanation |
+| 检查项编号 | 所属维度 | 检查要求 | 状态 | 证据强度 | 得分 | 证据编号 | 证据说明 |
 |---|---|---|---|---|---:|---|---|
 
 **读表说明：** PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。
@@ -61,12 +61,12 @@
 
 ## Claim-Evidence Matrix
 
-README claims are mapped to the criteria that must be supported before the claim can be treated as reproducible.
+**读表方法：** 每一行先看 README 说了什么，再看验证状态、需要检查的项、缺口和支持证据。
 
-| Claim | Status | Required criteria | Gaps | Evidence |
-|---|---|---|---|---|
-| A small retrieval-augmented agent demo. | VERIFIED | LLM-05 | - | E-012, E-010, E-009 |
-| This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/. | VERIFIED | LLM-01, LLM-03, LLM-05, MODEL-02 | - | E-006, E-007, E-008, E-003, E-004, E-012, E-010, E-009 |
+| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |
+|---|---|---|---|---|---|---|
+| E-013 | A small retrieval-augmented agent demo. | 已验证 | LLM-05 | - | E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
+| E-014 | This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/. | 已验证 | LLM-01, LLM-03, LLM-05, MODEL-02 | - | E-006, E-007, E-008, E-003, E-004, E-012, E-010, E-009 | 相关检查项均通过，这条 README 声明有证据支持。 |
 
 ## Findings
 
@@ -170,7 +170,7 @@ README claims are mapped to the criteria that must be supported before the claim
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.056s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.052s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

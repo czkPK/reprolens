@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
-from .claims import build_claim_matrix, criterion_confidence, evidence_coverage, evidence_explanation
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
 from .html_report import render_html
 from .models import AuditResult
 
@@ -17,10 +17,10 @@ STATUS_LABELS = {
 }
 
 CLAIM_STATUS_LABELS = {
-    "verified": "VERIFIED",
-    "partially_verified": "PARTIALLY VERIFIED",
-    "unverified": "UNVERIFIED",
-    "not_applicable": "N/A",
+    "verified": "已验证",
+    "partially_verified": "部分验证",
+    "unverified": "未验证",
+    "not_applicable": "不适用",
 }
 
 
@@ -80,7 +80,7 @@ def render_markdown(result: AuditResult) -> str:
             "",
             "## Criteria",
             "",
-            "| ID | Dimension | Criterion | Status | Confidence | Points | Evidence | Evidence Explanation |",
+            "| 检查项编号 | 所属维度 | 检查要求 | 状态 | 证据强度 | 得分 | 证据编号 | 证据说明 |",
             "|---|---|---|---|---|---:|---|---|",
         ]
     )
@@ -103,21 +103,21 @@ def render_markdown(result: AuditResult) -> str:
             "",
             "## Claim-Evidence Matrix",
             "",
-            "README claims are mapped to the criteria that must be supported before the claim can be treated as reproducible.",
+            "**读表方法：** 每一行先看 README 说了什么，再看验证状态、需要检查的项、缺口和支持证据。",
             "",
-            "| Claim | Status | Required criteria | Gaps | Evidence |",
-            "|---|---|---|---|---|",
+            "| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |",
+            "|---|---|---|---|---|---|---|",
         ]
     )
     if not claim_rows:
-        lines.append("| - | N/A | - | - | No README claims extracted. |")
+        lines.append("| - | 未抽取到 README 声明 | 不适用 | - | - | - | 未发现可验证声明。 |")
     for row in claim_rows:
         criteria = ", ".join(row.get("criteria", [])) or "-"
         gaps = ", ".join(row.get("gaps", [])) or "-"
         evidence = ", ".join(row.get("evidence_ids", [])) or "-"
         status = CLAIM_STATUS_LABELS.get(row.get("status", ""), str(row.get("status", "")))
         lines.append(
-            f"| {_md(row.get('claim', ''))} | {status} | {_md(criteria)} | {_md(gaps)} | {_md(evidence)} |"
+            f"| {_md(row.get('claim_id', '-'))} | {_md(row.get('claim', ''))} | {status} | {_md(criteria)} | {_md(gaps)} | {_md(evidence)} | {_md(claim_verification_note(row))} |"
         )
 
     lines.extend(["", "## Findings", ""])
@@ -191,7 +191,7 @@ def render_claims_markdown(result: AuditResult) -> str:
     coverage = _coverage(result)
     rows = _claim_rows(result)
     lines = [
-        "# ReproLens Claim-Evidence Matrix",
+        "# ReproLens 声明—证据—缺口矩阵",
         "",
         f"- Repository: `{result.repo_path}`",
         f"- Generated at: `{result.generated_at}`",
@@ -200,21 +200,22 @@ def render_claims_markdown(result: AuditResult) -> str:
         "",
         "## Matrix",
         "",
-        "| Claim ID | Claim | Status | Required criteria | Gaps | Evidence |",
-        "|---|---|---|---|---|---|",
+        "| 声明编号 | README 声明 | 验证状态 | 需要检查的项 | 缺口 | 支持证据 | 验证说明 |",
+        "|---|---|---|---|---|---|---|",
     ]
     if not rows:
-        lines.append("| - | No README claims extracted. | N/A | - | - | - |")
+        lines.append("| - | 未抽取到 README 声明 | 不适用 | - | - | - | 未发现可验证声明。 |")
     for row in rows:
         status = CLAIM_STATUS_LABELS.get(row.get("status", ""), str(row.get("status", "")))
         lines.append(
-            "| {claim_id} | {claim} | {status} | {criteria} | {gaps} | {evidence} |".format(
+            "| {claim_id} | {claim} | {status} | {criteria} | {gaps} | {evidence} | {note} |".format(
                 claim_id=_md(row.get("claim_id", "-")),
                 claim=_md(row.get("claim", "")),
                 status=status,
                 criteria=_md(", ".join(row.get("criteria", [])) or "-"),
                 gaps=_md(", ".join(row.get("gaps", [])) or "-"),
                 evidence=_md(", ".join(row.get("evidence_ids", [])) or "-"),
+                note=_md(claim_verification_note(row)),
             )
         )
     lines.extend(
@@ -222,12 +223,12 @@ def render_claims_markdown(result: AuditResult) -> str:
             "",
             "## Status Definitions",
             "",
-            "- **VERIFIED**: every applicable mapped criterion passes with linked evidence.",
-            "- **PARTIALLY VERIFIED**: at least one mapped criterion passes but another is partial.",
-            "- **UNVERIFIED**: at least one mapped criterion is missing, so the claim is not yet supported.",
-            "- **N/A**: none of the mapped criteria apply to this project type.",
+            "- **已验证**：相关检查项全部通过，并且有证据支持。",
+            "- **部分验证**：找到部分证据，但仍有缺口。",
+            "- **未验证**：关键证据缺失，当前声明不能视为已验证。",
+            "- **不适用**：相关检查项不适用于当前项目类型。",
             "",
-            "The matrix verifies documentation claims against repository evidence. It does not execute untrusted code or guarantee semantic correctness.",
+            "读表方法：Claim 是 README 原句；Required criteria 是验证这句话需要检查的项；Gaps 是仍未满足的检查项；Evidence 是支持证据编号。该矩阵不执行第三方代码，也不保证语义完全正确。",
         ]
     )
     return "\n".join(lines) + "\n"

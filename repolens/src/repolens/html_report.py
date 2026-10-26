@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from html import escape
 
-from .claims import build_claim_matrix, criterion_confidence, evidence_coverage, evidence_explanation
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation
 from .models import AuditResult
 
 
@@ -14,10 +14,10 @@ STATUS_LABELS = {
 }
 
 CLAIM_STATUS_LABELS = {
-    "verified": "VERIFIED",
-    "partially_verified": "PARTIALLY VERIFIED",
-    "unverified": "UNVERIFIED",
-    "not_applicable": "N/A",
+    "verified": "已验证",
+    "partially_verified": "部分验证",
+    "unverified": "未验证",
+    "not_applicable": "不适用",
 }
 
 
@@ -60,9 +60,9 @@ def render_html(result: AuditResult) -> str:
         for item in result.criteria
     )
     claim_rows = "".join(
-        f'<tr><td><a class="evidence-link" href="#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(", ".join(row.get("criteria", [])) or "-")}</td><td>{e(", ".join(row.get("gaps", [])) or "-")}</td><td>{evidence_links(row.get("evidence_ids", []))}</td></tr>'
+        f'<tr><td><a class="evidence-link" href="#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(", ".join(row.get("criteria", [])) or "-")}</td><td>{e(", ".join(row.get("gaps", [])) or "-")}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row))}</td></tr>'
         for row in claims
-    ) or '<tr><td colspan="6">No README claims extracted.</td></tr>'
+    ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
         f'<li><strong>{e(item.id)} [{e(item.severity.upper())}] {e(item.title)}</strong><br>{e(item.message)}<br><small>Evidence: {evidence_links(item.evidence_ids)}</small></li>'
         for item in result.findings
@@ -152,9 +152,9 @@ small {{ color: #697386; }}
 <h2>Evidence Overview</h2><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
-<h2>Criteria</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。</p><div class="table-scroll"><table><thead><tr><th>ID</th><th>Dimension</th><th>Criterion</th><th>Status</th><th>Confidence</th><th>Points</th><th>Evidence</th><th>Evidence Explanation</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2>Claim-Evidence Matrix</h2><p class="meta">Each README claim is checked against the criteria that must be supported before the claim can be treated as reproducible.</p><table><thead><tr><th>Claim ID</th><th>Claim</th><th>Status</th><th>Required criteria</th><th>Gaps</th><th>Evidence</th></tr></thead><tbody>{claim_rows}</tbody></table>
-<h2>Evidence Appendix</h2><p class="meta">Evidence IDs link directly to the source location and excerpt retained by this audit.</p><table><thead><tr><th>ID</th><th>Kind</th><th>Location</th><th>Excerpt</th></tr></thead><tbody>{evidence_rows}</tbody></table>
+<h2>Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。</p><div class="table-scroll"><table><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号</th><th>证据说明</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
+<h2>Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、需要检查的项、缺口和支持证据。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>需要检查的项</th><th>缺口</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2>Evidence Appendix（证据附录）</h2><p class="meta">证据编号链接到对应文件、行号和原文摘录。</p><table><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table>
 <h2>Findings</h2><ul>{finding_items}</ul>
 <h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
 <h2>Minimal Remediation Plan</h2><ul>{remediation_items}</ul>
