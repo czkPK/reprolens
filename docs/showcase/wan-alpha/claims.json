@@ -1,0 +1,82 @@
+[
+  {
+    "claim_id": "C-001",
+    "source_evidence_id": "E-015",
+    "claim": "[2026.03.10] Released Wan-Alpha v2.0 and Wan-Alpha VAE training codes and training datasets.",
+    "criteria": [
+      "DOC-02",
+      "DOC-03",
+      "EXP-02"
+    ],
+    "status": "unverified",
+    "gaps": [
+      "DOC-03",
+      "EXP-02"
+    ],
+    "evidence_ids": [
+      "E-006",
+      "E-007",
+      "E-009"
+    ]
+  },
+  {
+    "claim_id": "C-002",
+    "source_evidence_id": "E-016",
+    "claim": "[x] Dataset: Open-source the VAE and T2V training dataset.",
+    "criteria": [
+      "DOC-02",
+      "DOC-03",
+      "EXP-02"
+    ],
+    "status": "unverified",
+    "gaps": [
+      "DOC-03",
+      "EXP-02"
+    ],
+    "evidence_ids": [
+      "E-006",
+      "E-007",
+      "E-009"
+    ]
+  },
+  {
+    "claim_id": "C-003",
+    "source_evidence_id": "E-017",
+    "claim": "For the VAE training dataset, please refer to Section 3.3 of our paper for preparation details.",
+    "criteria": [
+      "DOC-02",
+      "DOC-03",
+      "EXP-02"
+    ],
+    "status": "unverified",
+    "gaps": [
+      "DOC-03",
+      "EXP-02"
+    ],
+    "evidence_ids": [
+      "E-006",
+      "E-007",
+      "E-009"
+    ]
+  },
+  {
+    "claim_id": "C-004",
+    "source_evidence_id": "E-018",
+    "claim": "You can download the training dataset from Google Drive or Hugging Face.",
+    "criteria": [
+      "DOC-02",
+      "DOC-03",
+      "EXP-02"
+    ],
+    "status": "unverified",
+    "gaps": [
+      "DOC-03",
+      "EXP-02"
+    ],
+    "evidence_ids": [
+      "E-006",
+      "E-007",
+      "E-009"
+    ]
+  }
+]

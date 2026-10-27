@@ -1,0 +1,5 @@
+{
+  "mode": "rules-fallback",
+  "enabled": false,
+  "reason": "LLM environment variables are not configured"
+}

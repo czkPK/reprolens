@@ -1,0 +1,870 @@
+{
+  "repo_path": "https://github.com/WeChatCV/Wan-Alpha @ 9e5d0533da2d",
+  "generated_at": "2026-10-27T15:05:32.760299+00:00",
+  "total_score": 65.7,
+  "readiness": "Partially Ready",
+  "dimensions": [
+    {
+      "name": "环境可复现",
+      "points": 21.0,
+      "max_points": 25,
+      "percent": 84.0
+    },
+    {
+      "name": "数据可复现",
+      "points": 11.0,
+      "max_points": 22,
+      "percent": 50.0
+    },
+    {
+      "name": "模型可复现",
+      "points": 19.0,
+      "max_points": 22,
+      "percent": 86.4
+    },
+    {
+      "name": "实验可复现",
+      "points": 23.0,
+      "max_points": 33,
+      "percent": 69.7
+    },
+    {
+      "name": "文档可复现",
+      "points": 11.0,
+      "max_points": 17,
+      "percent": 64.7
+    },
+    {
+      "name": "LLM 特有风险",
+      "points": 13.5,
+      "max_points": 31,
+      "percent": 43.5
+    }
+  ],
+  "criteria": [
+    {
+      "id": "ENV-01",
+      "dimension": "环境可复现",
+      "title": "是否存在依赖清单",
+      "status": "pass",
+      "points": 10,
+      "max_points": 10,
+      "applicable": true,
+      "note": "已发现依赖清单。",
+      "evidence_ids": [
+        "E-002"
+      ]
+    },
+    {
+      "id": "ENV-02",
+      "dimension": "环境可复现",
+      "title": "是否锁定依赖版本或提供容器化配置",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "有依赖清单，但没有锁定文件或容器配置。",
+      "evidence_ids": [
+        "E-002"
+      ]
+    },
+    {
+      "id": "ENV-03",
+      "dimension": "环境可复现",
+      "title": "是否提供安装步骤",
+      "status": "pass",
+      "points": 7,
+      "max_points": 7,
+      "applicable": true,
+      "note": "已发现安装步骤。",
+      "evidence_ids": [
+        "E-006"
+      ]
+    },
+    {
+      "id": "DATA-01",
+      "dimension": "数据可复现",
+      "title": "是否说明数据来源和获取方式",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "提到了数据，但缺少可执行的获取或处理说明。",
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "id": "DATA-02",
+      "dimension": "数据可复现",
+      "title": "是否提供数据下载或预处理脚本",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "有数据说明，但没有下载/预处理脚本。",
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "id": "DATA-03",
+      "dimension": "数据可复现",
+      "title": "是否提供数据集卡或数据许可说明",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有许可证和数据说明，但没有独立数据集卡。",
+      "evidence_ids": [
+        "E-003",
+        "E-008"
+      ]
+    },
+    {
+      "id": "MODEL-01",
+      "dimension": "模型可复现",
+      "title": "是否提供模型权重、API 或获取方式",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "已发现 API/模型提供方和模型版本信息。",
+      "evidence_ids": [
+        "E-013",
+        "E-011",
+        "E-014"
+      ]
+    },
+    {
+      "id": "MODEL-02",
+      "dimension": "模型可复现",
+      "title": "是否提供模型卡或版本说明",
+      "status": "pass",
+      "points": 8,
+      "max_points": 8,
+      "applicable": true,
+      "note": "已发现模型卡或模型版本说明。",
+      "evidence_ids": [
+        "E-011",
+        "E-014"
+      ]
+    },
+    {
+      "id": "MODEL-03",
+      "dimension": "模型可复现",
+      "title": "是否说明模型许可和来源",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
+      "evidence_ids": [
+        "E-003"
+      ]
+    },
+    {
+      "id": "EXP-01",
+      "dimension": "实验可复现",
+      "title": "是否提供训练或主运行脚本",
+      "status": "pass",
+      "points": 7,
+      "max_points": 7,
+      "applicable": true,
+      "note": "已发现训练脚本或主运行命令。",
+      "evidence_ids": [
+        "E-004",
+        "E-007"
+      ]
+    },
+    {
+      "id": "EXP-02",
+      "dimension": "实验可复现",
+      "title": "是否提供评测脚本或评测命令",
+      "status": "partial",
+      "points": 4.0,
+      "max_points": 8,
+      "applicable": true,
+      "note": "有指标描述，但没有评测脚本。",
+      "evidence_ids": [
+        "E-009"
+      ]
+    },
+    {
+      "id": "EXP-03",
+      "dimension": "实验可复现",
+      "title": "是否设置并说明随机种子",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "没有随机种子或确定性设置。",
+      "evidence_ids": []
+    },
+    {
+      "id": "EXP-04",
+      "dimension": "实验可复现",
+      "title": "是否说明硬件或 API 环境要求",
+      "status": "pass",
+      "points": 5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "已发现硬件或 API 环境说明。",
+      "evidence_ids": [
+        "E-010",
+        "E-013"
+      ]
+    },
+    {
+      "id": "EXP-05",
+      "dimension": "实验可复现",
+      "title": "是否给出预期结果和指标",
+      "status": "pass",
+      "points": 7,
+      "max_points": 7,
+      "applicable": true,
+      "note": "已发现预期结果、指标或评测集。",
+      "evidence_ids": [
+        "E-009"
+      ]
+    },
+    {
+      "id": "DOC-01",
+      "dimension": "文档可复现",
+      "title": "是否存在 README",
+      "status": "pass",
+      "points": 5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "已发现 README。",
+      "evidence_ids": [
+        "E-001"
+      ]
+    },
+    {
+      "id": "DOC-02",
+      "dimension": "文档可复现",
+      "title": "是否提供快速开始和运行示例",
+      "status": "pass",
+      "points": 6,
+      "max_points": 6,
+      "applicable": true,
+      "note": "安装和运行示例均已发现。",
+      "evidence_ids": [
+        "E-006",
+        "E-007"
+      ]
+    },
+    {
+      "id": "DOC-03",
+      "dimension": "文档可复现",
+      "title": "是否提供测试、CI 或一键复现脚本",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "没有测试、CI 或一键复现脚本。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-01",
+      "dimension": "LLM 特有风险",
+      "title": "是否记录模型/API 版本",
+      "status": "pass",
+      "points": 6,
+      "max_points": 6,
+      "applicable": true,
+      "note": "已记录模型提供方和版本。",
+      "evidence_ids": [
+        "E-013",
+        "E-011",
+        "E-014"
+      ]
+    },
+    {
+      "id": "LLM-02",
+      "dimension": "LLM 特有风险",
+      "title": "是否对 prompt/template 进行版本记录",
+      "status": "partial",
+      "points": 3.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "有 prompt 文件或描述，但没有可核验的版本信息。",
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "id": "LLM-03",
+      "dimension": "LLM 特有风险",
+      "title": "是否记录采样参数",
+      "status": "partial",
+      "points": 2.5,
+      "max_points": 5,
+      "applicable": true,
+      "note": "有采样参数或配置线索，但仍需补充可核验值。",
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "id": "LLM-04",
+      "dimension": "LLM 特有风险",
+      "title": "是否记录 tokenizer/上下文窗口",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 4,
+      "applicable": true,
+      "note": "没有记录 tokenizer 或上下文窗口。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-05",
+      "dimension": "LLM 特有风险",
+      "title": "是否记录 RAG 索引/知识库版本",
+      "status": "not_applicable",
+      "points": 0.0,
+      "max_points": 5,
+      "applicable": false,
+      "note": "不适用。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-06",
+      "dimension": "LLM 特有风险",
+      "title": "是否记录 Agent 工具调用轨迹",
+      "status": "not_applicable",
+      "points": 0.0,
+      "max_points": 5,
+      "applicable": false,
+      "note": "不适用。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-07",
+      "dimension": "LLM 特有风险",
+      "title": "是否说明评测集、数据划分和污染风险",
+      "status": "missing",
+      "points": 0.0,
+      "max_points": 6,
+      "applicable": true,
+      "note": "没有说明评测集、数据划分或污染风险。",
+      "evidence_ids": []
+    },
+    {
+      "id": "LLM-08",
+      "dimension": "LLM 特有风险",
+      "title": "是否说明推理成本或延迟",
+      "status": "partial",
+      "points": 2.0,
+      "max_points": 4,
+      "applicable": true,
+      "note": "有成本/硬件线索，但仍需量化数据。",
+      "evidence_ids": [
+        "E-010",
+        "E-013"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "medium",
+      "criterion_id": "ENV-02",
+      "title": "是否锁定依赖版本或提供容器化配置",
+      "message": "有依赖清单，但没有锁定文件或容器配置。",
+      "evidence_ids": [
+        "E-002"
+      ]
+    },
+    {
+      "id": "F-002",
+      "severity": "medium",
+      "criterion_id": "DATA-01",
+      "title": "是否说明数据来源和获取方式",
+      "message": "提到了数据，但缺少可执行的获取或处理说明。",
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "id": "F-003",
+      "severity": "medium",
+      "criterion_id": "DATA-02",
+      "title": "是否提供数据下载或预处理脚本",
+      "message": "有数据说明，但没有下载/预处理脚本。",
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "id": "F-004",
+      "severity": "medium",
+      "criterion_id": "DATA-03",
+      "title": "是否提供数据集卡或数据许可说明",
+      "message": "有许可证和数据说明，但没有独立数据集卡。",
+      "evidence_ids": [
+        "E-003",
+        "E-008"
+      ]
+    },
+    {
+      "id": "F-005",
+      "severity": "medium",
+      "criterion_id": "MODEL-03",
+      "title": "是否说明模型许可和来源",
+      "message": "有许可证或模型卡，但模型专用许可和来源仍需补充。",
+      "evidence_ids": [
+        "E-003"
+      ]
+    },
+    {
+      "id": "F-006",
+      "severity": "medium",
+      "criterion_id": "EXP-02",
+      "title": "是否提供评测脚本或评测命令",
+      "message": "有指标描述，但没有评测脚本。",
+      "evidence_ids": [
+        "E-009"
+      ]
+    },
+    {
+      "id": "F-007",
+      "severity": "medium",
+      "criterion_id": "EXP-03",
+      "title": "是否设置并说明随机种子",
+      "message": "没有随机种子或确定性设置。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-008",
+      "severity": "medium",
+      "criterion_id": "DOC-03",
+      "title": "是否提供测试、CI 或一键复现脚本",
+      "message": "没有测试、CI 或一键复现脚本。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-009",
+      "severity": "medium",
+      "criterion_id": "LLM-02",
+      "title": "是否对 prompt/template 进行版本记录",
+      "message": "有 prompt 文件或描述，但没有可核验的版本信息。",
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "id": "F-010",
+      "severity": "medium",
+      "criterion_id": "LLM-03",
+      "title": "是否记录采样参数",
+      "message": "有采样参数或配置线索，但仍需补充可核验值。",
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "id": "F-011",
+      "severity": "medium",
+      "criterion_id": "LLM-04",
+      "title": "是否记录 tokenizer/上下文窗口",
+      "message": "没有记录 tokenizer 或上下文窗口。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-012",
+      "severity": "medium",
+      "criterion_id": "LLM-07",
+      "title": "是否说明评测集、数据划分和污染风险",
+      "message": "没有说明评测集、数据划分或污染风险。",
+      "evidence_ids": []
+    },
+    {
+      "id": "F-013",
+      "severity": "medium",
+      "criterion_id": "LLM-08",
+      "title": "是否说明推理成本或延迟",
+      "message": "有成本/硬件线索，但仍需量化数据。",
+      "evidence_ids": [
+        "E-010",
+        "E-013"
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "finding_id": "F-007",
+      "action": "固定并记录随机种子、框架确定性和硬件差异",
+      "rationale": "降低结果不可重复的随机性。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 6.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-012",
+      "action": "说明评测集、数据划分和污染/泄漏风险",
+      "rationale": "让指标具有可比性，避免高估效果。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 6.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-008",
+      "action": "添加测试、CI 或一键复现脚本",
+      "rationale": "把复现变成持续可验证的工程流程。",
+      "cost": "medium",
+      "impact": "medium",
+      "estimated_score_gain": 6.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-002",
+      "action": "补充数据来源、获取方式和数据许可说明",
+      "rationale": "让读者知道数据从哪里来、能否使用。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "finding_id": "F-011",
+      "action": "记录 tokenizer、上下文窗口和截断策略",
+      "rationale": "避免输入长度和分词差异导致结果变化。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": []
+    },
+    {
+      "finding_id": "F-001",
+      "action": "添加锁文件或 Dockerfile，固定 Python、CUDA 和依赖版本",
+      "rationale": "消除环境版本漂移，提升跨机器复现概率。",
+      "cost": "medium",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-002"
+      ]
+    },
+    {
+      "finding_id": "F-003",
+      "action": "添加数据下载或预处理脚本",
+      "rationale": "把数据准备从手工步骤变成可执行流程。",
+      "cost": "medium",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-008"
+      ]
+    },
+    {
+      "finding_id": "F-006",
+      "action": "添加评测脚本、评测命令和指标计算方式",
+      "rationale": "让结果可以被独立验证。",
+      "cost": "medium",
+      "impact": "high",
+      "estimated_score_gain": 4.0,
+      "evidence_ids": [
+        "E-009"
+      ]
+    },
+    {
+      "finding_id": "F-004",
+      "action": "添加数据集卡或数据许可说明",
+      "rationale": "明确数据边界和再分发条件。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-003",
+        "E-008"
+      ]
+    },
+    {
+      "finding_id": "F-005",
+      "action": "在模型卡中说明模型许可和来源",
+      "rationale": "避免模型使用和再分发风险。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-003"
+      ]
+    },
+    {
+      "finding_id": "F-009",
+      "action": "将 prompt/template 版本化并记录在配置或模型卡中",
+      "rationale": "避免 prompt 漂移导致结果不可复现。",
+      "cost": "low",
+      "impact": "high",
+      "estimated_score_gain": 3.0,
+      "evidence_ids": [
+        "E-012"
+      ]
+    },
+    {
+      "finding_id": "F-010",
+      "action": "记录 temperature、top_p、max_tokens 等采样参数",
+      "rationale": "让生成行为可以复现和比较。",
+      "cost": "low",
+      "impact": "medium",
+      "estimated_score_gain": 2.5,
+      "evidence_ids": [
+        "E-005"
+      ]
+    },
+    {
+      "finding_id": "F-013",
+      "action": "说明推理成本、延迟和 token 消耗",
+      "rationale": "让读者评估复现成本。",
+      "cost": "low",
+      "impact": "low",
+      "estimated_score_gain": 2.0,
+      "evidence_ids": [
+        "E-010",
+        "E-013"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E-001",
+      "kind": "readme",
+      "path": "readme.md",
+      "line": 1,
+      "excerpt": "<div align=\"center\">"
+    },
+    {
+      "id": "E-002",
+      "kind": "dependency-manifest",
+      "path": "requirements.txt",
+      "line": 1,
+      "excerpt": "torch>=2.4.0"
+    },
+    {
+      "id": "E-003",
+      "kind": "license",
+      "path": "LICENSE",
+      "line": 1,
+      "excerpt": "MIT License"
+    },
+    {
+      "id": "E-004",
+      "kind": "script",
+      "path": "Wan-Alpha-VAE-train/train_vae.py",
+      "line": 1,
+      "excerpt": "import os"
+    },
+    {
+      "id": "E-005",
+      "kind": "config",
+      "path": "Wan-Alpha-train/configs/accelerate_config/accelerate_wxg.yaml",
+      "line": 1,
+      "excerpt": "compute_environment: LOCAL_MACHINE"
+    },
+    {
+      "id": "E-006",
+      "kind": "instruction",
+      "path": "readme.md",
+      "line": 78,
+      "excerpt": "# Create and activate Conda environment"
+    },
+    {
+      "id": "E-007",
+      "kind": "instruction",
+      "path": "readme.md",
+      "line": 135,
+      "excerpt": "CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 train_vae.py \\"
+    },
+    {
+      "id": "E-008",
+      "kind": "data",
+      "path": "readme.md",
+      "line": 11,
+      "excerpt": "[![arXiv](https://img.shields.io/badge/arXiv-2509.24979-red)](https://arxiv.org/pdf/2509.24979)"
+    },
+    {
+      "id": "E-009",
+      "kind": "metric",
+      "path": "readme.md",
+      "line": 89,
+      "excerpt": "Download [Lightx2v-T2V-14B](https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Lightx2v/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors)"
+    },
+    {
+      "id": "E-010",
+      "kind": "hardware",
+      "path": "readme.md",
+      "line": 135,
+      "excerpt": "CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 train_vae.py \\"
+    },
+    {
+      "id": "E-011",
+      "kind": "model",
+      "path": "readme.md",
+      "line": 13,
+      "excerpt": "[![🤗 HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model_v1.0-orange)](https://huggingface.co/htdong/Wan-Alpha)"
+    },
+    {
+      "id": "E-012",
+      "kind": "prompt",
+      "path": "readme.md",
+      "line": 55,
+      "excerpt": "<!-- | Prompt | Preview Video | Alpha Video |"
+    },
+    {
+      "id": "E-013",
+      "kind": "llm-provider",
+      "path": "readme.md",
+      "line": 13,
+      "excerpt": "[![🤗 HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model_v1.0-orange)](https://huggingface.co/htdong/Wan-Alpha)"
+    },
+    {
+      "id": "E-014",
+      "kind": "model",
+      "path": "readme.md",
+      "line": 148,
+      "excerpt": "--model_id_with_origin_paths \"Wan2.1-T2V-1.3B:diffusion_pytorch_model*.safetensors\" \\"
+    },
+    {
+      "id": "E-015",
+      "kind": "claim",
+      "path": "readme.md",
+      "line": 30,
+      "excerpt": "[2026.03.10] Released Wan-Alpha v2.0 and Wan-Alpha VAE training codes and training datasets."
+    },
+    {
+      "id": "E-016",
+      "kind": "claim",
+      "path": "readme.md",
+      "line": 44,
+      "excerpt": "[x] Dataset: Open-source the VAE and T2V training dataset."
+    },
+    {
+      "id": "E-017",
+      "kind": "claim",
+      "path": "readme.md",
+      "line": 128,
+      "excerpt": "For the VAE training dataset, please refer to Section 3.3 of our paper for preparation details."
+    },
+    {
+      "id": "E-018",
+      "kind": "claim",
+      "path": "readme.md",
+      "line": 157,
+      "excerpt": "You can download the training dataset from Google Drive or Hugging Face."
+    }
+  ],
+  "files_scanned": 407,
+  "probes": [
+    {
+      "name": "python-syntax",
+      "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
+      "status": "pass",
+      "returncode": 0,
+      "duration_seconds": 0.492,
+      "stdout": "\n",
+      "stderr": ""
+    }
+  ],
+  "claim_matrix": [
+    {
+      "claim_id": "C-001",
+      "source_evidence_id": "E-015",
+      "claim": "[2026.03.10] Released Wan-Alpha v2.0 and Wan-Alpha VAE training codes and training datasets.",
+      "criteria": [
+        "DOC-02",
+        "DOC-03",
+        "EXP-02"
+      ],
+      "status": "unverified",
+      "gaps": [
+        "DOC-03",
+        "EXP-02"
+      ],
+      "evidence_ids": [
+        "E-006",
+        "E-007",
+        "E-009"
+      ]
+    },
+    {
+      "claim_id": "C-002",
+      "source_evidence_id": "E-016",
+      "claim": "[x] Dataset: Open-source the VAE and T2V training dataset.",
+      "criteria": [
+        "DOC-02",
+        "DOC-03",
+        "EXP-02"
+      ],
+      "status": "unverified",
+      "gaps": [
+        "DOC-03",
+        "EXP-02"
+      ],
+      "evidence_ids": [
+        "E-006",
+        "E-007",
+        "E-009"
+      ]
+    },
+    {
+      "claim_id": "C-003",
+      "source_evidence_id": "E-017",
+      "claim": "For the VAE training dataset, please refer to Section 3.3 of our paper for preparation details.",
+      "criteria": [
+        "DOC-02",
+        "DOC-03",
+        "EXP-02"
+      ],
+      "status": "unverified",
+      "gaps": [
+        "DOC-03",
+        "EXP-02"
+      ],
+      "evidence_ids": [
+        "E-006",
+        "E-007",
+        "E-009"
+      ]
+    },
+    {
+      "claim_id": "C-004",
+      "source_evidence_id": "E-018",
+      "claim": "You can download the training dataset from Google Drive or Hugging Face.",
+      "criteria": [
+        "DOC-02",
+        "DOC-03",
+        "EXP-02"
+      ],
+      "status": "unverified",
+      "gaps": [
+        "DOC-03",
+        "EXP-02"
+      ],
+      "evidence_ids": [
+        "E-006",
+        "E-007",
+        "E-009"
+      ]
+    }
+  ],
+  "evidence_coverage": {
+    "covered": 19,
+    "total": 23,
+    "percent": 82.6
+  },
+  "source_url": "https://github.com/WeChatCV/Wan-Alpha",
+  "source_commit": "9e5d0533da2dea390bbb0e50c59adfebe5613323",
+  "ai_metadata": {
+    "mode": "rules-fallback",
+    "enabled": false,
+    "reason": "LLM environment variables are not configured"
+  },
+  "project_type": "ml_project",
+  "model_agnostic": true
+}
