@@ -34,11 +34,11 @@ repolens\Start-ReproLens-Web.cmd
 
 ### 2. 公网网页版：任何电脑和手机都能访问
 
-仓库已经提供 Docker 和 Render 部署配置，可直接部署成公网网页服务：
+推荐使用 Hugging Face Docker Space 部署稳定公网地址。Space 只需上传 `deploy/huggingface-space/README.md` 和 `deploy/huggingface-space/Dockerfile` 两个文件。
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/czkPK/reprolens)
+详细步骤见 `docs/HuggingFace-Space稳定部署指南.md`。部署成功后使用固定的 `https://用户名-reprolens.hf.space` 地址，不要把临时隧道或 `127.0.0.1` 作为作品网址提交。
 
-详细步骤见 `docs/公网网页版部署指南.md`。部署成功后使用 Render 提供的 HTTPS 地址，不要把 `127.0.0.1` 本机地址作为作品网址提交。
+Render 配置仍作为备选方案保留，见 `docs/公网网页版部署指南.md`；如果当前网络无法访问 Render，请使用 Hugging Face Space。
 
 ### 3. 本地版：选择本地仓库
 
