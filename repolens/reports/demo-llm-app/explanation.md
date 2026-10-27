@@ -7,8 +7,8 @@
 
 ## 声明验证
 
-- `E-013` [已验证] A small retrieval-augmented agent demo.（缺口：无）
-- `E-014` [已验证] This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.（缺口：无）
+- `C-001` [已验证] A small retrieval-augmented agent demo.（缺口：无）
+- `C-002` [已验证] This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.（缺口：无）
 
 ## 主要缺口
 

@@ -33,6 +33,9 @@ def render_html(result: AuditResult) -> str:
             for evidence_id in ids
         )
 
+    def claim_source_id(row: dict) -> str:
+        return str(row.get("source_evidence_id") or row.get("claim_id", ""))
+
     if result.evidence_coverage:
         coverage = result.evidence_coverage
     else:
@@ -60,7 +63,7 @@ def render_html(result: AuditResult) -> str:
         for item in result.criteria
     )
     claim_rows = "".join(
-        f'<tr><td><a class="evidence-link" href="#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
+        f'<tr><td><a class="evidence-link" href="#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
@@ -192,6 +195,9 @@ def render_claims_html(result: AuditResult) -> str:
             for evidence_id in ids
         )
 
+    def claim_source_id(row: dict) -> str:
+        return str(row.get("source_evidence_id") or row.get("claim_id", ""))
+
     cards = (
         f'<div class="card"><div class="label">README 声明</div><div class="value">{len(claims)}</div><div class="sub">从根 README 抽取</div></div>'
         f'<div class="card"><div class="label">已验证</div><div class="value">{counts.get("verified", 0)}</div><div class="sub">相关检查项全部通过</div></div>'
@@ -200,7 +206,7 @@ def render_claims_html(result: AuditResult) -> str:
     )
     rows = "".join(
         '<tr>'
-        f'<td><a href="report.html#evidence-{e(row.get("claim_id", ""))}"><code>{e(row.get("claim_id", "-"))}</code></a></td>'
+        f'<td><a href="report.html#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td>'
         f'<td>{e(row.get("claim", ""))}</td>'
         f'<td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td>'
         f'<td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td>'

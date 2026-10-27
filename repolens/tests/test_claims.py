@@ -1,7 +1,7 @@
 import unittest
 
-from repolens.claims import _claim_criteria, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
-from repolens.models import CriterionResult, Evidence
+from repolens.claims import _claim_criteria, build_claim_matrix, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
+from repolens.models import AuditResult, CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
 
@@ -77,6 +77,23 @@ class ClaimTests(unittest.TestCase):
             format_criterion_references(["LLM-01"], [item]),
             "LLM-01（是否记录模型/API 版本）",
         )
+
+    def test_build_claim_matrix_separates_claim_and_evidence_ids(self):
+        result = AuditResult(
+            repo_path="example",
+            generated_at="test",
+            total_score=0.0,
+            readiness="Not Ready",
+            dimensions=[],
+            criteria=[criterion("pass")],
+            findings=[],
+            remediations=[],
+            evidence=[Evidence("E-013", "claim", "README.md", 1, "The project records retrieval evidence.")],
+            files_scanned=1,
+        )
+        rows = build_claim_matrix(result)
+        self.assertEqual(rows[0]["claim_id"], "C-001")
+        self.assertEqual(rows[0]["source_evidence_id"], "E-013")
 
 
 if __name__ == "__main__":

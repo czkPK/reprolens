@@ -1,6 +1,7 @@
 [
   {
-    "claim_id": "E-013",
+    "claim_id": "C-001",
+    "source_evidence_id": "E-013",
     "claim": "A small retrieval-augmented agent demo.",
     "criteria": [
       "LLM-05"
@@ -14,7 +15,8 @@
     ]
   },
   {
-    "claim_id": "E-014",
+    "claim_id": "C-002",
+    "source_evidence_id": "E-014",
     "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
     "criteria": [
       "LLM-01",

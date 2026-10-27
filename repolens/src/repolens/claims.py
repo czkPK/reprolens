@@ -41,7 +41,7 @@ def build_claim_matrix(result: AuditResult) -> list[dict]:
     by_id = {item.id: item for item in result.criteria}
     rows: list[dict] = []
     claims: list[Evidence] = [item for item in result.evidence if item.kind == "claim"][:8]
-    for claim in claims:
+    for index, claim in enumerate(claims, 1):
         ids = _claim_criteria(claim.excerpt)
         criteria = [by_id[cid] for cid in ids if cid in by_id]
         gaps = [item.id for item in criteria if item.applicable and item.status in {"missing", "partial"}]
@@ -52,7 +52,8 @@ def build_claim_matrix(result: AuditResult) -> list[dict]:
                     evidence_ids.append(eid)
         rows.append(
             {
-                "claim_id": claim.id,
+                "claim_id": f"C-{index:03d}",
+                "source_evidence_id": claim.id,
                 "claim": claim.excerpt,
                 "criteria": [item.id for item in criteria],
                 "status": claim_status(criteria),

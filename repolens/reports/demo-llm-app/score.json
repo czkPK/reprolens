@@ -1,6 +1,6 @@
 {
   "repo_path": "D:\\CODEX\\ReproLens\\repolens\\examples\\demo-llm-app",
-  "generated_at": "2026-10-26T14:52:20.499846+00:00",
+  "generated_at": "2026-10-27T06:33:35.096841+00:00",
   "total_score": 49.1,
   "readiness": "At Risk",
   "dimensions": [
@@ -767,14 +767,15 @@
       "command": "C:\\Program Files\\Python313\\python.exe -c import ast, pathlib, sys\nignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'}\nbad=[]\nfor p in pathlib.Path('.').rglob('*.py'):\n    if any(part in ignore for part in p.parts): continue\n    try: ast.parse(p.read_text(encoding='utf-8', errors='ignore'))\n    except Exception as e: bad.append(f'{p}: {e}')\nprint('\\n'.join(bad))\nsys.exit(1 if bad else 0)\n",
       "status": "pass",
       "returncode": 0,
-      "duration_seconds": 0.062,
+      "duration_seconds": 0.069,
       "stdout": "\n",
       "stderr": ""
     }
   ],
   "claim_matrix": [
     {
-      "claim_id": "E-013",
+      "claim_id": "C-001",
+      "source_evidence_id": "E-013",
       "claim": "A small retrieval-augmented agent demo.",
       "criteria": [
         "LLM-05"
@@ -788,7 +789,8 @@
       ]
     },
     {
-      "claim_id": "E-014",
+      "claim_id": "C-002",
+      "source_evidence_id": "E-014",
       "claim": "This demo uses an OpenAI-compatible model and a local vector store. The knowledge base is under data/.",
       "criteria": [
         "LLM-01",
