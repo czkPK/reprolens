@@ -40,6 +40,8 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Evidence coverage", html)
         self.assertIn("Evidence Appendix", html)
         self.assertIn('href="#evidence-E-', html)
+        self.assertIn('title="requirements.txt:1', html)
+        self.assertIn('class="criteria-table"', html)
         self.assertIn("Top 3 Priority Actions", html)
         self.assertIn("证据说明", html)
         self.assertIn("是否存在依赖清单", html)
