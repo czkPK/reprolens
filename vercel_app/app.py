@@ -11,7 +11,7 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT / "repolens" / "src"))
+sys.path.insert(0, str(ROOT))
 
 from repolens.web import run_remote_audit  # noqa: E402
 from vercel_ui import LANDING_HTML  # noqa: E402

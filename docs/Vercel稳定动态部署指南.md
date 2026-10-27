@@ -4,11 +4,12 @@
 
 ## 已准备好的配置
 
-- `app.py`：FastAPI 应用和 `/api/audit` 在线分析接口；
-- `requirements.txt`：Vercel Python 依赖；
-- `vercel.json`：函数最长运行时间 300 秒；
-- `.vercelignore`：排除不必要的大文件；
-- `vercel_ui.py`：动态网页界面。
+- `vercel_app/app.py`：FastAPI 应用和 `/api/audit` 在线分析接口；
+- `vercel_app/requirements.txt`：Vercel Python 依赖；
+- `vercel_app/vercel.json`：函数最长运行时间 300 秒；
+- `vercel_app/.vercelignore`：排除不必要文件；
+- `vercel_app/vercel_ui.py`：动态网页界面；
+- `vercel_app/repolens/`：随函数部署的扫描器源码。
 
 ## 部署步骤
 
@@ -34,7 +35,7 @@ Vercel 会自动识别：
 
 ```text
 Framework Preset: FastAPI
-Root Directory: ./
+Root Directory: vercel_app
 Build Command: automatic
 Output Directory: automatic
 ```
