@@ -25,13 +25,16 @@ def render_html(result: AuditResult) -> str:
     def e(value: object) -> str:
         return escape(str(value))
 
-    def evidence_links(ids: list[str]) -> str:
+    def evidence_links(ids: list[str], *, stacked: bool = False) -> str:
         if not ids:
             return "-"
-        return " ".join(
+        links = [
             f'<a class="evidence-link" href="#evidence-{e(entry["id"])}" title="{e(entry["location"] + ("：" + entry["excerpt"] if entry["excerpt"] else ""))}"><code>{e(entry["id"])}</code></a>'
             for entry in evidence_reference_entries(ids, result.evidence)
-        )
+        ]
+        if stacked:
+            return f'<div class="evidence-id-list">{"".join(links)}</div>'
+        return " ".join(links)
 
     def claim_source_id(row: dict) -> str:
         return str(row.get("source_evidence_id") or row.get("claim_id", ""))
@@ -69,7 +72,7 @@ def render_html(result: AuditResult) -> str:
         for dim in result.dimensions
     )
     criteria_rows = "".join(
-        f'<tr><td>{e(item.id)}</td><td>{e(item.dimension)}</td><td>{e(item.title)}</td><td><span class="status {e(item.status)}">{e(STATUS_LABELS.get(item.status, item.status))}</span></td><td><span class="confidence {e("not_applicable" if criterion_confidence(item) == "N/A" else criterion_confidence(item).lower())}">{e(criterion_confidence(item).upper())}</span></td><td>{item.points:.1f}/{item.max_points:.1f}</td><td>{evidence_links(item.evidence_ids)}</td><td class="evidence-explanation">{e(evidence_explanation(item, result.evidence, result.project_type, result.model_agnostic))}</td></tr>'
+        f'<tr><td>{e(item.id)}</td><td>{e(item.dimension)}</td><td>{e(item.title)}</td><td><span class="status {e(item.status)}">{e(STATUS_LABELS.get(item.status, item.status))}</span></td><td><span class="confidence {e("not_applicable" if criterion_confidence(item) == "N/A" else criterion_confidence(item).lower())}">{e(criterion_confidence(item).upper())}</span></td><td>{item.points:.1f}/{item.max_points:.1f}</td><td>{evidence_links(item.evidence_ids, stacked=True)}</td><td class="evidence-explanation">{e(evidence_explanation(item, result.evidence, result.project_type, result.model_agnostic))}</td></tr>'
         for item in result.criteria
     )
     claim_rows = "".join(
@@ -168,8 +171,12 @@ tr:target {{ background: #fff8dc; }}
 .criteria-table th:nth-child(4), .criteria-table td:nth-child(4) {{ width: 88px; }}
 .criteria-table th:nth-child(5), .criteria-table td:nth-child(5) {{ width: 95px; }}
 .criteria-table th:nth-child(6), .criteria-table td:nth-child(6) {{ width: 82px; }}
-.criteria-table th:nth-child(7), .criteria-table td:nth-child(7) {{ width: 125px; white-space: nowrap; }}
-.criteria-table th:nth-child(8), .criteria-table td:nth-child(8) {{ width: 442px; }}
+.criteria-table th:nth-child(7) {{ width: 160px; white-space: nowrap; }}
+.criteria-table td:nth-child(7) {{ width: 160px; white-space: normal; overflow-wrap: anywhere; }}
+.criteria-table th:nth-child(8), .criteria-table td:nth-child(8) {{ width: 407px; }}
+.evidence-id-list {{ display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 6px; min-width: 0; }}
+.evidence-id-list .evidence-link {{ display: inline-flex; max-width: 100%; }}
+.evidence-id-list code {{ display: inline-block; padding: 3px 7px; border: 1px solid #d8e4f8; border-radius: 6px; background: #f4f8ff; color: #2457d6; font-size: 12px; line-height: 1.2; white-space: nowrap; }}
 .claim-table {{ table-layout: fixed; width: 1500px; min-width: 1500px; }}
 .claim-table th:nth-child(1), .claim-table td:nth-child(1) {{ width: 92px; white-space: nowrap; }}
 .claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 380px; }}
