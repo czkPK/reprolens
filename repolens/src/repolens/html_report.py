@@ -97,7 +97,7 @@ def render_html(result: AuditResult) -> str:
         for probe in result.probes
     ) or '<tr><td colspan="5">No probes run.</td></tr>'
     evidence_rows = "".join(
-        f'<tr id="evidence-{e(item.id)}"><td><code>{e(item.id)}</code></td><td>{e(item.kind)}</td><td><code>{e(item.path)}</code>{f":{item.line}" if item.line else ""}</td><td>{e(item.excerpt)}</td></tr>'
+        f'<tr id="evidence-{e(item.id)}"><td><code>{e(item.id)}</code></td><td>{e(item.kind)}</td><td><code class="evidence-path">{e(item.path)}</code>{f":{item.line}" if item.line else ""}</td><td class="evidence-raw">{e(item.excerpt)}</td></tr>'
         for item in result.evidence
     ) or '<tr><td colspan="4">No evidence extracted.</td></tr>'
     source_meta = ""
@@ -177,6 +177,20 @@ tr:target {{ background: #fff8dc; }}
 .evidence-id-list {{ display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 6px; min-width: 0; }}
 .evidence-id-list .evidence-link {{ display: inline-flex; max-width: 100%; }}
 .evidence-id-list code {{ display: inline-block; padding: 3px 7px; border: 1px solid #d8e4f8; border-radius: 6px; background: #f4f8ff; color: #2457d6; font-size: 12px; line-height: 1.2; white-space: nowrap; }}
+.evidence-scroll {{ max-height: 72vh; overflow: auto; border-radius: 12px; scrollbar-gutter: stable; }}
+.evidence-table {{ width: 1280px; min-width: 1280px; table-layout: fixed; border-collapse: separate; border-spacing: 0; overflow: visible; }}
+.evidence-table th, .evidence-table td {{ box-sizing: border-box; background-clip: padding-box; vertical-align: top; }}
+.evidence-table thead th {{ position: sticky; top: 0; z-index: 10; background: #eaf0fa; white-space: nowrap; }}
+.evidence-table tbody td:first-child, .evidence-table thead th:first-child {{ position: sticky; left: 0; }}
+.evidence-table tbody td:first-child {{ z-index: 5; background: #fff; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.evidence-table thead th:first-child {{ z-index: 12; background: #eaf0fa; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.evidence-table th:nth-child(1), .evidence-table td:nth-child(1) {{ width: 96px; white-space: nowrap; }}
+.evidence-table th:nth-child(2), .evidence-table td:nth-child(2) {{ width: 144px; }}
+.evidence-table th:nth-child(3), .evidence-table td:nth-child(3) {{ width: 390px; }}
+.evidence-table th:nth-child(4), .evidence-table td:nth-child(4) {{ width: 650px; }}
+.evidence-table td:nth-child(3), .evidence-table td:nth-child(4) {{ overflow-wrap: anywhere; word-break: break-word; line-height: 1.6; }}
+.evidence-table code {{ white-space: normal; word-break: break-word; }}
+.evidence-table tr:target td, .evidence-table tr:target td:first-child {{ background: #fff8dc; }}
 .claim-table {{ table-layout: fixed; width: 1500px; min-width: 1500px; }}
 .claim-table th:nth-child(1), .claim-table td:nth-child(1) {{ width: 92px; white-space: nowrap; }}
 .claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 380px; }}
@@ -205,7 +219,7 @@ small {{ color: #697386; }}
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
 <h2 id="criteria">Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
 <h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
-<h2>Evidence Appendix（证据附录）</h2><p class="meta">证据编号链接到对应文件、行号和原文摘录。</p><table><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table>
+<h2>Evidence Appendix（证据附录）</h2><p class="table-help"><strong>用途：</strong>这里保存每条证据的编号、类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动；长文件路径和原文会自动换行。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
 <h2>Findings</h2><ul>{finding_items}</ul>
 <h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
 <h2>Minimal Remediation Plan</h2><ul>{remediation_items}</ul>
