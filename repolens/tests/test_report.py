@@ -56,6 +56,9 @@ class ReportTests(unittest.TestCase):
         self.assertIn("验证说明", claims_html)
         self.assertIn("configs/app.yaml:8", claims_html)
         self.assertIn("sticky-scroll", claims_html)
+        self.assertIn('class="claim-table"', claims_html)
+        self.assertIn("overflow:visible", claims_html)
+        self.assertIn("box-sizing:border-box", claims_html)
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"

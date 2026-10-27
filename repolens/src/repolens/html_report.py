@@ -127,7 +127,7 @@ h2 {{ margin-top: 32px; border-bottom: 1px solid #dbe2ee; padding-bottom: 8px; }
 .card .label {{ color: #5f6b7a; font-size: 13px; }}
 .card .value {{ font-size: 26px; font-weight: 800; color: #2457d6; margin: 6px 0; }}
 .card .sub {{ color: #8490a1; font-size: 12px; }}
-table {{ width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
+table {{ width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: visible; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 th, td {{ text-align: left; padding: 10px 12px; border-bottom: 1px solid #edf1f7; font-size: 13px; vertical-align: top; }}
 th {{ background: #eef3fb; color: #40506a; }}
 .status {{ display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }}
@@ -149,18 +149,19 @@ th {{ background: #eef3fb; color: #40506a; }}
 tr:target {{ background: #fff8dc; }}
 .table-scroll {{ overflow-x: auto; }}
 .sticky-scroll {{ max-height: 72vh; overflow: auto; border-radius: 12px; scrollbar-gutter: stable; }}
-.sticky-scroll table {{ border-collapse: separate; border-spacing: 0; }}
-.sticky-scroll thead th {{ position: sticky; top: 0; z-index: 5; background: #eaf0fa; }}
+.sticky-scroll table {{ border-collapse: separate; border-spacing: 0; overflow: visible; }}
+.sticky-scroll th, .sticky-scroll td {{ box-sizing: border-box; background-clip: padding-box; }}
+.sticky-scroll thead th {{ position: sticky; top: 0; z-index: 10; background: #eaf0fa; }}
 .sticky-scroll tbody td:nth-child(1), .sticky-scroll thead th:nth-child(1) {{ position: sticky; left: 0; }}
-.sticky-scroll tbody td:nth-child(1) {{ z-index: 3; background: #fff; }}
-.sticky-scroll thead th:nth-child(1) {{ z-index: 7; background: #eaf0fa; }}
-.sticky-scroll tbody td:nth-child(2) {{ position: sticky; z-index: 3; background: #fff; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
-.sticky-scroll thead th:nth-child(2) {{ position: sticky; z-index: 7; background: #eaf0fa; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.sticky-scroll tbody td:nth-child(1) {{ z-index: 5; background: #fff; }}
+.sticky-scroll thead th:nth-child(1) {{ z-index: 12; background: #eaf0fa; }}
+.sticky-scroll tbody td:nth-child(2) {{ position: sticky; z-index: 5; background: #fff; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.sticky-scroll thead th:nth-child(2) {{ position: sticky; z-index: 12; background: #eaf0fa; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
 .criteria-table th:nth-child(2), .criteria-table td:nth-child(2) {{ left: 88px; }}
 .claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ left: 92px; }}
 .evidence-explanation {{ min-width: 300px; color: #526175; line-height: 1.55; }}
 .table-help {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
-.criteria-table {{ table-layout: fixed; min-width: 1260px; }}
+.criteria-table {{ table-layout: fixed; width: 1260px; min-width: 1260px; }}
 .criteria-table th:nth-child(1), .criteria-table td:nth-child(1) {{ width: 88px; white-space: nowrap; }}
 .criteria-table th:nth-child(2), .criteria-table td:nth-child(2) {{ width: 105px; }}
 .criteria-table th:nth-child(3), .criteria-table td:nth-child(3) {{ width: 235px; }}
@@ -168,15 +169,15 @@ tr:target {{ background: #fff8dc; }}
 .criteria-table th:nth-child(5), .criteria-table td:nth-child(5) {{ width: 95px; }}
 .criteria-table th:nth-child(6), .criteria-table td:nth-child(6) {{ width: 82px; }}
 .criteria-table th:nth-child(7), .criteria-table td:nth-child(7) {{ width: 125px; white-space: nowrap; }}
-.criteria-table th:nth-child(8), .criteria-table td:nth-child(8) {{ width: 360px; }}
-.claim-table {{ table-layout: fixed; min-width: 1380px; }}
+.criteria-table th:nth-child(8), .criteria-table td:nth-child(8) {{ width: 442px; }}
+.claim-table {{ table-layout: fixed; width: 1500px; min-width: 1500px; }}
 .claim-table th:nth-child(1), .claim-table td:nth-child(1) {{ width: 92px; white-space: nowrap; }}
-.claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 31%; }}
+.claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 380px; }}
 .claim-table th:nth-child(3), .claim-table td:nth-child(3) {{ width: 98px; }}
 .claim-table th:nth-child(4), .claim-table td:nth-child(4) {{ width: 165px; }}
 .claim-table th:nth-child(5), .claim-table td:nth-child(5) {{ width: 105px; }}
-.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width: 300px; }}
-.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width: 250px; }}
+.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width: 340px; }}
+.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width: 320px; }}
 .evidence-item {{ margin: 0 0 8px; }}
 .evidence-location {{ color: #2457d6; font-size: 12px; }}
 .evidence-excerpt {{ color: #697386; font-size: 12px; line-height: 1.45; margin-top: 2px; }}
@@ -269,16 +270,16 @@ h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
 .value {{ color:#2457d6; font-size:28px; font-weight:800; margin:5px 0; }}
 .guide {{ background:#eef3fb; border:1px solid #dbe4f0; border-radius:14px; padding:16px 20px; line-height:1.75; }}
 .table-scroll {{ max-height:72vh; overflow:auto; border-radius:14px; scrollbar-gutter:stable; }}
-table {{ width:100%; border-collapse:separate; border-spacing:0; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1350px; }}
-th,td {{ padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; }}
+table {{ width:100%; border-collapse:separate; border-spacing:0; background:white; border-radius:14px; overflow:visible; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1350px; }}
+th,td {{ box-sizing:border-box; padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; background-clip:padding-box; }}
 th {{ background:#eaf0fa; color:#40506a; }}
-thead th {{ position:sticky; top:0; z-index:5; background:#eaf0fa; }}
+thead th {{ position:sticky; top:0; z-index:10; background:#eaf0fa; }}
 td:nth-child(1), th:nth-child(1) {{ position:sticky; left:0; }}
-td:nth-child(1) {{ z-index:3; background:#fff; }}
-th:nth-child(1) {{ z-index:7; }}
+td:nth-child(1) {{ z-index:5; background:#fff; }}
+th:nth-child(1) {{ z-index:12; }}
 td:nth-child(2), th:nth-child(2) {{ position:sticky; left:92px; }}
-td:nth-child(2) {{ z-index:3; background:#fff; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
-th:nth-child(2) {{ z-index:7; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
+td:nth-child(2) {{ z-index:5; background:#fff; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
+th:nth-child(2) {{ z-index:12; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
 .status {{ display:inline-block; border-radius:999px; padding:4px 9px; font-weight:700; white-space:nowrap; }}
 .status.verified {{ background:#e4f7ec; color:#167a3a; }}
 .status.partially_verified {{ background:#fff4db; color:#9a6500; }}
@@ -293,6 +294,10 @@ th:nth-child(4), td:nth-child(4) {{ width:165px; }}
 th:nth-child(5), td:nth-child(5) {{ width:105px; }}
 th:nth-child(6), td:nth-child(6) {{ width:300px; }}
 th:nth-child(7), td:nth-child(7) {{ width:250px; }}
+.claim-table {{ table-layout:fixed; width:1500px; min-width:1500px; }}
+.claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width:380px; }}
+.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width:340px; }}
+.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width:320px; }}
 .evidence-item {{ margin:0 0 8px; }}
 .evidence-location {{ color:#2457d6; font-size:12px; }}
 .evidence-excerpt {{ color:#697386; font-size:12px; line-height:1.45; margin-top:2px; }}
@@ -311,7 +316,7 @@ a:hover {{ text-decoration:underline; }}
 “检查依据”是验证这句话必须检查的规则，编号后的括号是中文含义；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
 “支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
 <h2>声明列表</h2>
-<p class="guide"><strong>表格已固定首行和前两列</strong>，可在表格内横向和纵向滚动。点击 E-xxx 可查看完整报告中的证据原文。</p><div class="table-scroll sticky-scroll"><table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table></div>
+<p class="guide"><strong>表格已固定首行和前两列</strong>，可在表格内横向和纵向滚动。点击 E-xxx 可查看完整报告中的证据原文。</p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table></div>
 <h2>状态说明</h2>
 <div class="guide"><strong>已验证</strong>：相关检查项全部通过，并且有证据支持。<br>
 <strong>部分验证</strong>：找到部分证据，但仍有缺口。<br>
