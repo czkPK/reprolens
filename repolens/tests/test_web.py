@@ -18,6 +18,20 @@ class WebTests(unittest.TestCase):
             "https://github.com/openai/openai-python",
         )
 
+    def test_parse_github_pages_url_maps_to_repository(self):
+        self.assertEqual(
+            parse_github_url("https://donghaotian123.github.io/Wan-Alpha/"),
+            "https://github.com/donghaotian123/Wan-Alpha",
+        )
+        self.assertEqual(
+            parse_github_url("https://donghaotian123.github.io/Wan-Alpha/docs/index.html"),
+            "https://github.com/donghaotian123/Wan-Alpha",
+        )
+        self.assertEqual(
+            parse_github_url("https://donghaotian123.github.io/"),
+            "https://github.com/donghaotian123/donghaotian123.github.io",
+        )
+
     def test_parse_github_url_rejects_non_repository_links(self):
         for value in (
             "http://github.com/openai/openai-python",

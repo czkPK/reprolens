@@ -28,6 +28,7 @@ MAX_FILES = 20_000
 MAX_ARCHIVE_BYTES = 200 * 1024 * 1024
 AUDIT_SEMAPHORE = threading.BoundedSemaphore(2)
 GITHUB_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
+GITHUB_PAGES_HOST_RE = re.compile(r"^([A-Za-z0-9-]+)\.github\.io$")
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 REPORT_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
@@ -41,16 +42,24 @@ IGNORE_DIRS = {
 def parse_github_url(value: str) -> str:
     value = value.strip()
     if not value:
-        raise ValueError("请输入 GitHub 仓库地址。")
+        raise ValueError("请输入 GitHub 仓库地址或 GitHub Pages 网站地址。")
     if value.endswith(".git"):
         value = value[:-4]
     parsed = urlparse(value)
-    if parsed.scheme != "https" or parsed.netloc.lower() != "github.com":
-        raise ValueError("目前只支持 https://github.com/owner/repo 形式的公开仓库。")
+    if parsed.scheme != "https":
+        raise ValueError("链接必须使用 https。")
+    host = parsed.netloc.lower()
     parts = [part for part in parsed.path.split("/") if part]
-    if len(parts) != 2:
-        raise ValueError("链接必须指向仓库主页，而不是文件、Issue 或子目录。")
-    owner, repo = parts
+    pages_match = GITHUB_PAGES_HOST_RE.fullmatch(host)
+    if host == "github.com":
+        if len(parts) != 2:
+            raise ValueError("GitHub 链接必须指向仓库主页，而不是文件、Issue 或子目录。")
+        owner, repo = parts
+    elif pages_match:
+        owner = pages_match.group(1)
+        repo = parts[0] if parts else f"{owner}.github.io"
+    else:
+        raise ValueError("请输入 GitHub 仓库地址，或 username.github.io/repo 形式的 GitHub Pages 地址。")
     if not GITHUB_PART_RE.fullmatch(owner) or not GITHUB_PART_RE.fullmatch(repo):
         raise ValueError("GitHub 仓库名称不合法。")
     if owner.startswith(".") or repo.startswith("."):
@@ -594,4 +603,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
