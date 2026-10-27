@@ -38,7 +38,7 @@ repolens\Start-ReproLens-Web.cmd
 
 详细步骤见 `docs/HuggingFace-Space稳定部署指南.md`。部署成功后使用固定的 `https://用户名-reprolens.hf.space` 地址，不要把临时隧道或 `127.0.0.1` 作为作品网址提交。
 
-Render 配置仍作为备选方案保留，见 `docs/公网网页版部署指南.md`；如果当前网络无法访问 Render，请使用 Hugging Face Space。
+Hugging Face 登录受限时，可使用 Koyeb 从 GitHub 直接部署 Dockerfile，步骤见 `docs/Koyeb稳定部署指南.md`。Render 配置也作为备选方案保留，见 `docs/公网网页版部署指南.md`。
 
 ### 3. 本地版：选择本地仓库
 
