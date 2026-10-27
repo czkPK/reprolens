@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T14:02:53.017971+00:00",
+  "generated_at": "2026-10-27T14:18:55.616005+00:00",
   "before_score": 49.1,
   "after_score": 68.4,
   "delta": 19.3,
@@ -75,5 +75,7 @@
   ],
   "proposal_dir": "D:\\CODEX\\ReproLens\\repolens\\reports\\demo-llm-app\\autofix\\proposal",
   "staging_dir": "D:\\CODEX\\ReproLens\\repolens\\reports\\demo-llm-app\\autofix\\staging",
-  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed."
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed.",
+  "original_fingerprint": "0d3cbcf0b7179450e31fdbb2b4959716e46fe60a19d3c61afc473f8d92382366",
+  "original_unchanged": true
 }

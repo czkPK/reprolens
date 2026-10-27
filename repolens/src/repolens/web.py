@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from .cli import run_audit
 
@@ -29,6 +29,7 @@ MAX_ARCHIVE_BYTES = 200 * 1024 * 1024
 AUDIT_SEMAPHORE = threading.BoundedSemaphore(2)
 GITHUB_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+REPORT_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
 MAX_PENDING_JOBS = 8
 IGNORE_DIRS = {
@@ -216,6 +217,7 @@ def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -
             "claims_url": f"/reports/{run_id}/claims.html",
             "score_url": f"/reports/{run_id}/score.json",
             "badge_url": f"/reports/{run_id}/badge.svg",
+            "autofix_url": f"/reports/{run_id}/autofix.html",
         }
         (run_dir / "web-result.json").write_text(
             json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -347,7 +349,7 @@ run.addEventListener('click', async () => {
     setText('files', data.files_scanned); setText('coverage', data.evidence_coverage.percent.toFixed(1)+'%'); setText('claims', data.claims);
     const fixText = data.autofix ? `AutoFix：${data.autofix.before_score.toFixed(1)} → ${data.autofix.after_score.toFixed(1)}（+${data.autofix.delta.toFixed(1)}）` : (data.autofix_ran ? 'AutoFix 已完成。' : '仓库较大，本次跳过 AutoFix，仅执行静态审计。');
     setText('autofix', fixText + '  |  语义映射：' + data.ai_mode);
-    addLink('打开完整报告', data.report_url); addLink('查看声明矩阵', data.claims_url); addLink('下载评分 JSON', data.score_url); addLink('复现徽章', data.badge_url);
+    addLink('打开完整报告', data.report_url); addLink('查看声明矩阵', data.claims_url); if(data.autofix_url) addLink('查看 AutoFix 验证', data.autofix_url); addLink('下载评分 JSON', data.score_url); addLink('复现徽章', data.badge_url);
     result.classList.add('show');
   } catch (error) {
     status.className='status error'; status.textContent = error.message;
@@ -413,13 +415,16 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
         self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
 
     def _serve_report(self, relative: str) -> None:
-        parts = [part for part in relative.split("/") if part]
-        if len(parts) != 2 or not RUN_ID_RE.fullmatch(parts[0]):
+        parts = [part for part in unquote(relative).split("/") if part]
+        if len(parts) < 2 or not RUN_ID_RE.fullmatch(parts[0]):
             self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
             return
-        target = (self.runs_dir / parts[0] / parts[1]).resolve()
-        runs_root = self.runs_dir.resolve()
-        if runs_root not in target.parents or not target.is_file():
+        if any(part.startswith(".") or not REPORT_PART_RE.fullmatch(part) for part in parts[1:]):
+            self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
+            return
+        run_root = (self.runs_dir / parts[0]).resolve()
+        target = self.runs_dir.joinpath(*parts).resolve()
+        if run_root not in target.parents or not target.is_file():
             self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
             return
         body = target.read_bytes()

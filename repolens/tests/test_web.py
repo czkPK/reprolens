@@ -43,7 +43,11 @@ class WebTests(unittest.TestCase):
             return summary
 
         with tempfile.TemporaryDirectory() as tmp:
-            server = ReproLensHTTPServer(("127.0.0.1", 0), Path(tmp))
+            runs_dir = Path(tmp)
+            proposal_file = runs_dir / "test-run" / "autofix" / "proposal" / "Dockerfile"
+            proposal_file.parent.mkdir(parents=True)
+            proposal_file.write_text("FROM python:3.11-slim\n", encoding="utf-8")
+            server = ReproLensHTTPServer(("127.0.0.1", 0), runs_dir)
             thread = threading.Thread(target=server.serve_forever, daemon=True)
             thread.start()
             base = f"http://127.0.0.1:{server.server_port}"
@@ -71,6 +75,9 @@ class WebTests(unittest.TestCase):
                         self.assertNotEqual(state["status"], "error")
                         time.sleep(0.03)
                     self.assertEqual(result, summary)
+                    with urllib.request.urlopen(f"{base}/reports/test-run/autofix/proposal/Dockerfile", timeout=5) as response:
+                        self.assertEqual(response.status, 200)
+                        self.assertIn(b"FROM python:3.11-slim", response.read())
             finally:
                 server.shutdown()
                 server.server_close()

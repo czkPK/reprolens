@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .autofix_report import tree_fingerprint, write_autofix_html
 from .models import AuditResult
 from .rules import evaluate_criteria
 from .scanner import scan_repo
@@ -243,6 +244,7 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
         shutil.rmtree(proposal_dir)
     proposal_dir.mkdir(parents=True, exist_ok=True)
 
+    original_fingerprint = tree_fingerprint(root)
     files = _build_proposal(root, result)
     _copy_repo(root, staging_dir)
 
@@ -303,6 +305,8 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
         "proposal_dir": str(proposal_dir),
         "staging_dir": str(staging_dir),
         "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed.",
+        "original_fingerprint": original_fingerprint,
+        "original_unchanged": tree_fingerprint(root) == original_fingerprint,
     }
     (out_dir / "autofix.json").write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     lines = [
@@ -332,4 +336,5 @@ def generate_autofix(root: Path, result: AuditResult, out_dir: Path) -> dict:
     lines.extend(f"- `{cid}`" for cid in remaining) if remaining else lines.append("- None")
     lines.extend(["", "## Review Note", "", "Generated templates with TODO fields are intentionally not treated as verified evidence. Candidates that reduce the audit score are automatically rejected."])
     (out_dir / "FIX_PROPOSAL.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    write_autofix_html(report, out_dir)
     return report

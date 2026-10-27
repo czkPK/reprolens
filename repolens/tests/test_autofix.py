@@ -36,11 +36,17 @@ class AutoFixTests(unittest.TestCase):
             out = Path(tmp) / "autofix"
             report = generate_autofix(root, result, out)
             self.assertGreater(report["after_score"], report["before_score"])
+            self.assertTrue(report["original_unchanged"])
+            self.assertEqual(len(report["original_fingerprint"]), 64)
             self.assertTrue((out / "autofix.json").exists())
+            self.assertTrue((out.parent / "autofix.html").exists())
             self.assertTrue((out / "FIX_PROPOSAL.md").exists())
             self.assertTrue((out / "proposal" / "Dockerfile").exists())
             self.assertTrue((out / "proposal" / "prompts" / "prompt_metadata.json").exists())
             self.assertTrue((out / "proposal" / "tests" / "test_smoke.py").exists())
+            autofix_html = (out.parent / "autofix.html").read_text(encoding="utf-8")
+            self.assertIn("原仓库未被修改", autofix_html)
+            self.assertIn("autofix/proposal/Dockerfile", autofix_html)
 
 
 if __name__ == "__main__":
