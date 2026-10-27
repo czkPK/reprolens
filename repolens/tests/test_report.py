@@ -42,6 +42,8 @@ class ReportTests(unittest.TestCase):
         self.assertIn('href="#evidence-E-', html)
         self.assertIn('title="requirements.txt:1', html)
         self.assertIn('class="criteria-table"', html)
+        self.assertIn("sticky-scroll", html)
+        self.assertIn("表格已固定首行和前两列", html)
         self.assertIn("Top 3 Priority Actions", html)
         self.assertIn("证据说明", html)
         self.assertIn("是否存在依赖清单", html)
@@ -53,6 +55,7 @@ class ReportTests(unittest.TestCase):
         self.assertIn("README 声明", claims_html)
         self.assertIn("验证说明", claims_html)
         self.assertIn("configs/app.yaml:8", claims_html)
+        self.assertIn("sticky-scroll", claims_html)
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"

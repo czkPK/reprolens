@@ -148,6 +148,16 @@ th {{ background: #eef3fb; color: #40506a; }}
 .evidence-link:hover {{ text-decoration: underline; }}
 tr:target {{ background: #fff8dc; }}
 .table-scroll {{ overflow-x: auto; }}
+.sticky-scroll {{ max-height: 72vh; overflow: auto; border-radius: 12px; scrollbar-gutter: stable; }}
+.sticky-scroll table {{ border-collapse: separate; border-spacing: 0; }}
+.sticky-scroll thead th {{ position: sticky; top: 0; z-index: 5; background: #eaf0fa; }}
+.sticky-scroll tbody td:nth-child(1), .sticky-scroll thead th:nth-child(1) {{ position: sticky; left: 0; }}
+.sticky-scroll tbody td:nth-child(1) {{ z-index: 3; background: #fff; }}
+.sticky-scroll thead th:nth-child(1) {{ z-index: 7; background: #eaf0fa; }}
+.sticky-scroll tbody td:nth-child(2) {{ position: sticky; z-index: 3; background: #fff; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.sticky-scroll thead th:nth-child(2) {{ position: sticky; z-index: 7; background: #eaf0fa; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
+.criteria-table th:nth-child(2), .criteria-table td:nth-child(2) {{ left: 88px; }}
+.claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ left: 92px; }}
 .evidence-explanation {{ min-width: 300px; color: #526175; line-height: 1.55; }}
 .table-help {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
 .criteria-table {{ table-layout: fixed; min-width: 1260px; }}
@@ -185,8 +195,8 @@ small {{ color: #697386; }}
 <h2>Evidence Overview</h2><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
-<h2>Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。</p><div class="table-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。</p><div class="table-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2 id="criteria">Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
+<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
 <h2>Evidence Appendix（证据附录）</h2><p class="meta">证据编号链接到对应文件、行号和原文摘录。</p><table><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table>
 <h2>Findings</h2><ul>{finding_items}</ul>
 <h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
@@ -258,9 +268,17 @@ h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
 .label,.sub {{ color:#64748b; font-size:13px; }}
 .value {{ color:#2457d6; font-size:28px; font-weight:800; margin:5px 0; }}
 .guide {{ background:#eef3fb; border:1px solid #dbe4f0; border-radius:14px; padding:16px 20px; line-height:1.75; }}
-table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1350px; }}
+.table-scroll {{ max-height:72vh; overflow:auto; border-radius:14px; scrollbar-gutter:stable; }}
+table {{ width:100%; border-collapse:separate; border-spacing:0; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1350px; }}
 th,td {{ padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; }}
 th {{ background:#eaf0fa; color:#40506a; }}
+thead th {{ position:sticky; top:0; z-index:5; background:#eaf0fa; }}
+td:nth-child(1), th:nth-child(1) {{ position:sticky; left:0; }}
+td:nth-child(1) {{ z-index:3; background:#fff; }}
+th:nth-child(1) {{ z-index:7; }}
+td:nth-child(2), th:nth-child(2) {{ position:sticky; left:92px; }}
+td:nth-child(2) {{ z-index:3; background:#fff; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
+th:nth-child(2) {{ z-index:7; box-shadow:2px 0 6px rgba(23,32,51,.08); }}
 .status {{ display:inline-block; border-radius:999px; padding:4px 9px; font-weight:700; white-space:nowrap; }}
 .status.verified {{ background:#e4f7ec; color:#167a3a; }}
 .status.partially_verified {{ background:#fff4db; color:#9a6500; }}
@@ -293,7 +311,7 @@ a:hover {{ text-decoration:underline; }}
 “检查依据”是验证这句话必须检查的规则，编号后的括号是中文含义；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
 “支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
 <h2>声明列表</h2>
-<table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table>
+<p class="guide"><strong>表格已固定首行和前两列</strong>，可在表格内横向和纵向滚动。点击 E-xxx 可查看完整报告中的证据原文。</p><div class="table-scroll sticky-scroll"><table><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table></div>
 <h2>状态说明</h2>
 <div class="guide"><strong>已验证</strong>：相关检查项全部通过，并且有证据支持。<br>
 <strong>部分验证</strong>：找到部分证据，但仍有缺口。<br>
