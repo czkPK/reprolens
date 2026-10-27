@@ -20,9 +20,9 @@ ReproLens 把“文件检查”升级为“声明—证据—缺口”审计：
 - GitHub Action Job Summary；
 - 可选 LLM 语义声明映射，异常时回退确定性规则。
 
-## 三种使用方式
+## 四种使用方式
 
-### 1. 网页版：任意公开 GitHub 仓库
+### 1. 本机网页版：任意公开 GitHub 仓库
 
 双击：
 
@@ -32,7 +32,15 @@ repolens\Start-ReproLens-Web.cmd
 
 粘贴任意公开 GitHub 仓库地址，系统会固定到具体 commit SHA，浅克隆后生成报告。不会执行仓库代码。
 
-### 2. 本地版：选择本地仓库
+### 2. 公网网页版：任何电脑和手机都能访问
+
+仓库已经提供 Docker 和 Render 部署配置，可直接部署成公网网页服务：
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/czkPK/reprolens)
+
+详细步骤见 `docs/公网网页版部署指南.md`。部署成功后使用 Render 提供的 HTTPS 地址，不要把 `127.0.0.1` 本机地址作为作品网址提交。
+
+### 3. 本地版：选择本地仓库
 
 双击：
 
@@ -40,7 +48,7 @@ repolens\Start-ReproLens-Web.cmd
 repolens\Start-ReproLens.cmd
 ```
 
-### 3. GitHub Action：持续集成
+### 4. GitHub Action：持续集成
 
 根目录提供可复用 `action.yml`，接入方式见：
 
