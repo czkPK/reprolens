@@ -34,11 +34,11 @@ repolens\Start-ReproLens-Web.cmd
 
 ### 2. 公网网页版：任何电脑和手机都能访问
 
-推荐使用 Hugging Face Docker Space 部署稳定公网地址。Space 只需上传 `deploy/huggingface-space/README.md` 和 `deploy/huggingface-space/Dockerfile` 两个文件。
+推荐使用 Vercel 部署完整动态公网版。仓库已经提供 FastAPI 入口、依赖和 300 秒函数配置，支持现场分析任意公开 GitHub 仓库和 GitHub Pages 地址。
 
-详细步骤见 `docs/HuggingFace-Space稳定部署指南.md`。部署成功后使用固定的 `https://用户名-reprolens.hf.space` 地址，不要把临时隧道或 `127.0.0.1` 作为作品网址提交。
+部署步骤见 `docs/Vercel稳定动态部署指南.md`。Vercel 会提供固定的 `https://reprolens-xxxx.vercel.app` 地址，不要使用临时隧道或 `127.0.0.1` 作为作品网址。
 
-Hugging Face 登录受限时，可使用 Koyeb 从 GitHub 直接部署 Dockerfile，步骤见 `docs/Koyeb稳定部署指南.md`。Render 配置也作为备选方案保留，见 `docs/公网网页版部署指南.md`。
+如果需要纯静态展示页，可使用 GitHub Pages；Hugging Face、Koyeb 和 Render 配置仅作为备选方案保留。
 
 ### 3. 本地版：选择本地仓库
 

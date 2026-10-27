@@ -1,0 +1,10 @@
+.git
+.github
+docs
+deliverables
+licenselens
+reference
+repolens/web-runs*
+repolens/reports
+repolens/**/autofix/staging
+*.wav

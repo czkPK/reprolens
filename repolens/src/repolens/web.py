@@ -118,14 +118,22 @@ def _count_repo_files(root: Path) -> int:
 def _run_git(args: list[str], *, timeout: int = 180) -> subprocess.CompletedProcess[str]:
     env = os.environ.copy()
     env["GIT_TERMINAL_PROMPT"] = "0"
-    return subprocess.run(
-        ["git", *args],
-        capture_output=True,
-        text=True,
-        timeout=timeout,
-        env=env,
-        check=False,
-    )
+    try:
+        return subprocess.run(
+            ["git", *args],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            env=env,
+            check=False,
+        )
+    except FileNotFoundError:
+        return subprocess.CompletedProcess(
+            ["git", *args],
+            returncode=127,
+            stdout="",
+            stderr="git executable not found; using GitHub archive fallback",
+        )
 
 
 def _github_json(source_url: str) -> dict:

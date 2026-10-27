@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 from unittest.mock import patch
 
-from repolens.web import ReproLensHTTPServer, parse_github_url, resolve_github_source
+from repolens.web import ReproLensHTTPServer, _run_git, parse_github_url, resolve_github_source
 
 
 class WebTests(unittest.TestCase):
@@ -63,6 +63,12 @@ class WebTests(unittest.TestCase):
                 resolve_github_source("https://donghaotian123.github.io/Wan-Alpha/"),
                 "https://github.com/WeChatCV/Wan-Alpha",
             )
+
+    def test_missing_git_uses_fallback_exit_code(self):
+        with patch("repolens.web.subprocess.run", side_effect=FileNotFoundError):
+            result = _run_git(["clone", "https://github.com/openai/openai-python"])
+        self.assertEqual(result.returncode, 127)
+        self.assertIn("archive fallback", result.stderr)
 
     def test_async_audit_job_can_be_polled_to_completion(self):
         summary = {
