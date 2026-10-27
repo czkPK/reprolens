@@ -61,8 +61,13 @@ class ClaimTests(unittest.TestCase):
 
     def test_not_applicable_explanation_does_not_claim_evidence_support(self):
         item = criterion("not_applicable", ["E-1"], applicable=False)
+        item.id = "MODEL-02"
+        item.title = "是否提供模型卡或版本说明"
         evidence = [Evidence("E-1", "readme", "README.md", 1, "demo")]
-        self.assertIn("不参与评分", evidence_explanation(item, evidence))
+        explanation = evidence_explanation(item, evidence, project_type="agent_framework")
+        self.assertIn("模型无关的 Agent 框架", explanation)
+        self.assertIn("不需要提供自有模型卡", explanation)
+        self.assertIn("识别线索", explanation)
 
     def test_claim_verification_note_explains_gaps(self):
         note = claim_verification_note({"status": "partially_verified", "gaps": ["LLM-03"]})

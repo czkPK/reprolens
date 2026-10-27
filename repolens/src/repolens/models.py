@@ -84,6 +84,8 @@ class AuditResult:
     source_url: str | None = None
     source_commit: str | None = None
     ai_metadata: dict[str, Any] = field(default_factory=dict)
+    project_type: str | None = None
+    model_agnostic: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

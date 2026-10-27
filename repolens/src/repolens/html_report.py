@@ -69,7 +69,7 @@ def render_html(result: AuditResult) -> str:
         for dim in result.dimensions
     )
     criteria_rows = "".join(
-        f'<tr><td>{e(item.id)}</td><td>{e(item.dimension)}</td><td>{e(item.title)}</td><td><span class="status {e(item.status)}">{e(STATUS_LABELS.get(item.status, item.status))}</span></td><td><span class="confidence {e("not_applicable" if criterion_confidence(item) == "N/A" else criterion_confidence(item).lower())}">{e(criterion_confidence(item).upper())}</span></td><td>{item.points:.1f}/{item.max_points:.1f}</td><td>{evidence_links(item.evidence_ids)}</td><td class="evidence-explanation">{e(evidence_explanation(item, result.evidence))}</td></tr>'
+        f'<tr><td>{e(item.id)}</td><td>{e(item.dimension)}</td><td>{e(item.title)}</td><td><span class="status {e(item.status)}">{e(STATUS_LABELS.get(item.status, item.status))}</span></td><td><span class="confidence {e("not_applicable" if criterion_confidence(item) == "N/A" else criterion_confidence(item).lower())}">{e(criterion_confidence(item).upper())}</span></td><td>{item.points:.1f}/{item.max_points:.1f}</td><td>{evidence_links(item.evidence_ids)}</td><td class="evidence-explanation">{e(evidence_explanation(item, result.evidence, result.project_type, result.model_agnostic))}</td></tr>'
         for item in result.criteria
     )
     claim_rows = "".join(

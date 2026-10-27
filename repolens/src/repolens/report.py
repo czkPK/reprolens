@@ -93,7 +93,7 @@ def render_markdown(result: AuditResult) -> str:
     )
     for item in result.criteria:
         evidence = ", ".join(item.evidence_ids) if item.evidence_ids else "-"
-        explanation = evidence_explanation(item, result.evidence)
+        explanation = evidence_explanation(item, result.evidence, result.project_type, result.model_agnostic)
         lines.append(
             f"| {item.id} | {item.dimension} | {item.title} | {STATUS_LABELS.get(item.status, item.status)} | {criterion_confidence(item).upper()} | {item.points:.1f}/{item.max_points:.1f} | {evidence} | {_md(explanation)} |"
         )

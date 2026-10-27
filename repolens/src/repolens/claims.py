@@ -82,12 +82,42 @@ def evidence_coverage(criteria: list[CriterionResult]) -> tuple[int, int, float]
     return covered, total, round(covered / total * 100, 1) if total else 0.0
 
 
-def evidence_explanation(item: CriterionResult, evidence: list[Evidence]) -> str:
+def _project_label(project_type: str | None, model_agnostic: bool) -> str:
+    labels = {
+        "agent_framework": "模型无关的 Agent 框架",
+        "sdk": "模型无关的 SDK",
+        "memory_framework": "模型无关的记忆框架",
+        "ml_project": "机器学习项目",
+        "application": "AI 应用",
+    }
+    label = labels.get(project_type or "", "当前项目")
+    if project_type == "application" and model_agnostic:
+        return "模型无关的 AI 应用"
+    return label
+
+
+def _not_applicable_reason(item: CriterionResult, project_type: str | None, model_agnostic: bool) -> str:
+    label = _project_label(project_type, model_agnostic)
+    if project_type in {"agent_framework", "sdk", "memory_framework"} and item.id.startswith("MODEL-"):
+        return f"这是一个{label}，自身不提供模型权重或模型卡，模型由外部提供方管理，因此不需要提供自有模型卡。"
+    if project_type in {"agent_framework", "sdk", "memory_framework"} and item.id.startswith("DATA-"):
+        return f"这是一个{label}，自身不拥有训练数据集，因此不需要提供项目自己的数据下载地址、预处理脚本或数据集卡。"
+    if project_type in {"agent_framework", "sdk", "memory_framework"} and item.id == "EXP-03":
+        return f"这是一个{label}，不训练固定模型，因此不需要设置训练随机种子。"
+    if item.id == "LLM-05" and project_type in {"sdk", "agent_framework"}:
+        return f"这是一个{label}，自身不维护固定的 RAG 索引或知识库，因此不需要提供索引版本。"
+    if item.id == "LLM-06" and project_type in {"sdk", "memory_framework"}:
+        return f"这是一个{label}，不是完整的 Agent 执行应用，因此不需要提供项目级 Agent 调用轨迹。"
+    return f"这是一个{label}，不具备该检查项对应的项目产物，因此这项检查不适用。"
+
+
+def evidence_explanation(item: CriterionResult, evidence: list[Evidence], project_type: str | None = None, model_agnostic: bool = False) -> str:
     by_id = {entry.id: entry for entry in evidence}
     if not item.applicable:
         if item.evidence_ids:
-            return "该项不适用于当前项目类型；列出的证据只用于说明识别线索，不参与评分。"
-        return "该项不适用于当前项目类型，不需要提供证据。"
+            ids = "、".join(item.evidence_ids)
+            return _not_applicable_reason(item, project_type, model_agnostic) + f" 列出的 {ids} 只是判断项目类型时看到的识别线索。"
+        return _not_applicable_reason(item, project_type, model_agnostic)
     if not item.evidence_ids:
         return "未找到可引用证据，因此该项不能判定为通过。"
     snippets: list[str] = []

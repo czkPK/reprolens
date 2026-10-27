@@ -84,6 +84,8 @@ def run_audit(
         },
         source_url=source_url,
         source_commit=source_commit,
+        project_type=snapshot.project_type,
+        model_agnostic=snapshot.has("model_agnostic"),
     )
     result.claim_matrix = build_claim_matrix(result)
     result.claim_matrix, result.ai_metadata = enhance_claim_matrix(result, enabled=ai_review)
