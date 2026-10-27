@@ -29,6 +29,8 @@ MAX_ARCHIVE_BYTES = 200 * 1024 * 1024
 AUDIT_SEMAPHORE = threading.BoundedSemaphore(2)
 GITHUB_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
+MAX_PENDING_JOBS = 8
 IGNORE_DIRS = {
     ".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache",
     ".mypy_cache", "dist", "build", "target", "vendor",
@@ -313,15 +315,32 @@ const result = document.getElementById('result');
 document.querySelectorAll('.sample').forEach(el => el.addEventListener('click', () => { repo.value = el.dataset.url; repo.focus(); }));
 function setText(id, value){ document.getElementById(id).textContent = value; }
 function addLink(label, href){ const a=document.createElement('a'); a.textContent=label; a.href=href; a.target='_blank'; a.rel='noopener noreferrer'; document.getElementById('links').appendChild(a); }
+function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+async function waitForJob(jobId){
+  const started = Date.now();
+  while(Date.now() - started < 10 * 60 * 1000){
+    const response = await fetch('/api/jobs/' + encodeURIComponent(jobId), {cache:'no-store'});
+    const job = await response.json();
+    if(!response.ok) throw new Error(job.error || '无法读取分析任务状态');
+    if(job.status === 'done') return job.result;
+    if(job.status === 'error') throw new Error(job.error || '分析失败');
+    const elapsed = Math.floor((Date.now() - started) / 1000);
+    status.className='status loading';
+    status.textContent = (job.message || '正在分析仓库…') + `（已等待 ${elapsed} 秒）`;
+    await sleep(1200);
+  }
+  throw new Error('分析等待超时，请稍后重新提交。');
+}
 run.addEventListener('click', async () => {
   const value = repo.value.trim();
   if(!value) { status.className='status error'; status.textContent='请先输入 GitHub 仓库地址。'; return; }
-  run.disabled=true; result.classList.remove('show'); document.getElementById('links').replaceChildren();
-  status.className='status loading'; status.textContent='正在浅克隆仓库并执行静态审计，大型仓库可能需要几十秒…';
+  run.disabled=true; run.textContent='分析中…'; result.classList.remove('show'); document.getElementById('links').replaceChildren();
+  status.className='status loading'; status.textContent='正在提交分析任务…';
   try {
-    const response = await fetch('/api/audit', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:value})});
-    const data = await response.json();
-    if(!response.ok) throw new Error(data.error || '分析失败');
+    const response = await fetch('/api/jobs', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url:value})});
+    const job = await response.json();
+    if(!response.ok) throw new Error(job.error || '提交分析任务失败');
+    const data = await waitForJob(job.job_id);
     status.className='status'; status.textContent='分析完成。';
     setText('score', data.score.toFixed(1)); document.getElementById('score').insertAdjacentHTML('beforeend','<small> / 100</small>');
     setText('readiness', data.readiness); setText('commit', 'commit ' + data.source_commit.slice(0,12));
@@ -332,7 +351,7 @@ run.addEventListener('click', async () => {
     result.classList.add('show');
   } catch (error) {
     status.className='status error'; status.textContent = error.message;
-  } finally { run.disabled=false; }
+  } finally { run.disabled=false; run.textContent='开始体检'; }
 });
 </script>
 </body></html>'''
@@ -377,6 +396,17 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
         if parsed.path == "/api/health":
             self._json({"status": "ok"})
             return
+        if parsed.path.startswith("/api/jobs/"):
+            job_id = parsed.path.removeprefix("/api/jobs/")
+            if not JOB_ID_RE.fullmatch(job_id):
+                self._json({"error": "任务编号不合法。"}, HTTPStatus.BAD_REQUEST)
+                return
+            job = self.server.get_audit_job(job_id)  # type: ignore[attr-defined]
+            if job is None:
+                self._json({"error": "任务不存在或已过期。"}, HTTPStatus.NOT_FOUND)
+                return
+            self._json(job)
+            return
         if parsed.path.startswith("/reports/"):
             self._serve_report(parsed.path.removeprefix("/reports/"))
             return
@@ -403,7 +433,7 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self) -> None:
-        if self.path != "/api/audit":
+        if self.path not in {"/api/audit", "/api/jobs"}:
             self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
             return
         length = int(self.headers.get("Content-Length", "0") or "0")
@@ -415,6 +445,13 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
             source_url = parse_github_url(str(payload.get("url", "")))
         except (ValueError, json.JSONDecodeError) as exc:
             self._json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+            return
+        if self.path == "/api/jobs":
+            try:
+                job = self.server.create_audit_job(source_url)  # type: ignore[attr-defined]
+                self._json(job, HTTPStatus.ACCEPTED)
+            except RuntimeError as exc:
+                self._json({"error": str(exc)}, HTTPStatus.TOO_MANY_REQUESTS)
             return
         if not AUDIT_SEMAPHORE.acquire(blocking=False):
             self._json({"error": "当前分析任务较多，请稍后重试。"}, HTTPStatus.TOO_MANY_REQUESTS)
@@ -436,6 +473,95 @@ class ReproLensHTTPServer(ThreadingHTTPServer):
     def __init__(self, address: tuple[str, int], runs_dir: Path):
         super().__init__(address, ReproLensWebHandler)
         self.runs_dir = runs_dir
+        self.jobs: dict[str, dict] = {}
+        self.jobs_lock = threading.Lock()
+
+    @staticmethod
+    def _now() -> str:
+        return datetime.now(timezone.utc).isoformat()
+
+    def _public_job(self, job: dict) -> dict:
+        payload = {
+            "job_id": job["job_id"],
+            "status": job["status"],
+            "created_at": job["created_at"],
+            "updated_at": job["updated_at"],
+        }
+        if job.get("message"):
+            payload["message"] = job["message"]
+        if job.get("result"):
+            payload["result"] = job["result"]
+        if job.get("error"):
+            payload["error"] = job["error"]
+        return payload
+
+    def create_audit_job(self, source_url: str) -> dict:
+        now = self._now()
+        job_id = uuid.uuid4().hex
+        with self.jobs_lock:
+            pending = sum(
+                1 for job in self.jobs.values()
+                if job["status"] in {"queued", "running"}
+            )
+            if pending >= MAX_PENDING_JOBS:
+                raise RuntimeError("当前分析任务较多，请稍后重试。")
+            job = {
+                "job_id": job_id,
+                "status": "queued",
+                "message": "任务已提交，正在等待分析。",
+                "created_at": now,
+                "updated_at": now,
+            }
+            self.jobs[job_id] = job
+        threading.Thread(
+            target=self._run_audit_job,
+            args=(job_id, source_url),
+            daemon=True,
+        ).start()
+        return self._public_job(job)
+
+    def get_audit_job(self, job_id: str) -> dict | None:
+        with self.jobs_lock:
+            job = self.jobs.get(job_id)
+            return self._public_job(job) if job else None
+
+    def _update_job(self, job_id: str, **changes: object) -> None:
+        with self.jobs_lock:
+            job = self.jobs.get(job_id)
+            if job is None:
+                return
+            job.update(changes)
+            job["updated_at"] = self._now()
+
+    def _run_audit_job(self, job_id: str, source_url: str) -> None:
+        self._update_job(
+            job_id,
+            status="running",
+            message="正在浅克隆仓库并执行静态审计，大型仓库可能需要几十秒。",
+        )
+        try:
+            with AUDIT_SEMAPHORE:
+                summary = run_remote_audit(source_url, self.runs_dir, autofix=True)
+            self._update_job(
+                job_id,
+                status="done",
+                message="分析完成。",
+                result=summary,
+            )
+        except subprocess.TimeoutExpired:
+            self._update_job(
+                job_id,
+                status="error",
+                message="克隆仓库超时",
+                error="克隆仓库超时，请换一个较小的仓库或稍后重试。",
+            )
+        except Exception as exc:
+            self._update_job(
+                job_id,
+                status="error",
+                message="分析失败",
+                error=str(exc)[:500],
+            )
 
 
 def main(argv: list[str] | None = None) -> int:

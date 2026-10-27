@@ -1,6 +1,14 @@
+import json
+import re
+import tempfile
+import threading
+import time
 import unittest
+import urllib.request
+from pathlib import Path
+from unittest.mock import patch
 
-from repolens.web import parse_github_url
+from repolens.web import ReproLensHTTPServer, parse_github_url
 
 
 class WebTests(unittest.TestCase):
@@ -21,6 +29,52 @@ class WebTests(unittest.TestCase):
             with self.subTest(value=value):
                 with self.assertRaises(ValueError):
                     parse_github_url(value)
+
+    def test_async_audit_job_can_be_polled_to_completion(self):
+        summary = {
+            "run_id": "test-run",
+            "score": 88.0,
+            "readiness": "Ready",
+            "report_url": "/reports/test-run/report.html",
+        }
+
+        def fake_audit(source_url, runs_dir, autofix=True):
+            time.sleep(0.08)
+            return summary
+
+        with tempfile.TemporaryDirectory() as tmp:
+            server = ReproLensHTTPServer(("127.0.0.1", 0), Path(tmp))
+            thread = threading.Thread(target=server.serve_forever, daemon=True)
+            thread.start()
+            base = f"http://127.0.0.1:{server.server_port}"
+            try:
+                with patch("repolens.web.run_remote_audit", side_effect=fake_audit):
+                    request = urllib.request.Request(
+                        f"{base}/api/jobs",
+                        data=json.dumps({"url": "https://github.com/openai/openai-python"}).encode("utf-8"),
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    with urllib.request.urlopen(request, timeout=5) as response:
+                        self.assertEqual(response.status, 202)
+                        job = json.loads(response.read().decode("utf-8"))
+                    self.assertRegex(job["job_id"], re.compile(r"^[a-f0-9]{32}$"))
+                    self.assertIn(job["status"], {"queued", "running"})
+
+                    result = None
+                    for _ in range(50):
+                        with urllib.request.urlopen(f"{base}/api/jobs/{job['job_id']}", timeout=5) as response:
+                            state = json.loads(response.read().decode("utf-8"))
+                        if state["status"] == "done":
+                            result = state["result"]
+                            break
+                        self.assertNotEqual(state["status"], "error")
+                        time.sleep(0.03)
+                    self.assertEqual(result, summary)
+            finally:
+                server.shutdown()
+                server.server_close()
+                thread.join(timeout=2)
 
 
 if __name__ == "__main__":
