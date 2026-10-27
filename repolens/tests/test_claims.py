@@ -1,6 +1,6 @@
 import unittest
 
-from repolens.claims import _claim_criteria, build_claim_matrix, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
+from repolens.claims import _claim_criteria, build_claim_matrix, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
 from repolens.models import AuditResult, CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
@@ -94,6 +94,14 @@ class ClaimTests(unittest.TestCase):
         rows = build_claim_matrix(result)
         self.assertEqual(rows[0]["claim_id"], "C-001")
         self.assertEqual(rows[0]["source_evidence_id"], "E-013")
+
+    def test_evidence_reference_entries_include_location_and_excerpt(self):
+        entries = evidence_reference_entries(
+            ["E-1"],
+            [Evidence("E-1", "config", "configs/app.yaml", 8, "vector_store: faiss")],
+        )
+        self.assertEqual(entries[0]["location"], "configs/app.yaml:8")
+        self.assertEqual(entries[0]["excerpt"], "vector_store: faiss")
 
 
 if __name__ == "__main__":

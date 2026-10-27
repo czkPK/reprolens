@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
 from .html_report import render_claims_html, render_html
 from .models import AuditResult
 
@@ -114,7 +114,11 @@ def render_markdown(result: AuditResult) -> str:
     for row in claim_rows:
         criteria = format_criterion_references(row.get("criteria", []), result.criteria)
         gaps = format_criterion_references(row.get("gaps", []), result.criteria)
-        evidence = ", ".join(row.get("evidence_ids", [])) or "-"
+        evidence_entries = evidence_reference_entries(row.get("evidence_ids", []), result.evidence)
+        evidence = "<br>".join(
+            f"`{entry['id']}` {entry['location']}：{entry['excerpt']}" if entry["excerpt"] else f"`{entry['id']}` {entry['location']}"
+            for entry in evidence_entries
+        ) or "-"
         status = CLAIM_STATUS_LABELS.get(row.get("status", ""), str(row.get("status", "")))
         lines.append(
             f"| {_md(row.get('claim_id', '-'))} | {_md(row.get('claim', ''))} | {status} | {_md(criteria)} | {_md(gaps)} | {_md(evidence)} | {_md(claim_verification_note(row, result.criteria))} |"
@@ -214,7 +218,10 @@ def render_claims_markdown(result: AuditResult) -> str:
                 status=status,
                 criteria=_md(format_criterion_references(row.get("criteria", []), result.criteria)),
                 gaps=_md(format_criterion_references(row.get("gaps", []), result.criteria)),
-                evidence=_md(", ".join(row.get("evidence_ids", [])) or "-"),
+                evidence="<br>".join(
+                    f"`{entry['id']}` {entry['location']}：{_md(entry['excerpt'])}" if entry["excerpt"] else f"`{entry['id']}` {entry['location']}"
+                    for entry in evidence_reference_entries(row.get("evidence_ids", []), result.evidence)
+                ) or "-",
                 note=_md(claim_verification_note(row, result.criteria)),
             )
         )

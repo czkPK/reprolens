@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from html import escape
 
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
 from .models import AuditResult
 
 
@@ -36,6 +36,16 @@ def render_html(result: AuditResult) -> str:
     def claim_source_id(row: dict) -> str:
         return str(row.get("source_evidence_id") or row.get("claim_id", ""))
 
+    def evidence_details(ids: list[str]) -> str:
+        items = []
+        for entry in evidence_reference_entries(ids, result.evidence):
+            excerpt = f'<div class="evidence-excerpt">“{e(entry["excerpt"])}”</div>' if entry["excerpt"] else ""
+            items.append(
+                f'<div class="evidence-item"><a class="evidence-link" href="#evidence-{e(entry["id"])}"><code>{e(entry["id"])}</code></a> '
+                f'<span class="evidence-location">{e(entry["location"])}</span>{excerpt}</div>'
+            )
+        return "".join(items) or "-"
+
     if result.evidence_coverage:
         coverage = result.evidence_coverage
     else:
@@ -63,7 +73,7 @@ def render_html(result: AuditResult) -> str:
         for item in result.criteria
     )
     claim_rows = "".join(
-        f'<tr><td><a class="evidence-link" href="#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_links(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
+        f'<tr><td><a class="evidence-link" href="#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_details(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
@@ -140,14 +150,17 @@ tr:target {{ background: #fff8dc; }}
 .table-scroll {{ overflow-x: auto; }}
 .evidence-explanation {{ min-width: 300px; color: #526175; line-height: 1.55; }}
 .table-help {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
-.claim-table {{ table-layout: fixed; min-width: 1180px; }}
+.claim-table {{ table-layout: fixed; min-width: 1380px; }}
 .claim-table th:nth-child(1), .claim-table td:nth-child(1) {{ width: 92px; white-space: nowrap; }}
 .claim-table th:nth-child(2), .claim-table td:nth-child(2) {{ width: 31%; }}
 .claim-table th:nth-child(3), .claim-table td:nth-child(3) {{ width: 98px; }}
 .claim-table th:nth-child(4), .claim-table td:nth-child(4) {{ width: 165px; }}
 .claim-table th:nth-child(5), .claim-table td:nth-child(5) {{ width: 105px; }}
-.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width: 180px; }}
-.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width: 270px; }}
+.claim-table th:nth-child(6), .claim-table td:nth-child(6) {{ width: 300px; }}
+.claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width: 250px; }}
+.evidence-item {{ margin: 0 0 8px; }}
+.evidence-location {{ color: #2457d6; font-size: 12px; }}
+.evidence-excerpt {{ color: #697386; font-size: 12px; line-height: 1.45; margin-top: 2px; }}
 ul {{ background: white; border-radius: 12px; padding: 18px 24px 18px 42px; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 .priority {{ background: linear-gradient(135deg,#eef3fb,#f8faff); border: 1px solid #dbe4f0; border-radius: 12px; padding: 18px 22px; }}
 .priority li {{ margin: 10px 0; }}
@@ -188,12 +201,14 @@ def render_claims_html(result: AuditResult) -> str:
         coverage = {"covered": covered, "total": total, "percent": percent}
 
     def evidence_links(ids: list[str]) -> str:
-        if not ids:
-            return "-"
-        return " ".join(
-            f'<a href="report.html#evidence-{e(evidence_id)}"><code>{e(evidence_id)}</code></a>'
-            for evidence_id in ids
-        )
+        items = []
+        for entry in evidence_reference_entries(ids, result.evidence):
+            excerpt = f'<div class="evidence-excerpt">“{e(entry["excerpt"])}”</div>' if entry["excerpt"] else ""
+            items.append(
+                f'<div class="evidence-item"><a href="report.html#evidence-{e(entry["id"])}"><code>{e(entry["id"])}</code></a> '
+                f'<span class="evidence-location">{e(entry["location"])}</span>{excerpt}</div>'
+            )
+        return "".join(items) or "-"
 
     def claim_source_id(row: dict) -> str:
         return str(row.get("source_evidence_id") or row.get("claim_id", ""))
@@ -234,7 +249,7 @@ h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
 .label,.sub {{ color:#64748b; font-size:13px; }}
 .value {{ color:#2457d6; font-size:28px; font-weight:800; margin:5px 0; }}
 .guide {{ background:#eef3fb; border:1px solid #dbe4f0; border-radius:14px; padding:16px 20px; line-height:1.75; }}
-table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1100px; }}
+table {{ width:100%; border-collapse:collapse; background:white; border-radius:14px; overflow:hidden; box-shadow:0 5px 18px rgba(23,32,51,.07); table-layout:fixed; min-width:1350px; }}
 th,td {{ padding:12px; border-bottom:1px solid #edf1f7; text-align:left; vertical-align:top; font-size:13px; line-height:1.6; }}
 th {{ background:#eaf0fa; color:#40506a; }}
 .status {{ display:inline-block; border-radius:999px; padding:4px 9px; font-weight:700; white-space:nowrap; }}
@@ -249,8 +264,11 @@ th:nth-child(2), td:nth-child(2) {{ width:31%; }}
 th:nth-child(3), td:nth-child(3) {{ width:98px; }}
 th:nth-child(4), td:nth-child(4) {{ width:165px; }}
 th:nth-child(5), td:nth-child(5) {{ width:105px; }}
-th:nth-child(6), td:nth-child(6) {{ width:180px; }}
-th:nth-child(7), td:nth-child(7) {{ width:270px; }}
+th:nth-child(6), td:nth-child(6) {{ width:300px; }}
+th:nth-child(7), td:nth-child(7) {{ width:250px; }}
+.evidence-item {{ margin:0 0 8px; }}
+.evidence-location {{ color:#2457d6; font-size:12px; }}
+.evidence-excerpt {{ color:#697386; font-size:12px; line-height:1.45; margin-top:2px; }}
 code {{ background:#f1f4f9; border-radius:4px; padding:2px 5px; word-break:break-all; }}
 a {{ color:#2457d6; text-decoration:none; }}
 a:hover {{ text-decoration:underline; }}

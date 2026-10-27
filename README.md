@@ -50,7 +50,7 @@ docs\GitHub-Action使用指南.md
 
 ## 当前验证结果
 
-- 28 个单元测试通过；
+- 33 个单元测试通过；
 - 演示项目 49.1 → 68.4（+19.3）；
 - fresh holdout 初次独立结果 26/28（92.9%，F1 0.900）；
 - fresh holdout 修复后复跑 27/28（96.4%，F1 1.000）；
@@ -76,3 +76,11 @@ docs\GitHub-Action使用指南.md
 项目代码采用 MIT License。第三方评测仓库只作为本地测试输入，不随仓库分发。
 
 代码仓库：https://github.com/czkPK/reprolens
+
+## 外部系统接入
+
+`score.json` 可以被 CI 门禁或 Webhook 直接消费。实际演示和命令见：
+
+```text
+docs/评分JSON外部接入演示.md
+```

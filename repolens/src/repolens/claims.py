@@ -113,6 +113,22 @@ def format_criterion_references(ids: list[str], criteria: list[CriterionResult])
     return "；".join(labels) if labels else "-"
 
 
+def evidence_reference_entries(ids: list[str], evidence: list[Evidence], excerpt_limit: int = 90) -> list[dict[str, str]]:
+    by_id = {entry.id: entry for entry in evidence}
+    result: list[dict[str, str]] = []
+    for evidence_id in ids:
+        entry = by_id.get(evidence_id)
+        if entry is None:
+            result.append({"id": evidence_id, "location": "未找到对应证据", "excerpt": ""})
+            continue
+        location = f"{entry.path}:{entry.line}" if entry.line else entry.path
+        excerpt = entry.excerpt.replace("\n", " ").strip()
+        if len(excerpt) > excerpt_limit:
+            excerpt = excerpt[: excerpt_limit - 3] + "..."
+        result.append({"id": evidence_id, "location": location, "excerpt": excerpt})
+    return result
+
+
 def claim_verification_note(row: dict, criteria: list[CriterionResult] | None = None) -> str:
     status = str(row.get("status", ""))
     gaps = row.get("gaps", [])

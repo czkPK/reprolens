@@ -50,6 +50,7 @@ class ReportTests(unittest.TestCase):
         self.assertIn("声明验证矩阵", claims_html)
         self.assertIn("README 声明", claims_html)
         self.assertIn("验证说明", claims_html)
+        self.assertIn("configs/app.yaml:8", claims_html)
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"
