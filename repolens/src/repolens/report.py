@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .badge import badge_payload, render_badge_page, render_badge_svg
+from .badge import badge_payload, render_badge_svg
 from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
 from .html_report import render_claims_html, render_html
 from .models import AuditResult
@@ -255,7 +255,6 @@ def write_outputs(result: AuditResult, out_dir: Path) -> None:
         json.dumps(result.ai_metadata, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     (out_dir / "badge.svg").write_text(render_badge_svg(result), encoding="utf-8")
-    (out_dir / "badge.html").write_text(render_badge_page(result), encoding="utf-8")
     (out_dir / "badge.json").write_text(
         json.dumps(badge_payload(result), ensure_ascii=False, indent=2), encoding="utf-8"
     )
@@ -274,3 +273,4 @@ def write_outputs(result: AuditResult, out_dir: Path) -> None:
         json.dumps([item.__dict__ for item in result.probes], ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+

@@ -216,8 +216,6 @@ def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -
             "report_url": f"/reports/{run_id}/report.html",
             "claims_url": f"/reports/{run_id}/claims.html",
             "score_url": f"/reports/{run_id}/score.json",
-            "badge_url": f"/reports/{run_id}/badge.html",
-            "badge_svg_url": f"/reports/{run_id}/badge.svg",
             "autofix_url": f"/reports/{run_id}/autofix.html",
         }
         (run_dir / "web-result.json").write_text(
@@ -350,7 +348,7 @@ run.addEventListener('click', async () => {
     setText('files', data.files_scanned); setText('coverage', data.evidence_coverage.percent.toFixed(1)+'%'); setText('claims', data.claims);
     const fixText = data.autofix ? `AutoFix：${data.autofix.before_score.toFixed(1)} → ${data.autofix.after_score.toFixed(1)}（+${data.autofix.delta.toFixed(1)}）` : (data.autofix_ran ? 'AutoFix 已完成。' : '仓库较大，本次跳过 AutoFix，仅执行静态审计。');
     setText('autofix', fixText + '  |  语义映射：' + data.ai_mode);
-    addLink('打开完整报告', data.report_url); addLink('查看声明矩阵', data.claims_url); if(data.autofix_url) addLink('查看 AutoFix 验证', data.autofix_url); addLink('下载评分 JSON', data.score_url); addLink('复现徽章与使用说明', data.badge_url);
+    addLink('打开完整报告', data.report_url); addLink('查看声明矩阵', data.claims_url); if(data.autofix_url) addLink('查看 AutoFix 验证', data.autofix_url); addLink('下载评分 JSON', data.score_url);
     result.classList.add('show');
   } catch (error) {
     status.className='status error'; status.textContent = error.message;
@@ -596,3 +594,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

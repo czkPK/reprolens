@@ -1,7 +1,7 @@
 # ReproLens Audit Report
 
 - Repository: `D:\CODEX\ReproLens\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-27T14:34:45.616906+00:00`
+- Generated at: `2026-10-27T14:38:23.538047+00:00`
 - Semantic claim mapping: **rules**
 - Files scanned: **6**
 - Overall score: **49.1 / 100**
@@ -170,7 +170,7 @@
 
 | Probe | Status | Return code | Duration | Command |
 |---|---|---:|---:|---|
-| python-syntax | PASS | 0 | 0.057s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
+| python-syntax | PASS | 0 | 0.064s | `C:\Program Files\Python313\python.exe -c import ast, pathlib, sys ignore={'.git','.venv','venv','node_modules','__pycache__','.mypy_cache','.pytest_cache','dist','build'} bad=[] fo` |
 
 ## Minimal Remediation Plan
 

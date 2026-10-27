@@ -39,7 +39,6 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Claim-Evidence Matrix", html)
         self.assertIn("Evidence coverage", html)
         self.assertIn("Evidence Appendix", html)
-        self.assertIn('href="badge.html"', html)
         self.assertIn('id="evidence"', html)
         self.assertIn('href="#evidence-E-', html)
         self.assertIn('title="requirements.txt:1', html)
@@ -94,15 +93,12 @@ class ReportTests(unittest.TestCase):
             self.assertTrue((Path(tmp) / "claims.md").exists())
             self.assertTrue((Path(tmp) / "claims.html").exists())
             self.assertTrue((Path(tmp) / "badge.svg").exists())
-            self.assertTrue((Path(tmp) / "badge.html").exists())
             self.assertTrue((Path(tmp) / "badge.json").exists())
             self.assertIn("ReproLens", (Path(tmp) / "badge.svg").read_text(encoding="utf-8"))
-            badge_page = (Path(tmp) / "badge.html").read_text(encoding="utf-8")
-            self.assertIn("复现徽章", badge_page)
-            self.assertIn("放到 GitHub README", badge_page)
             self.assertIn("Claim-Evidence Matrix", (Path(tmp) / "report.md").read_text(encoding="utf-8"))
             self.assertIn("声明验证矩阵", (Path(tmp) / "claims.html").read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":
     unittest.main()
+

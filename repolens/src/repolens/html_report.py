@@ -213,7 +213,7 @@ small {{ color: #697386; }}
 <body><main>
 <h1>ReproLens Audit Report</h1>
 <div class="meta">Repository: {e(result.repo_path)}<br>Generated: {e(result.generated_at)} | Files scanned: {result.files_scanned}{source_meta}{ai_meta}</div>
-<div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 LLM/RAG/Agent 项目复现就绪度</p><a href="badge.html" title="查看复现徽章和使用方式"><img src="badge.svg" alt="ReproLens badge" style="max-width:310px;height:28px"></a></div></div>
+<div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 LLM/RAG/Agent 项目复现就绪度</p></div></div>
 <h2>Evidence Overview</h2><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
@@ -345,3 +345,4 @@ a:hover {{ text-decoration:underline; }}
 <strong>不适用</strong>：相关检查项不适用于当前项目类型，证据只作为识别线索。</div>
 <a class="back" href="report.html">返回完整报告</a>
 </main></body></html>'''
+

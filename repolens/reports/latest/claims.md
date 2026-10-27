@@ -1,7 +1,7 @@
 # ReproLens 声明—证据—缺口矩阵
 
 - Repository: `D:\CODEX\ReproLens\repolens\examples\demo-llm-app`
-- Generated at: `2026-10-27T14:34:44.975827+00:00`
+- Generated at: `2026-10-27T14:38:22.815828+00:00`
 - Evidence coverage: **16/25 (64.0%)**
 - Claims extracted: **2**
 
