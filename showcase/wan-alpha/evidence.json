@@ -1,0 +1,128 @@
+[
+  {
+    "id": "E-001",
+    "kind": "readme",
+    "path": "readme.md",
+    "line": 1,
+    "excerpt": "<div align=\"center\">"
+  },
+  {
+    "id": "E-002",
+    "kind": "dependency-manifest",
+    "path": "requirements.txt",
+    "line": 1,
+    "excerpt": "torch>=2.4.0"
+  },
+  {
+    "id": "E-003",
+    "kind": "license",
+    "path": "LICENSE",
+    "line": 1,
+    "excerpt": "MIT License"
+  },
+  {
+    "id": "E-004",
+    "kind": "script",
+    "path": "Wan-Alpha-VAE-train/train_vae.py",
+    "line": 1,
+    "excerpt": "import os"
+  },
+  {
+    "id": "E-005",
+    "kind": "config",
+    "path": "Wan-Alpha-train/configs/accelerate_config/accelerate_wxg.yaml",
+    "line": 1,
+    "excerpt": "compute_environment: LOCAL_MACHINE"
+  },
+  {
+    "id": "E-006",
+    "kind": "instruction",
+    "path": "readme.md",
+    "line": 78,
+    "excerpt": "# Create and activate Conda environment"
+  },
+  {
+    "id": "E-007",
+    "kind": "instruction",
+    "path": "readme.md",
+    "line": 135,
+    "excerpt": "CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 train_vae.py \\"
+  },
+  {
+    "id": "E-008",
+    "kind": "data",
+    "path": "readme.md",
+    "line": 11,
+    "excerpt": "[![arXiv](https://img.shields.io/badge/arXiv-2509.24979-red)](https://arxiv.org/pdf/2509.24979)"
+  },
+  {
+    "id": "E-009",
+    "kind": "metric",
+    "path": "readme.md",
+    "line": 89,
+    "excerpt": "Download [Lightx2v-T2V-14B](https://huggingface.co/Kijai/WanVideo_comfy/blob/main/Lightx2v/lightx2v_T2V_14B_cfg_step_distill_v2_lora_rank64_bf16.safetensors)"
+  },
+  {
+    "id": "E-010",
+    "kind": "hardware",
+    "path": "readme.md",
+    "line": 135,
+    "excerpt": "CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python3 train_vae.py \\"
+  },
+  {
+    "id": "E-011",
+    "kind": "model",
+    "path": "readme.md",
+    "line": 13,
+    "excerpt": "[![🤗 HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model_v1.0-orange)](https://huggingface.co/htdong/Wan-Alpha)"
+  },
+  {
+    "id": "E-012",
+    "kind": "prompt",
+    "path": "readme.md",
+    "line": 55,
+    "excerpt": "<!-- | Prompt | Preview Video | Alpha Video |"
+  },
+  {
+    "id": "E-013",
+    "kind": "llm-provider",
+    "path": "readme.md",
+    "line": 13,
+    "excerpt": "[![🤗 HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model_v1.0-orange)](https://huggingface.co/htdong/Wan-Alpha)"
+  },
+  {
+    "id": "E-014",
+    "kind": "model",
+    "path": "readme.md",
+    "line": 148,
+    "excerpt": "--model_id_with_origin_paths \"Wan2.1-T2V-1.3B:diffusion_pytorch_model*.safetensors\" \\"
+  },
+  {
+    "id": "E-015",
+    "kind": "claim",
+    "path": "readme.md",
+    "line": 30,
+    "excerpt": "[2026.03.10] Released Wan-Alpha v2.0 and Wan-Alpha VAE training codes and training datasets."
+  },
+  {
+    "id": "E-016",
+    "kind": "claim",
+    "path": "readme.md",
+    "line": 44,
+    "excerpt": "[x] Dataset: Open-source the VAE and T2V training dataset."
+  },
+  {
+    "id": "E-017",
+    "kind": "claim",
+    "path": "readme.md",
+    "line": 128,
+    "excerpt": "For the VAE training dataset, please refer to Section 3.3 of our paper for preparation details."
+  },
+  {
+    "id": "E-018",
+    "kind": "claim",
+    "path": "readme.md",
+    "line": 157,
+    "excerpt": "You can download the training dataset from Google Drive or Hugging Face."
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-10-27T14:38:53.907312+00:00",
+  "before_score": 78.8,
+  "after_score": 85.9,
+  "delta": 7.1,
+  "accepted": true,
+  "generated_files": [
+    {
+      "path": "Dockerfile",
+      "reason": "ENV-02: 增加容器化入口，固定 Python 与依赖安装方式。"
+    },
+    {
+      "path": "prompts/prompt_metadata.json",
+      "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+    }
+  ],
+  "rejected_files": [
+    {
+      "path": "data/download.sh",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "dataset_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "model_card.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "configs/llm_metadata.yaml",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    },
+    {
+      "path": "eval/README.md",
+      "reason": "修复提案未提升评分，已自动丢弃。"
+    }
+  ],
+  "fixed_criteria": [
+    "ENV-02",
+    "LLM-02"
+  ],
+  "changed_criteria": [
+    "ENV-02",
+    "LLM-02"
+  ],
+  "remaining_gaps": [
+    "LLM-03",
+    "LLM-04",
+    "LLM-06",
+    "LLM-07",
+    "LLM-08"
+  ],
+  "proposal_dir": "D:\\CODEX\\ReproLens\\repolens\\web-runs-live\\20261027-143844-ec4d94bc\\autofix\\proposal",
+  "staging_dir": "D:\\CODEX\\ReproLens\\repolens\\web-runs-live\\20261027-143844-ec4d94bc\\autofix\\staging",
+  "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed.",
+  "original_fingerprint": "3203d10608a6c9c9a4d1b594b127a66fe9e69052c296356c8729f8377cea9dcf",
+  "original_unchanged": true
+}

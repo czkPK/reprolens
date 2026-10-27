@@ -1,0 +1,93 @@
+{
+  "run_id": "20261027-150450-a5600da5",
+  "source_url": "https://github.com/WeChatCV/Wan-Alpha",
+  "source_commit": "9e5d0533da2dea390bbb0e50c59adfebe5613323",
+  "score": 65.7,
+  "readiness": "Partially Ready",
+  "files_scanned": 407,
+  "claims": 4,
+  "evidence_coverage": {
+    "covered": 19,
+    "total": 23,
+    "percent": 82.6
+  },
+  "ai_mode": "rules-fallback",
+  "autofix_ran": true,
+  "autofix": {
+    "generated_at": "2026-10-27T15:05:38.620180+00:00",
+    "before_score": 65.7,
+    "after_score": 77.0,
+    "delta": 11.3,
+    "accepted": true,
+    "generated_files": [
+      {
+        "path": "Dockerfile",
+        "reason": "ENV-02: 增加容器化入口，固定 Python 与依赖安装方式。"
+      },
+      {
+        "path": "reproduce.sh",
+        "reason": "DOC-03: 提供一键复现入口。"
+      },
+      {
+        "path": "tests/test_smoke.py",
+        "reason": "DOC-03: 增加最小烟雾测试，验证关键项目文件存在。"
+      },
+      {
+        "path": "data/download.sh",
+        "reason": "DATA-02: 提供数据下载脚本入口；URL 需要维护者补充。"
+      },
+      {
+        "path": "prompts/prompt_metadata.json",
+        "reason": "LLM-02: 为当前 prompt 文件生成可核验的版本号和哈希。"
+      }
+    ],
+    "rejected_files": [
+      {
+        "path": "dataset_card.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "model_card.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "configs/llm_metadata.yaml",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      },
+      {
+        "path": "eval/README.md",
+        "reason": "修复提案未提升评分，已自动丢弃。"
+      }
+    ],
+    "fixed_criteria": [
+      "ENV-02",
+      "DATA-01",
+      "DOC-03",
+      "LLM-02"
+    ],
+    "changed_criteria": [
+      "ENV-02",
+      "DATA-01",
+      "DOC-03",
+      "LLM-02"
+    ],
+    "remaining_gaps": [
+      "DATA-02",
+      "DATA-03",
+      "MODEL-03",
+      "EXP-02",
+      "EXP-03",
+      "LLM-03",
+      "LLM-04",
+      "LLM-07",
+      "LLM-08"
+    ],
+    "execution_probes": "Run the normal audit with --execute on a trusted staging copy if needed.",
+    "original_fingerprint": "d7712bf77e7c8e5d59b4ca1becc5ada7aa8652023da94ca3b542e89dd1d28cc8",
+    "original_unchanged": true
+  },
+  "report_url": "/reports/20261027-150450-a5600da5/report.html",
+  "claims_url": "/reports/20261027-150450-a5600da5/claims.html",
+  "score_url": "/reports/20261027-150450-a5600da5/score.json",
+  "autofix_url": "/reports/20261027-150450-a5600da5/autofix.html"
+}
