@@ -29,13 +29,21 @@
 czkPK/reprolens
 ```
 
+在导入手动选择 **Branch**：
+
+```text
+vercel-deploy
+```
+
+`vercel-deploy` 分支只包含 Vercel 动态应用，不会触发仓库中的多应用检测。
+
 ### 3. 保留默认配置
 
 Vercel 会自动识别：
 
 ```text
 Framework Preset: FastAPI
-Root Directory: vercel_app
+Root Directory: ./
 Build Command: automatic
 Output Directory: automatic
 ```
