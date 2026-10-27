@@ -39,6 +39,7 @@ class ReportTests(unittest.TestCase):
         self.assertIn("Claim-Evidence Matrix", html)
         self.assertIn("Evidence coverage", html)
         self.assertIn("Evidence Appendix", html)
+        self.assertIn('id="evidence"', html)
         self.assertIn('href="#evidence-E-', html)
         self.assertIn('title="requirements.txt:1', html)
         self.assertIn('class="criteria-table"', html)
