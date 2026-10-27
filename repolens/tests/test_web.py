@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 from unittest.mock import patch
 
-from repolens.web import ReproLensHTTPServer, parse_github_url
+from repolens.web import ReproLensHTTPServer, parse_github_url, resolve_github_source
 
 
 class WebTests(unittest.TestCase):
@@ -43,6 +43,26 @@ class WebTests(unittest.TestCase):
             with self.subTest(value=value):
                 with self.assertRaises(ValueError):
                     parse_github_url(value)
+
+    def test_github_pages_resolver_prefers_linked_upstream_repository(self):
+        class FakeResponse:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self, limit):
+                return (
+                    b'<a href="https://github.com/donghaotian123/Wan-Alpha">page</a>'
+                    b'<a href="https://github.com/WeChatCV/Wan-Alpha">source</a>'
+                )
+
+        with patch("repolens.web.urllib.request.urlopen", return_value=FakeResponse()):
+            self.assertEqual(
+                resolve_github_source("https://donghaotian123.github.io/Wan-Alpha/"),
+                "https://github.com/WeChatCV/Wan-Alpha",
+            )
 
     def test_async_audit_job_can_be_polled_to_completion(self):
         summary = {

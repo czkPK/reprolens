@@ -29,6 +29,7 @@ MAX_ARCHIVE_BYTES = 200 * 1024 * 1024
 AUDIT_SEMAPHORE = threading.BoundedSemaphore(2)
 GITHUB_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 GITHUB_PAGES_HOST_RE = re.compile(r"^([A-Za-z0-9-]+)\.github\.io$")
+GITHUB_REPO_LINK_RE = re.compile(r"https?://github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)")
 RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 REPORT_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
@@ -65,6 +66,43 @@ def parse_github_url(value: str) -> str:
     if owner.startswith(".") or repo.startswith("."):
         raise ValueError("GitHub 仓库名称不合法。")
     return f"https://github.com/{owner}/{repo}"
+
+
+def _is_github_pages_url(value: str) -> bool:
+    parsed = urlparse(value.strip())
+    return parsed.scheme == "https" and bool(GITHUB_PAGES_HOST_RE.fullmatch(parsed.netloc.lower()))
+
+
+def resolve_github_source(value: str) -> str:
+    derived = parse_github_url(value)
+    if not _is_github_pages_url(value):
+        return derived
+    parsed = urlparse(value.strip())
+    parts = [part for part in parsed.path.split("/") if part]
+    repo_hint = parts[0] if parts else f"{parsed.netloc.split('.')[0]}.github.io"
+    try:
+        request = urllib.request.Request(
+            value.strip(),
+            headers={"User-Agent": "ReproLens/0.1 repository resolver"},
+        )
+        with urllib.request.urlopen(request, timeout=12) as response:
+            page = response.read(2_000_000).decode("utf-8", errors="ignore")
+    except Exception:
+        return derived
+    matches: list[tuple[str, str]] = []
+    for owner, repo in GITHUB_REPO_LINK_RE.findall(page):
+        repo = repo.removesuffix(".git")
+        if GITHUB_PART_RE.fullmatch(owner) and GITHUB_PART_RE.fullmatch(repo):
+            candidate = (owner, repo)
+            if candidate not in matches:
+                matches.append(candidate)
+    same_project = [pair for pair in matches if pair[1].lower() == repo_hint.lower()]
+    if same_project:
+        pages_owner = parsed.netloc.lower().split(".")[0]
+        same_project.sort(key=lambda pair: pair[0].lower() == pages_owner.lower())
+        owner, repo = same_project[0]
+        return f"https://github.com/{owner}/{repo}"
+    return derived
 
 
 def _count_repo_files(root: Path) -> int:
@@ -181,7 +219,7 @@ def clone_public_repo(source_url: str, destination: Path) -> str:
 
 
 def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -> dict:
-    source_url = parse_github_url(source_url)
+    source_url = resolve_github_source(source_url)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:8]
     run_dir = runs_dir / run_id
     source_dir = run_dir / "source"
@@ -455,7 +493,7 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
             return
         try:
             payload = json.loads(self.rfile.read(length).decode("utf-8"))
-            source_url = parse_github_url(str(payload.get("url", "")))
+            source_url = resolve_github_source(str(payload.get("url", "")))
         except (ValueError, json.JSONDecodeError) as exc:
             self._json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
             return
