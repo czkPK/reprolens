@@ -115,6 +115,8 @@ class ClaimTests(unittest.TestCase):
         )
         self.assertEqual(entries[0]["location"], "configs/app.yaml:8")
         self.assertEqual(entries[0]["excerpt"], "vector_store: faiss")
+        self.assertEqual(entries[0]["kind"], "config")
+        self.assertEqual(entries[0]["kind_label"], "配置文件")
 
 
 if __name__ == "__main__":

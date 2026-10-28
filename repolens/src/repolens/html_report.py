@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from html import escape
 
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references
 from .models import AuditResult
 
 
@@ -29,10 +29,16 @@ def render_html(result: AuditResult) -> str:
     def evidence_links(ids: list[str], *, stacked: bool = False) -> str:
         if not ids:
             return "-"
-        links = [
-            f'<a class="evidence-link" href="#evidence-{e(entry["id"])}" title="{e(entry["location"] + ("：" + entry["excerpt"] if entry["excerpt"] else ""))}"><code>{e(entry["id"])}</code></a>'
-            for entry in evidence_reference_entries(ids, result.evidence)
-        ]
+        links = []
+        for entry in evidence_reference_entries(ids, result.evidence):
+            kind_label = entry.get("kind_label") or evidence_type_label(entry.get("kind", ""))
+            tooltip = f"{kind_label}；{entry['location']}"
+            if entry["excerpt"]:
+                tooltip += f"；原文：{entry['excerpt']}"
+            links.append(
+                f'<a class="evidence-link" href="#evidence-{e(entry["id"])}" title="{e(tooltip)}">'
+                f'<code>{e(entry["id"])}</code><span class="evidence-kind">{e(kind_label)}</span></a>'
+            )
         if stacked:
             return f'<div class="evidence-id-list">{"".join(links)}</div>'
         return " ".join(links)
@@ -44,8 +50,10 @@ def render_html(result: AuditResult) -> str:
         items = []
         for entry in evidence_reference_entries(ids, result.evidence):
             excerpt = f'<div class="evidence-excerpt">“{e(entry["excerpt"])}”</div>' if entry["excerpt"] else ""
+            kind_label = entry.get("kind_label") or evidence_type_label(entry.get("kind", ""))
             items.append(
                 f'<div class="evidence-item"><a class="evidence-link" href="#evidence-{e(entry["id"])}"><code>{e(entry["id"])}</code></a> '
+                f'<span class="evidence-kind">类型：{e(kind_label)}</span> '
                 f'<span class="evidence-location">{e(entry["location"])}</span>{excerpt}</div>'
             )
         return "".join(items) or "-"
@@ -199,9 +207,9 @@ def render_html(result: AuditResult) -> str:
         for probe in result.probes
     ) or '<tr><td colspan="5">本次没有运行执行探测。</td></tr>'
     evidence_rows = "".join(
-        f'<tr id="evidence-{e(item.id)}"><td><code>{e(item.id)}</code></td><td>{e(item.kind)}</td><td><code class="evidence-path">{e(item.path)}</code>{f":{item.line}" if item.line else ""}</td><td class="evidence-raw">{e(item.excerpt)}</td></tr>'
+        f'<tr id="evidence-{e(item.id)}"><td><code>{e(item.id)}</code></td><td><strong class="evidence-kind-main">{e(evidence_type_label(item.kind))}</strong><br><code>{e(item.kind)}</code></td><td><code class="evidence-path">{e(item.path)}</code>{f":{item.line}" if item.line else ""}</td><td class="evidence-raw">{e(item.excerpt)}</td></tr>'
         for item in result.evidence
-    ) or '<tr><td colspan="4">No evidence extracted.</td></tr>'
+    ) or '<tr><td colspan="4">未提取到证据。</td></tr>'
     source_meta = ""
     if result.source_url:
         source_meta = f'<br>Source: <a href="{e(result.source_url)}" target="_blank" rel="noopener noreferrer">{e(result.source_url)}</a>'
@@ -254,6 +262,8 @@ th {{ background: #eef3fb; color: #40506a; }}
 .confidence.low {{ background: #ffe5e8; color: #b42336; }}
 .evidence-link {{ color: #2457d6; text-decoration: none; }}
 .evidence-link:hover {{ text-decoration: underline; }}
+.evidence-kind {{ color:#5f6b7a; font-size:10px; margin-left:4px; white-space:normal; }}
+.evidence-kind-main {{ color:#40506a; font-size:12px; }}
 tr:target {{ background: #fff8dc; }}
 .table-scroll {{ overflow-x: auto; }}
 .sticky-scroll {{ max-height: 72vh; overflow: auto; border-radius: 12px; scrollbar-gutter: stable; }}
@@ -280,8 +290,9 @@ tr:target {{ background: #fff8dc; }}
 .criteria-table td:nth-child(7) {{ width: 160px; white-space: normal; overflow-wrap: anywhere; }}
 .criteria-table th:nth-child(8), .criteria-table td:nth-child(8) {{ width: 407px; }}
 .evidence-id-list {{ display: flex; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 6px; min-width: 0; }}
-.evidence-id-list .evidence-link {{ display: inline-flex; max-width: 100%; }}
-.evidence-id-list code {{ display: inline-block; padding: 3px 7px; border: 1px solid #d8e4f8; border-radius: 6px; background: #f4f8ff; color: #2457d6; font-size: 12px; line-height: 1.2; white-space: nowrap; }}
+.evidence-id-list .evidence-link {{ display: flex; flex-direction: column; align-items: flex-start; gap: 2px; max-width: 100%; padding: 4px 7px; border: 1px solid #d8e4f8; border-radius: 7px; background: #f4f8ff; }}
+.evidence-id-list .evidence-kind {{ margin-left: 0; font-size: 10px; line-height: 1.25; }}
+.evidence-id-list code {{ display: inline-block; padding: 0; border: 0; background: transparent; color: #2457d6; font-size: 12px; line-height: 1.2; white-space: nowrap; }}
 .evidence-scroll {{ max-height: 72vh; overflow: auto; border-radius: 12px; scrollbar-gutter: stable; }}
 .evidence-table {{ width: 1280px; min-width: 1280px; table-layout: fixed; border-collapse: separate; border-spacing: 0; overflow: visible; }}
 .evidence-table th, .evidence-table td {{ box-sizing: border-box; background-clip: padding-box; vertical-align: top; }}
@@ -290,9 +301,9 @@ tr:target {{ background: #fff8dc; }}
 .evidence-table tbody td:first-child {{ z-index: 5; background: #fff; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
 .evidence-table thead th:first-child {{ z-index: 12; background: #eaf0fa; box-shadow: 2px 0 6px rgba(23,32,51,.08); }}
 .evidence-table th:nth-child(1), .evidence-table td:nth-child(1) {{ width: 96px; white-space: nowrap; }}
-.evidence-table th:nth-child(2), .evidence-table td:nth-child(2) {{ width: 144px; }}
-.evidence-table th:nth-child(3), .evidence-table td:nth-child(3) {{ width: 390px; }}
-.evidence-table th:nth-child(4), .evidence-table td:nth-child(4) {{ width: 650px; }}
+.evidence-table th:nth-child(2), .evidence-table td:nth-child(2) {{ width: 185px; }}
+.evidence-table th:nth-child(3), .evidence-table td:nth-child(3) {{ width: 365px; }}
+.evidence-table th:nth-child(4), .evidence-table td:nth-child(4) {{ width: 634px; }}
 .evidence-table td:nth-child(3), .evidence-table td:nth-child(4) {{ overflow-wrap: anywhere; word-break: break-word; line-height: 1.6; }}
 .evidence-table code {{ white-space: normal; word-break: break-word; }}
 .evidence-table tr:target td, .evidence-table tr:target td:first-child {{ background: #fff8dc; }}
@@ -361,9 +372,9 @@ small {{ color: #697386; }}
 <h2>Evidence Overview（证据总览）</h2><p class="section-note"><strong>中文翻译：</strong>证据总览。<strong>简单解释：</strong>汇总证据覆盖率、README 声明数量和仍需补充证据的数量，先判断证据基础是否完整。</p><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions（三项优先整改行动）</h2><p class="section-note"><strong>中文翻译：</strong>三项优先整改行动。<strong>简单解释：</strong>按照预计提分从高到低，列出最值得先处理的三项修改。</p><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores（维度评分）</h2><p class="section-note"><strong>中文翻译：</strong>维度评分。<strong>简单解释：</strong>展示六个复现维度的得分。显示 N/A 表示该维度没有适用检查项，不能用 0% 或 100% 代表好坏。</p><div class="cards">{dim_cards}</div>
-<h2 id="criteria">Criteria（检查项）</h2><p class="section-note"><strong>中文翻译：</strong>检查项。<strong>简单解释：</strong>逐条列出检查要求、当前状态、得分、对应证据以及证据说明。</p><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
+<h2 id="criteria">Criteria（检查项）</h2><p class="section-note"><strong>中文翻译：</strong>检查项。<strong>简单解释：</strong>逐条列出检查要求、当前状态、得分、对应证据以及证据说明。</p><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 本次报告中的证据序号，不是固定分类。例如 E-005 只表示本次报告的第 5 条证据，具体含义由编号后的中文类型、文件位置和原文共同决定；同一仓库重新分析后序号可能变化。点击可跳到证据附录。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
 <h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="section-note"><strong>中文翻译：</strong>声明与证据矩阵。<strong>简单解释：</strong>检查 README 中声称具备的能力，是否能被仓库里的文件证据支持。</p><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
-<h2 id="evidence">Evidence Appendix（证据附录）</h2><p class="section-note"><strong>中文翻译：</strong>证据附录。<strong>简单解释：</strong>集中保存证据编号、类型、文件位置和原文，方便评委或维护者人工复核。</p><p class="table-help"><strong>用途：</strong>这里保存每条证据的编号、类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动；长文件路径和原文会自动换行。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
+<h2 id="evidence">Evidence Appendix（证据附录）</h2><p class="section-note"><strong>中文翻译：</strong>证据附录。<strong>简单解释：</strong>集中保存证据编号、类型、文件位置和原文，方便评委或维护者人工复核。</p><p class="table-help"><strong>编号说明：</strong>E-xxx 只是本次报告内的顺序编号，每次扫描可能变化。真正的“意思”由“中文证据含义 + 文件位置 + 原文”共同确定。<br><strong>用途：</strong>这里保存每条证据的编号、中文含义、原始类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号<br>（本次报告序号）</th><th>证据含义<br>（自动识别类型）</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
 <h2>Findings（问题发现）</h2><p class="section-note"><strong>中文翻译：</strong>问题发现。<strong>简单解释：</strong>列出当前检查中发现的主要缺口、风险等级和对应证据。</p><ul>{finding_items}</ul>
 <h2>Execution Evidence（执行证据）</h2><p class="section-note"><strong>中文翻译：</strong>执行证据。<strong>简单解释：</strong>记录实际运行过的探测命令、结果和耗时；它只证明这些探测执行过，不代表整个项目已经复现成功。</p><table><thead><tr><th>Probe（探测项）</th><th>Status（状态）</th><th>Return code（返回码）</th><th>Duration（耗时）</th><th>Command（命令）</th></tr></thead><tbody>{probe_rows}</tbody></table>
 <h2>Minimal Remediation Plan（最小整改计划）</h2><p class="section-note"><strong>中文翻译：</strong>最小整改计划。<strong>简单解释：</strong>给出成本较低、能够提高复现就绪度的修改建议，并估算预计提分。</p><ul>{remediation_items}</ul>
@@ -389,8 +400,10 @@ def render_claims_html(result: AuditResult) -> str:
         items = []
         for entry in evidence_reference_entries(ids, result.evidence):
             excerpt = f'<div class="evidence-excerpt">“{e(entry["excerpt"])}”</div>' if entry["excerpt"] else ""
+            kind_label = entry.get("kind_label") or evidence_type_label(entry.get("kind", ""))
             items.append(
                 f'<div class="evidence-item"><a href="report.html#evidence-{e(entry["id"])}"><code>{e(entry["id"])}</code></a> '
+                f'<span class="evidence-kind">类型：{e(kind_label)}</span> '
                 f'<span class="evidence-location">{e(entry["location"])}</span>{excerpt}</div>'
             )
         return "".join(items) or "-"
@@ -465,6 +478,7 @@ th:nth-child(7), td:nth-child(7) {{ width:250px; }}
 .claim-table th:nth-child(7), .claim-table td:nth-child(7) {{ width:320px; }}
 .evidence-item {{ margin:0 0 8px; }}
 .evidence-location {{ color:#2457d6; font-size:12px; }}
+.evidence-kind {{ color:#5f6b7a; font-size:11px; margin-right:4px; }}
 .evidence-excerpt {{ color:#697386; font-size:12px; line-height:1.45; margin-top:2px; }}
 code {{ background:#f1f4f9; border-radius:4px; padding:2px 5px; word-break:break-all; }}
 a {{ color:#2457d6; text-decoration:none; }}
@@ -479,7 +493,7 @@ a:hover {{ text-decoration:underline; }}
 <div class="guide"><strong>怎么看这张表：</strong><br>
 先看“README 声明”项目声称了什么；再看“验证状态”是否可信；<br>
 “检查依据”是验证这句话必须检查的规则，编号后的括号是中文含义；“还缺什么”是这些规则中还没满足的部分，显示“-”表示没有缺口；<br>
-“支持证据”中的 E-xxx 可以点击，跳转到完整报告中的文件、行号和原文。</div>
+“支持证据”中的 E-xxx 是本次报告内的顺序编号，具体含义看后面的中文类型、文件名和原文。编号可以点击，跳转到完整报告中的证据位置。</div>
 <h2>声明列表</h2>
 <p class="guide"><strong>表格已固定首行和前两列</strong>，可在表格内横向和纵向滚动。点击 E-xxx 可查看完整报告中的证据原文。</p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{rows}</tbody></table></div>
 <h2>状态说明</h2>

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references
 from .html_report import render_claims_html, render_html
 from .models import AuditResult
 
@@ -42,6 +42,9 @@ def _coverage(result: AuditResult) -> dict:
 def render_markdown(result: AuditResult) -> str:
     coverage = _coverage(result)
     claim_rows = _claim_rows(result)
+    evidence_kind_by_id = {item.id: item.kind for item in result.evidence}
+    def evidence_label(evidence_id: str) -> str:
+        return f"{evidence_id}（{evidence_type_label(evidence_kind_by_id.get(evidence_id, 'unknown'))}）"
     lines = [
         "# ReproLens Audit Report",
         "",
@@ -88,12 +91,12 @@ def render_markdown(result: AuditResult) -> str:
     lines.extend(
         [
             "",
-            "**读表说明：** PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。",
+            "**读表说明：** PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。E-xxx 只是本次报告内的顺序编号，编号后的中文类型、文件位置和原文才定义它的具体含义。",
             "",
         ]
     )
     for item in result.criteria:
-        evidence = ", ".join(item.evidence_ids) if item.evidence_ids else "-"
+        evidence = ", ".join(evidence_label(eid) for eid in item.evidence_ids) if item.evidence_ids else "-"
         explanation = evidence_explanation(item, result.evidence, result.project_type, result.model_agnostic)
         lines.append(
             f"| {item.id} | {item.dimension} | {item.title} | {STATUS_LABELS.get(item.status, item.status)} | {criterion_confidence(item).upper()} | {item.points:.1f}/{item.max_points:.1f} | {evidence} | {_md(explanation)} |"
@@ -117,7 +120,8 @@ def render_markdown(result: AuditResult) -> str:
         gaps = format_criterion_references(row.get("gaps", []), result.criteria)
         evidence_entries = evidence_reference_entries(row.get("evidence_ids", []), result.evidence)
         evidence = "<br>".join(
-            f"`{entry['id']}` {entry['location']}：{entry['excerpt']}" if entry["excerpt"] else f"`{entry['id']}` {entry['location']}"
+            f"`{entry['id']}`（{entry.get('kind_label', evidence_type_label(entry.get('kind', '')))}） {entry['location']}：{entry['excerpt']}"
+            if entry["excerpt"] else f"`{entry['id']}`（{entry.get('kind_label', evidence_type_label(entry.get('kind', '')))}） {entry['location']}"
             for entry in evidence_entries
         ) or "-"
         status = CLAIM_STATUS_LABELS.get(row.get("status", ""), str(row.get("status", "")))
@@ -135,7 +139,7 @@ def render_markdown(result: AuditResult) -> str:
                 "",
                 f"- Criterion: `{finding.criterion_id}`",
                 f"- Message: {finding.message}",
-                f"- Evidence: {', '.join(f'`{e}`' for e in finding.evidence_ids) if finding.evidence_ids else 'none'}",
+                f"- Evidence: {', '.join(evidence_label(eid) for eid in finding.evidence_ids) if finding.evidence_ids else 'none'}",
                 "",
             ]
         )
@@ -166,7 +170,7 @@ def render_markdown(result: AuditResult) -> str:
                 f"- Cost: **{item.cost}**",
                 f"- Impact: **{item.impact}**",
                 f"- Estimated score gain: **+{item.estimated_score_gain:.1f}**",
-                f"- Evidence: {', '.join(f'`{e}`' for e in item.evidence_ids) if item.evidence_ids else 'none'}",
+                f"- Evidence: {', '.join(evidence_label(eid) for eid in item.evidence_ids) if item.evidence_ids else 'none'}",
                 "",
             ]
         )
@@ -176,7 +180,7 @@ def render_markdown(result: AuditResult) -> str:
         lines.append("No evidence extracted.")
     for item in result.evidence:
         location = f"{item.path}:{item.line}" if item.line else item.path
-        lines.append(f"- `{item.id}` [{item.kind}] `{location}` — {item.excerpt}")
+        lines.append(f"- `{item.id}` [{evidence_type_label(item.kind)} / `{item.kind}`] `{location}` — {item.excerpt}")
 
     lines.extend(
         [

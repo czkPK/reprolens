@@ -3,6 +3,45 @@ from __future__ import annotations
 from .models import AuditResult, CriterionResult, Evidence
 
 
+EVIDENCE_TYPE_LABELS = {
+    "readme": "README 项目说明",
+    "dependency-manifest": "依赖清单",
+    "lockfile": "依赖版本锁定文件",
+    "container": "容器配置文件",
+    "model-card": "模型卡",
+    "dataset-card": "数据集卡",
+    "license": "项目许可证",
+    "ci": "持续集成配置",
+    "tests": "测试文件",
+    "config": "配置文件",
+    "script": "运行或处理脚本",
+    "instruction": "安装或运行说明",
+    "data": "数据文字说明",
+    "data-source": "数据集获取链接",
+    "data-command": "数据下载或加载命令",
+    "data-license": "数据许可说明",
+    "model": "模型名称或版本线索",
+    "model-source": "模型权重或下载来源",
+    "weights": "模型权重文件",
+    "llm-provider": "LLM 服务提供方",
+    "llm": "LLM 使用线索",
+    "prompt": "提示词或模板",
+    "llm-config": "LLM 配置参数",
+    "rag": "RAG 检索配置",
+    "evaluation": "评测与数据划分说明",
+    "agent": "Agent 调用或轨迹线索",
+    "claim": "README 能力声明",
+    "metric": "性能指标",
+    "determinism": "随机种子或确定性设置",
+    "hardware": "硬件环境",
+    "cost": "成本或性能信息",
+}
+
+
+def evidence_type_label(kind: str) -> str:
+    return EVIDENCE_TYPE_LABELS.get(kind, "其他证据线索")
+
+
 def _claim_criteria(text: str) -> list[str]:
     lower = text.lower()
     criteria: set[str] = set()
@@ -153,13 +192,25 @@ def evidence_reference_entries(ids: list[str], evidence: list[Evidence], excerpt
     for evidence_id in ids:
         entry = by_id.get(evidence_id)
         if entry is None:
-            result.append({"id": evidence_id, "location": "未找到对应证据", "excerpt": ""})
+            result.append({
+                "id": evidence_id,
+                "kind": "unknown",
+                "kind_label": "未知证据",
+                "location": "未找到对应证据",
+                "excerpt": "",
+            })
             continue
         location = f"{entry.path}:{entry.line}" if entry.line else entry.path
         excerpt = entry.excerpt.replace("\n", " ").strip()
         if len(excerpt) > excerpt_limit:
             excerpt = excerpt[: excerpt_limit - 3] + "..."
-        result.append({"id": evidence_id, "location": location, "excerpt": excerpt})
+        result.append({
+            "id": evidence_id,
+            "kind": entry.kind,
+            "kind_label": evidence_type_label(entry.kind),
+            "location": location,
+            "excerpt": excerpt,
+        })
     return result
 
 
