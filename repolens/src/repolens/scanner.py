@@ -149,7 +149,8 @@ def scan_repo(root: Path) -> RepoSnapshot:
             is_prompt = low.startswith("prompts/") or (name.startswith("prompt") and "/" not in low)
             is_script = name in {"app.py", "main.py", "train.py", "eval.py", "evaluate.py", "infer.py", "predict.py", "reproduce.sh", "run.sh"}
             is_card = "model_card" in name or "dataset_card" in name
-            if is_root_readme or is_docs_readme or is_relevant_doc or is_config or is_prompt or is_script or is_card:
+            is_model_source = name in {"__init__.py", "model.py", "models.py", "hub.py", "download.py"} or "/models/" in low
+            if is_root_readme or is_docs_readme or is_relevant_doc or is_config or is_prompt or is_script or is_card or is_model_source:
                 yield rel_path, text
 
     def first_matching(pattern: str) -> Path | None:
@@ -242,6 +243,61 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 snapshot.mark(flag, evidence_id)
             return
 
+    def find_model_source_link() -> None:
+        artifact_url_re = re.compile(
+            r"huggingface\.co/(?!(?:datasets|docs|blog|papers|spaces)/)[^/\s)]+/[^\s)]+"
+            r"|(?:storage\.googleapis\.com|dl\.fbaipublicfiles\.com|openaipublic\.azureedge\.net)[^\s)]*(?:(?:models?|checkpoints?|weights?)[^\s)]*|\.(?:pt|pth|ckpt|bin|safetensors|zip|npz)(?:[?#][^\s)]*)?)"
+            r"|github\.com/[^\s)]+/releases/download[^\s)]*"
+            r"|https?://[^\s)]+\.(?:pt|pth|ckpt|bin|safetensors|zip|npz)(?:[?#][^\s)]*)?",
+            re.IGNORECASE,
+        )
+        model_re = re.compile(r"model|checkpoint|weights|pre-?trained", re.IGNORECASE)
+        for rel_path, text in preferred_text_items():
+            lines = text.splitlines()
+            for index, line in enumerate(lines):
+                for match in artifact_url_re.finditer(line):
+                    context = " ".join(lines[max(0, index - 4): min(len(lines), index + 3)])
+                    if not model_re.search(context):
+                        continue
+                    path = root / rel_path
+                    evidence_id = snapshot.add_evidence("model-source", path, index + 1, line.strip())
+                    snapshot.mark("model_source_link", evidence_id)
+                    snapshot.mark("model_version", evidence_id)
+                    return
+
+    def find_data_license() -> None:
+        license_re = re.compile(
+            r"\bCC[ -]?BY(?:[ -][A-Z0-9.]+)?\b|\bCreative Commons\b|"
+            r"\b(?:released|distributed|licensed)\s+under[^\n]{0,100}\blicen[cs]e\b",
+            re.IGNORECASE,
+        )
+        data_re = re.compile(
+            r"\b(?:data|datasets?|data sets?|training data|validation data|evaluation data|corpus|data source)\b",
+            re.IGNORECASE,
+        )
+        for rel_path, text in preferred_text_items():
+            lines = text.splitlines()
+            for index, line in enumerate(lines):
+                match = license_re.search(line)
+                if not match:
+                    continue
+                line_has_data = bool(data_re.search(line))
+                heading_has_data_license = any(
+                    data_re.search(context_line) and re.search(r"licen[cs]e", context_line, re.IGNORECASE)
+                    for context_line in lines[max(0, index - 4): index]
+                )
+                if not line_has_data and not heading_has_data_license:
+                    continue
+                path = root / rel_path
+                evidence_id = snapshot.add_evidence(
+                    "data-license",
+                    path,
+                    index + 1,
+                    line.strip(),
+                )
+                snapshot.mark("data_license", evidence_id)
+                return
+
     find_text(r"pip install|conda env|docker build|uv sync|poetry install", "install_instructions", "instruction")
     find_text(r"python[^\n]*(train|finetune)|bash[^\n]*\.sh|make[^\n]*", "run_instructions", "instruction")
     dataset_link_pattern = (
@@ -264,28 +320,39 @@ def scan_repo(root: Path) -> RepoSnapshot:
         r"|(?:\bpython\b[^\n]*(?:download|prepare|preprocess)\w*[^\n]*(?:data|dataset))"
     )
     find_text(data_download_pattern, "data_download_command", "data-command")
-    data_license_pattern = (
-        r"(?:\bCC[ -]?BY(?:[ -][A-Z0-9.]+)?\b)"
-        r"|(?:\bCreative Commons\b)"
-        r"|(?:\b(?:released|distributed|licensed)\s+under[^\n]{0,80}\blicen[cs]e\b)"
-    )
-    find_text(data_license_pattern, "data_license", "data-license")
+    find_data_license()
     find_text(r"accuracy|f1|bleu|rouge|psnr|ssim|expected|reproduce", "expected_results", "metric")
     find_text(r"torch\.manual_seed\s*\(\s*\d+|np\.random\.seed\s*\(\s*\d+|random_state\s*=\s*\d+|seed\s*[:=]\s*\d+", "seed", "determinism")
     find_text(r"cuda|gpu|a100|v100|h100|vram|nvidia", "hardware", "hardware")
-    find_text(r"model_name|model version|checkpoint|huggingface|transformers", "model_version", "model")
+    find_model_source_link()
+    model_version_pattern = (
+        r"model_name|model_id|model version|api version|model[_ -]?checkpoint|"
+        r"huggingface\.co/(?!datasets/)[^\s)]+|gpt-[0-9]|claude-[0-9]|"
+        r"llama[- ]?[0-9]|qwen[- ]?[0-9]|mistral-[0-9]|gemini-[0-9]"
+    )
+    find_text(model_version_pattern, "model_version", "model")
     find_text(r"prompt|system message|template", "prompt_mention", "prompt")
     find_text(r"train[/_-]?(val|test)|validation|split", "eval_split", "evaluation")
     find_text(r"contamination|leakage|data leak", "contamination", "evaluation")
     find_text(r"gpu hour|training time|inference cost|inference latency|token usage|tokens per second|cost", "cost", "cost")
-    find_text(r"openai|anthropic|azure openai|gemini|cohere|ollama|vllm|huggingface|transformers|litellm|bedrock", "model_provider", "llm-provider")
-    find_text(r"model_name|model_id|model version|api version|gpt-[0-9]|claude-[0-9]|llama|qwen|mistral|gemini", "model_version", "model")
+    model_provider_pattern = (
+        r"openai\s*(?:api|api key|\.com/v1)|openai-compatible|anthropic\s*api|"
+        r"azure\s*openai|gemini\s*api|cohere\s*api|\bollama\b|\bvllm\b|"
+        r"\blitellm\b|aws\s*bedrock"
+    )
+    find_text(model_provider_pattern, "model_provider", "llm-provider")
+    llm_explicit_pattern = (
+        r"\blarge language models?\b|\bLLMs?\b|chatgpt|prompt template|"
+        r"system message|retrieval[- ]augmented(?: generation)?|\bRAG\b|"
+        r"llm agent|tool call|function calling|openai-compatible"
+    )
+    find_text(llm_explicit_pattern, "llm_explicit", "llm")
     find_text_scoped(r"prompt_version|template_version|prompt[^\n]*version|version[^\n]*prompt", "prompt_version", "prompt", is_prompt_or_config)
     find_text_scoped(r"temperature|top_p|top_k|max_tokens|presence_penalty|frequency_penalty", "sampling_params", "llm-config", is_config_or_script)
     find_text_scoped(r"tokenizer|context_window|context window|max_context|tiktoken|sentencepiece", "tokenizer", "llm-config", is_config_or_script)
-    find_text(r"\brag\b|retrieval|retriever|vector store|faiss|chroma|pinecone|weaviate|qdrant|milvus", "rag_project", "rag")
+    find_text(r"retrieval[- ]augmented generation|\bRAG\b|retriever|vector store|vector database|faiss|chroma|pinecone|weaviate|qdrant|milvus", "rag_project", "rag")
     find_text_scoped(r"index_name|index_version|collection_name|vector_store|embedding_model|chunk_size|chunk_overlap|knowledge base", "rag_index", "rag", is_config_or_script)
-    find_text(r"\bagent\b|tool_call|tool call|langgraph|autogen|crewai|mcp|function calling", "agent_project", "agent")
+    find_text(r"tool_call|tool call|langgraph|autogen|crewai|\bMCP\b|function calling|llm agent|retrieval[- ]augmented agent|multi-agent system", "agent_project", "agent")
     find_text_scoped(r"trace|trajectory|tool_call|tool call|run_id|session_id", "agent_trace", "agent", is_config_or_script)
     find_text_scoped(r"chunk_size|chunk_overlap|index_name|collection_name|index_version|embedding_model", "rag_config", "rag", is_config_only)
     find_text_scoped(r"run_id|session_id|trace_id|trace_path|log_path", "agent_trace_artifact", "agent", lambda rel_path: is_config_only(rel_path) or "trace" in rel_path.lower() or "log" in rel_path.lower())
@@ -300,27 +367,23 @@ def scan_repo(root: Path) -> RepoSnapshot:
     ):
         snapshot.mark("ml_project", snapshot.evidence_for("train_script", "eval_script", "deps"))
     if (
-        snapshot.has("prompt_mention")
-        or snapshot.has("prompt_files")
-        or snapshot.has("model_provider")
+        snapshot.has("llm_explicit")
         or snapshot.has("rag_project")
         or snapshot.has("agent_project")
-        or any(name in all_text for name in ("openai", "anthropic", "huggingface", "transformers", "llm", "chat model", "retrieval augmented"))
+        or (snapshot.has("model_provider") and snapshot.has("prompt_mention"))
     ):
-        snapshot.mark("llm_project", snapshot.evidence_for("prompt_mention", "prompt_files", "model_provider", "model_version", "rag_project", "agent_project", "deps"))
+        snapshot.mark("llm_project", snapshot.evidence_for("llm_explicit", "prompt_files", "model_provider", "model_version", "rag_project", "agent_project", "deps"))
 
     root_readme_text = "\n".join(
         text for rel_path, text in texts.items()
         if "/" not in rel_path and Path(rel_path).name.lower().startswith("readme")
     ).lower()
-    provider_names = ("openai", "anthropic", "google", "ollama", "huggingface", "azure", "cohere", "mistral", "groq", "together")
-    provider_count = sum(name in all_text for name in provider_names)
     if any(phrase in root_readme_text for phrase in (
         "any llm", "almost any llm", "choice of model", "models are discovered",
         "multiple models", "model providers", "openai-compatible apis", "cloud and local",
         "local or cloud llm", "closed and open-source llm", "dynamic model routing", "all popular",
         "external model api",
-    )) or provider_count >= 3:
+    )):
         snapshot.mark("model_agnostic", snapshot.evidence_for("readme"))
     has_app_entry = any(
         "/" not in rel_path and Path(rel_path).name.lower() in {"app.py", "main.py"}
@@ -352,6 +415,8 @@ def scan_repo(root: Path) -> RepoSnapshot:
         snapshot.project_type = "ml_project"
     else:
         snapshot.project_type = "unknown"
+    if snapshot.has("model_agnostic") and snapshot.project_type not in {"sdk", "agent_framework", "memory_framework", "application"}:
+        snapshot.flags["model_agnostic"] = False
 
     claim_keywords = (
         "reproduce", "benchmark", "accuracy", "f1", "bleu", "rouge",

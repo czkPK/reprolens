@@ -54,6 +54,96 @@ class ScannerTests(unittest.TestCase):
         self.assertIn("huggingface.co/datasets", source_evidence.excerpt)
         self.assertNotIn("arxiv", source_evidence.excerpt.lower())
 
+    def test_non_llm_model_does_not_enable_llm_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Vision model\n\n"
+                "[Dataset](https://huggingface.co/datasets/example/vision-data)\n\n"
+                "See the [OpenAI blog](https://openai.com/blog/example) for background.\n"
+                "We train agents in simulated environments.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("llm_project"))
+        self.assertFalse(snapshot.has("agent_project"))
+        self.assertFalse(snapshot.has("model_provider"))
+        self.assertFalse(snapshot.has("model_agnostic"))
+
+    def test_explicit_llm_api_project_is_still_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM assistant\n\n"
+                "Use the OpenAI API with gpt-4o. The system message and prompt template are versioned.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("llm_project"))
+        self.assertTrue(snapshot.has("model_provider"))
+        self.assertTrue(snapshot.has("model_version"))
+
+    def test_model_license_is_not_data_license(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Model release\n\n"
+                "Download the pretrained model from https://storage.googleapis.com/example_models/model.zip .\n"
+                "The code and model weights are released under the MIT License.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("model_source_link"))
+        self.assertFalse(snapshot.has("data_license"))
+
+    def test_data_license_under_data_heading_is_recognized(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Dataset\n\n"
+                "https://huggingface.co/datasets/example/data\n\n"
+                "### Source data and license\n"
+                "ExampleData is released under CC BY-NC 4.0.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("data_license"))
+
+    def test_vision_retrieval_is_not_rag(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Vision model\n\n"
+                "The benchmark evaluates image-to-text retrieval and text-to-image retrieval.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("rag_project"))
+        self.assertFalse(snapshot.has("llm_project"))
+
+    def test_huggingface_docs_link_is_not_model_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Model project\n\n"
+                "See the model documentation at https://huggingface.co/docs/transformers/model_doc/example.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("model_source_link"))
+
+    def test_storage_agreement_is_not_model_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Dataset terms\n\n"
+                "Trained models are distributed under the dataset terms: "
+                "https://storage.googleapis.com/example/Agreement.pdf\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("model_source_link"))
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

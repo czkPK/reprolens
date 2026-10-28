@@ -147,6 +147,8 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
 
     if snapshot.has("weights"):
         add("MODEL-01", "pass", "已发现模型权重文件。", ev("weights"), applicable=not model_agnostic)
+    elif snapshot.has("model_source_link"):
+        add("MODEL-01", "pass", "已发现明确的模型下载或获取链接。", ev("model_source_link"), applicable=not model_agnostic)
     elif is_llm and snapshot.has("model_provider") and snapshot.has("model_version"):
         add("MODEL-01", "pass", "已发现 API/模型提供方和模型版本信息。", ev("model_provider", "model_version"), applicable=not model_agnostic)
     elif snapshot.has("model_version") or snapshot.has("model_provider"):
@@ -154,8 +156,8 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("MODEL-01", "missing", "没有模型权重、API 或获取方式。", applicable=(is_ml or is_llm) and not model_agnostic)
 
-    if concrete("model_card") or (is_llm and concrete("model_version")):
-        add("MODEL-02", "pass", "已发现模型卡或模型版本说明。", ev("model_card", "model_version"), applicable=not model_agnostic)
+    if concrete("model_card") or snapshot.has("model_source_link") or (is_llm and concrete("model_version")):
+        add("MODEL-02", "pass", "已发现模型卡、模型版本或明确模型来源。", ev("model_card", "model_source_link", "model_version"), applicable=not model_agnostic)
     elif snapshot.has("model_card") or snapshot.has("model_version") or snapshot.has("model_provider"):
         add("MODEL-02", "partial", "有模型卡、版本或提供方信息，但仍需补充完整。", ev("model_card", "model_version", "model_provider"), applicable=not model_agnostic)
     else:

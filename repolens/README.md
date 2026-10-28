@@ -75,6 +75,10 @@ python -m repolens.benchmark
 
 The repository list is in `benchmark/repos.json`; labeled expectations are in `benchmark/cases.json`.
 
+## 跨领域论文仓库验证
+
+仓库提供 `benchmark/paper_repos.json`，覆盖自然语言处理、语音识别、医疗影像、多模态、具身智能、时间序列和计算机视觉等论文官方仓库。跨领域误报修复与真实运行结果见 `docs/跨领域泛化验证-2026-10-28.md`。
+
 ## GitHub Action
 
 The repository root contains a reusable composite Action (`action.yml`). See `docs/GitHub-Action使用指南.md` for a workflow example. It audits the current repository, writes a concise Job Summary, outputs the score and badge path, and can upload the generated report as an artifact.
