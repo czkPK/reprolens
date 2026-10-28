@@ -112,28 +112,36 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("ENV-03", "missing", "没有安装步骤。")
 
-    if snapshot.has("data_mention") and (snapshot.has("data_script") or snapshot.has("dataset_card")):
+    if snapshot.has("data_source_link"):
+        add("DATA-01", "pass", "已发现明确的数据集下载或获取链接。", ev("data_source_link"), applicable=data_applicable)
+    elif snapshot.has("data_mention") and (snapshot.has("data_script") or snapshot.has("dataset_card")):
         add("DATA-01", "pass", "已发现数据来源，并配有脚本或数据集卡。", ev("data_mention", "data_script", "dataset_card"), applicable=data_applicable)
     elif snapshot.has("data_mention"):
-        add("DATA-01", "partial", "提到了数据，但缺少可执行的获取或处理说明。", ev("data_mention"), applicable=data_applicable)
+        add("DATA-01", "partial", "只看到数据名称或论文说明，缺少可直接访问的数据获取链接。", ev("data_mention"), applicable=data_applicable)
     else:
         add("DATA-01", "missing", "没有数据来源说明。", applicable=data_applicable)
 
     if concrete("data_script"):
         add("DATA-02", "pass", "已发现数据下载或预处理脚本。", ev("data_script"), applicable=data_applicable)
+    elif snapshot.has("data_download_command"):
+        add("DATA-02", "pass", "README 提供了可直接执行的数据下载或加载命令。", ev("data_download_command"), applicable=data_applicable)
     elif snapshot.has("data_script"):
         add("DATA-02", "partial", "存在数据脚本，但其中仍包含 TODO/占位内容。", ev("data_script"), applicable=data_applicable)
+    elif snapshot.has("data_source_link"):
+        add("DATA-02", "partial", "提供了数据下载链接，但没有下载或预处理脚本。", ev("data_source_link"), applicable=data_applicable)
     elif snapshot.has("data_mention"):
-        add("DATA-02", "partial", "有数据说明，但没有下载/预处理脚本。", ev("data_mention"), applicable=data_applicable)
+        add("DATA-02", "partial", "只有数据文字说明，缺少下载或预处理脚本。", ev("data_mention"), applicable=data_applicable)
     else:
         add("DATA-02", "missing", "没有数据下载或预处理脚本。", applicable=data_applicable)
 
     if concrete("dataset_card"):
         add("DATA-03", "pass", "已发现数据集卡。", ev("dataset_card"), applicable=data_applicable)
+    elif snapshot.has("data_source_link") and snapshot.has("data_license"):
+        add("DATA-03", "pass", "已提供数据集卡链接并说明数据许可。", ev("data_source_link", "data_license"), applicable=data_applicable)
     elif snapshot.has("dataset_card"):
         add("DATA-03", "partial", "数据集卡已生成，但仍有待补充字段。", ev("dataset_card"), applicable=data_applicable)
-    elif snapshot.has("license") and snapshot.has("data_mention"):
-        add("DATA-03", "partial", "有许可证和数据说明，但没有独立数据集卡。", ev("license", "data_mention"), applicable=data_applicable)
+    elif snapshot.has("license") and (snapshot.has("data_source_link") or snapshot.has("data_mention")):
+        add("DATA-03", "partial", "有项目许可证和数据获取线索，但没有独立数据集卡或单独的数据许可说明。", ev("license", "data_source_link", "data_mention"), applicable=data_applicable)
     else:
         add("DATA-03", "missing", "没有数据集卡或明确的数据许可说明。", applicable=data_applicable)
 

@@ -59,6 +59,14 @@ class ClaimTests(unittest.TestCase):
         self.assertIn("openai>=1.0", explanation)
         self.assertTrue(explanation.startswith("支持证据"))
 
+    def test_partial_evidence_explanation_names_missing_item(self):
+        item = criterion("partial", ["E-1"])
+        item.note = "缺少 data/download.sh 或数据预处理脚本。"
+        evidence = [Evidence("E-1", "data-source", "README.md", 20, "dataset download link")]
+        explanation = evidence_explanation(item, evidence)
+        self.assertIn("仍缺：缺少 data/download.sh 或数据预处理脚本", explanation)
+        self.assertNotIn("现有证据不足以完全满足该项", explanation)
+
     def test_not_applicable_explanation_does_not_claim_evidence_support(self):
         item = criterion("not_applicable", ["E-1"], applicable=False)
         item.id = "MODEL-02"

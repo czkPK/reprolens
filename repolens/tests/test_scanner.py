@@ -36,6 +36,24 @@ class ScannerTests(unittest.TestCase):
         self.assertFalse(snapshot.has("agent_trace"))
         self.assertFalse(snapshot.has("eval_dataset"))
 
+    def test_dataset_link_is_preferred_over_paper_link(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "[![arXiv](https://img.shields.io/badge/arXiv-2509.24979-red)](https://arxiv.org/pdf/2509.24979)\n"
+                "## Data\n"
+                "Download the training dataset from "
+                "[Hugging Face](https://huggingface.co/datasets/example/project-data).\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+            source_ids = snapshot.evidence_for("data_source_link")
+        self.assertTrue(snapshot.has("data_source_link"))
+        self.assertTrue(snapshot.has("data_mention"))
+        source_evidence = next(item for item in snapshot.evidence if item.id == source_ids[0])
+        self.assertIn("huggingface.co/datasets", source_evidence.excerpt)
+        self.assertNotIn("arxiv", source_evidence.excerpt.lower())
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

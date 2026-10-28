@@ -190,7 +190,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     if weight_path and not any(part in {"docs", "tests", "examples", ".inline-snapshot"} for part in weight_path.parts):
         snapshot.mark("weights", snapshot.add_evidence("weights", weight_path, None, weight_path.name))
 
-    def find_text(pattern: str, flag: str, kind: str) -> None:
+    def find_text(pattern: str, flag: str, kind: str) -> bool:
         for rel_path, text in preferred_text_items():
             match = _first_match(text, pattern)
             if not match:
@@ -203,7 +203,8 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 snapshot.mark_placeholder(flag)
             else:
                 snapshot.mark(flag, evidence_id)
-            return
+            return True
+        return False
 
     def is_prompt_or_config(rel_path: str) -> bool:
         low = rel_path.lower()
@@ -243,7 +244,32 @@ def scan_repo(root: Path) -> RepoSnapshot:
 
     find_text(r"pip install|conda env|docker build|uv sync|poetry install", "install_instructions", "instruction")
     find_text(r"python[^\n]*(train|finetune)|bash[^\n]*\.sh|make[^\n]*", "run_instructions", "instruction")
-    find_text(r"https?://|download|dataset", "data_mention", "data")
+    dataset_link_pattern = (
+        r"(?:huggingface\.co/datasets/|kaggle\.com/|zenodo\.org/|figshare\.com/|drive\.google\.com/)"
+        r"|(?:(?:download|获取|下载)[^\n]{0,100}(?:dataset|data set|training data|data))"
+        r"|(?:(?:dataset|data set|training data)[^\n]{0,100}(?:download|https?://|huggingface|google drive|kaggle|zenodo|figshare))"
+    )
+    data_mention_pattern = r"\b(?:dataset|data sets?|training data|validation data|evaluation data|test data|data source)\b"
+    if find_text(dataset_link_pattern, "data_source_link", "data-source"):
+        source_evidence = snapshot.evidence_for("data_source_link")
+        if source_evidence:
+            snapshot.mark("data_mention", source_evidence[0])
+    else:
+        find_text(data_mention_pattern, "data_mention", "data")
+    data_download_pattern = (
+        r"(?:\b(?:hf|huggingface-cli)\s+download\b[^\n]*(?:--repo-type\s+dataset|dataset))"
+        r"|(?:\bload_dataset\s*\()"
+        r"|(?:\bgit\s+clone\b[^\n]*(?:dataset|data))"
+        r"|(?:\b(?:wget|curl)\b[^\n]*(?:dataset|data))"
+        r"|(?:\bpython\b[^\n]*(?:download|prepare|preprocess)\w*[^\n]*(?:data|dataset))"
+    )
+    find_text(data_download_pattern, "data_download_command", "data-command")
+    data_license_pattern = (
+        r"(?:\bCC[ -]?BY(?:[ -][A-Z0-9.]+)?\b)"
+        r"|(?:\bCreative Commons\b)"
+        r"|(?:\b(?:released|distributed|licensed)\s+under[^\n]{0,80}\blicen[cs]e\b)"
+    )
+    find_text(data_license_pattern, "data_license", "data-license")
     find_text(r"accuracy|f1|bleu|rouge|psnr|ssim|expected|reproduce", "expected_results", "metric")
     find_text(r"torch\.manual_seed\s*\(\s*\d+|np\.random\.seed\s*\(\s*\d+|random_state\s*=\s*\d+|seed\s*[:=]\s*\d+", "seed", "determinism")
     find_text(r"cuda|gpu|a100|v100|h100|vram|nvidia", "hardware", "hardware")

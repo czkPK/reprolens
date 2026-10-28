@@ -133,7 +133,11 @@ def evidence_explanation(item: CriterionResult, evidence: list[Evidence], projec
     if not snippets:
         return "证据编号存在，但未找到对应原文，需要人工复核。"
     prefix = "支持证据：" if item.status == "pass" else "部分证据："
-    suffix = "。" if item.status == "pass" else "；现有证据不足以完全满足该项。"
+    if item.status == "pass":
+        suffix = "。"
+    else:
+        gap = item.note.strip().rstrip("。")
+        suffix = f"；仍缺：{gap}。" if gap else "；仍缺：缺少足以满足该检查项的直接证据。"
     return prefix + "；".join(snippets) + suffix
 
 

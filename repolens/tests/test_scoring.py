@@ -1,3 +1,4 @@
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -44,6 +45,37 @@ class ScoringTests(unittest.TestCase):
         self.assertFalse(model.applicable)
         self.assertEqual(model.max_points, 0)
         self.assertEqual(model.percent, 0.0)
+
+    def test_dataset_link_satisfies_source_but_not_script(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Example project\n\n"
+                "Download the training dataset from "
+                "[Hugging Face](https://huggingface.co/datasets/example/project-data).\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["DATA-01"].status, "pass")
+        self.assertEqual(by_id["DATA-02"].status, "partial")
+        self.assertIn("没有下载或预处理脚本", by_id["DATA-02"].note)
+
+    def test_dataset_download_and_license_satisfy_data_checks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Example dataset\n\n"
+                "[Dataset](https://huggingface.co/datasets/example/project-data)\n"
+                "```python\nload_dataset(\"example/project-data\")\n```\n"
+                "The dataset is released under CC BY-NC 4.0.\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["DATA-01"].status, "pass")
+        self.assertEqual(by_id["DATA-02"].status, "pass")
+        self.assertEqual(by_id["DATA-03"].status, "pass")
 
     def test_prompt_check_not_applicable_for_non_llm_repo(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-ai-repo"
