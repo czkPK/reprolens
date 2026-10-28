@@ -44,6 +44,8 @@ def write_autofix_html(report: dict, out_dir: Path) -> None:
     status_text = "原仓库未被修改" if unchanged else "检测到原仓库内容发生变化"
     status_class = "pass" if unchanged else "fail"
     fingerprint = escape(str(report.get("original_fingerprint", "-")))
+    before_width = max(0.0, min(100.0, float(report["before_score"])))
+    after_width = max(0.0, min(100.0, float(report["after_score"])))
     html = f'''<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -60,6 +62,15 @@ h2 {{ margin-top:30px; border-bottom:1px solid #dbe4f0; padding-bottom:9px; }}
 .card {{ background:#fff; border-radius:14px; padding:16px; box-shadow:0 5px 18px rgba(23,32,51,.07); }}
 .label {{ color:#64748b; font-size:13px; }}
 .value {{ color:#2457d6; font-size:30px; font-weight:800; margin:6px 0; }}
+.compare-chart {{ background:#fff; border-radius:14px; padding:18px 20px; margin:18px 0; box-shadow:0 5px 18px rgba(23,32,51,.07); }}
+.compare-head {{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:16px; }}
+.compare-head strong {{ font-size:16px; }} .compare-head span {{ color:#64748b; font-size:12px; }}
+.compare-row {{ display:grid; grid-template-columns:70px 1fr 70px; gap:10px; align-items:center; margin:10px 0; }}
+.compare-label {{ color:#64748b; font-size:13px; }} .compare-track {{ height:18px; border-radius:999px; background:#eef2f8; overflow:hidden; }}
+.compare-bar {{ height:100%; border-radius:999px; min-width:2px; }}
+.compare-bar.before {{ background:#94a3b8; }} .compare-bar.after {{ background:linear-gradient(90deg,#0f8a5f,#22b573); }}
+.compare-value {{ color:#172033; font-weight:900; font-size:15px; text-align:right; }}
+.compare-scale {{ display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-top:12px; color:#94a3b8; font-size:10px; }}
 .verification {{ display:flex; align-items:center; gap:12px; padding:16px 18px; border-radius:12px; background:#eef8f2; border:1px solid #cfeada; }}
 .verification.fail {{ background:#fff0f2; border-color:#f5c9d0; color:#9e1f31; }}
 .check {{ display:inline-grid; place-items:center; width:28px; height:28px; border-radius:50%; background:#167a3a; color:#fff; font-weight:900; }}
@@ -86,6 +97,12 @@ a {{ color:#2457d6; }}
   <div class="card"><div class="label">修改后</div><div class="value">{report["after_score"]:.1f}</div><div class="label">隔离副本复测评分</div></div>
   <div class="card"><div class="label">评分提升</div><div class="value">+{report["delta"]:.1f}</div><div class="label">只保留有效修改</div></div>
   <div class="card"><div class="label">保留文件</div><div class="value">{len(report["generated_files"])}</div><div class="label">丢弃 {len(report["rejected_files"])} 个无效候选</div></div>
+</div>
+<div class="compare-chart">
+  <div class="compare-head"><strong>AutoFix 前后评分对比</strong><span>绿色为隔离副本复测结果</span></div>
+  <div class="compare-row"><span class="compare-label">修改前</span><div class="compare-track"><div class="compare-bar before" style="width:{before_width:.1f}%"></div></div><span class="compare-value">{report["before_score"]:.1f}</span></div>
+  <div class="compare-row"><span class="compare-label">修改后</span><div class="compare-track"><div class="compare-bar after" style="width:{after_width:.1f}%"></div></div><span class="compare-value">{report["after_score"]:.1f}</span></div>
+  <div class="compare-scale"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
 </div>
 <div class="verification {status_class}"><span class="check">{"✓" if unchanged else "!"}</span><div><strong>{status_text}</strong><br><span>原仓库内容指纹：<code>{fingerprint}</code></span></div></div>
 <h2>AutoFix 做了什么</h2><div class="guide">

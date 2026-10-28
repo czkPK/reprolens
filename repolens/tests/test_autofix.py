@@ -47,6 +47,9 @@ class AutoFixTests(unittest.TestCase):
             autofix_html = (out.parent / "autofix.html").read_text(encoding="utf-8")
             self.assertIn("原仓库未被修改", autofix_html)
             self.assertIn("autofix/proposal/Dockerfile", autofix_html)
+            self.assertIn("AutoFix 前后评分对比", autofix_html)
+            self.assertIn("compare-bar before", autofix_html)
+            self.assertIn("compare-bar after", autofix_html)
 
 
 if __name__ == "__main__":

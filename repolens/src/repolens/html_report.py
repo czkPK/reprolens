@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from html import escape
 
 from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
@@ -60,6 +61,97 @@ def render_html(result: AuditResult) -> str:
         status = str(row.get("status", ""))
         claim_counts[status] = claim_counts.get(status, 0) + 1
     attention_count = claim_counts.get("partially_verified", 0) + claim_counts.get("unverified", 0)
+
+    def radar_svg() -> str:
+        dims = result.dimensions
+        if len(dims) < 3:
+            return '<div class="visual-empty">暂无足够维度数据</div>'
+        width, height = 430, 340
+        cx, cy, radius = 215, 165, 112
+        angles = [-math.pi / 2 + 2 * math.pi * index / len(dims) for index in range(len(dims))]
+
+        def point(index: int, scale: float) -> tuple[float, float]:
+            angle = angles[index]
+            return cx + math.cos(angle) * radius * scale, cy + math.sin(angle) * radius * scale
+
+        def polygon(scale: float) -> str:
+            return " ".join(f"{x:.1f},{y:.1f}" for x, y in (point(index, scale) for index in range(len(dims))))
+
+        grids = "".join(
+            f'<polygon points="{polygon(level)}" class="radar-grid" />'
+            for level in (0.25, 0.5, 0.75, 1.0)
+        )
+        axes = "".join(
+            f'<line x1="{cx}" y1="{cy}" x2="{point(index, 1.0)[0]:.1f}" y2="{point(index, 1.0)[1]:.1f}" class="radar-axis" />'
+            for index in range(len(dims))
+        )
+        values = [max(0.0, min(1.0, dim.percent / 100 if dim.max_points else 0.0)) for dim in dims]
+        data_points = " ".join(f"{x:.1f},{y:.1f}" for x, y in (point(index, values[index]) for index in range(len(dims))))
+        dots = "".join(
+            f'<circle cx="{point(index, values[index])[0]:.1f}" cy="{point(index, values[index])[1]:.1f}" r="4" class="radar-dot" />'
+            for index in range(len(dims))
+        )
+        labels = []
+        for index, dim in enumerate(dims):
+            x, y = point(index, 1.2)
+            cosine = math.cos(angles[index])
+            anchor = "middle" if abs(cosine) < 0.25 else ("start" if cosine > 0 else "end")
+            labels.append(
+                f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" class="radar-label">{e(dim.name)}</text>'
+            )
+        return (
+            f'<svg class="radar-svg" viewBox="0 0 {width} {height}" role="img" aria-label="六维复现能力雷达图">'
+            f'{grids}{axes}<polygon points="{data_points}" class="radar-area" />{dots}{"".join(labels)}</svg>'
+        )
+
+    claim_total = len(claims)
+    claim_colors = {
+        "verified": "#16a34a",
+        "partially_verified": "#f59e0b",
+        "unverified": "#dc2626",
+        "not_applicable": "#94a3b8",
+    }
+    segments = []
+    start_angle = 0.0
+    for key in ("verified", "partially_verified", "unverified", "not_applicable"):
+        count = claim_counts.get(key, 0)
+        if count <= 0 or claim_total <= 0:
+            continue
+        end_angle = start_angle + count / claim_total * 360
+        segments.append(f"{claim_colors[key]} {start_angle:.2f}deg {end_angle:.2f}deg")
+        start_angle = end_angle
+    donut_background = f"conic-gradient({', '.join(segments)})" if segments else "conic-gradient(#e9eef8 0deg 360deg)"
+    coverage_percent = max(0.0, min(100.0, float(coverage.get("percent", 0))))
+    score_value = max(0.0, min(100.0, float(result.total_score)))
+    legend = "".join(
+        f'<div class="legend-item"><span class="legend-dot" style="background:{claim_colors[key]}"></span>'
+        f'<span>{CLAIM_STATUS_LABELS[key]}</span><strong>{claim_counts.get(key, 0)}</strong></div>'
+        for key in ("verified", "partially_verified", "unverified", "not_applicable")
+    )
+    visual_overview = f"""
+<section id="visual-overview" class="visual-section">
+  <div class="visual-heading"><div><h2>复现诊断总览</h2><p>先看整体强弱，再进入下方逐项证据。</p></div><span class="visual-hint">图表由本次 audit 数据直接生成</span></div>
+  <div class="visual-grid">
+    <article class="visual-card score-visual">
+      <div class="visual-title">综合评分</div>
+      <div class="gauge" style="--score-angle:{score_value * 3.6:.1f}deg"><div class="gauge-inner"><strong>{score_value:.1f}</strong><span>/ 100</span></div></div>
+      <div class="gauge-caption">{e(result.readiness)}</div>
+    </article>
+    <article class="visual-card radar-card">
+      <div class="visual-title">六维能力雷达</div>
+      {radar_svg()}
+      <div class="visual-foot">各维度按可用满分归一化，N/A 维度显示为 0。</div>
+    </article>
+    <article class="visual-card claims-visual">
+      <div class="visual-title">README 声明状态</div>
+      <div class="donut-row"><div class="donut" style="background:{donut_background}"><div class="donut-hole"><strong>{claim_total}</strong><span>条声明</span></div></div><div class="legend">{legend}</div></div>
+      <div class="coverage-line"><span>证据覆盖率</span><strong>{coverage_percent:.1f}%</strong></div>
+      <div class="coverage-track"><div style="width:{coverage_percent:.1f}%"></div></div>
+      <div class="visual-foot">{coverage.get("covered", 0)}/{coverage.get("total", 0)} 个适用检查项存在关联证据</div>
+    </article>
+  </div>
+</section>
+"""
 
     summary_cards = (
         f'<div class="card"><div class="label">Evidence coverage</div><div class="value">{coverage["percent"]:.1f}%</div><div class="sub">{coverage["covered"]}/{coverage["total"]} applicable criteria</div></div>'
@@ -202,6 +294,43 @@ tr:target {{ background: #fff8dc; }}
 .evidence-item {{ margin: 0 0 8px; }}
 .evidence-location {{ color: #2457d6; font-size: 12px; }}
 .evidence-excerpt {{ color: #697386; font-size: 12px; line-height: 1.45; margin-top: 2px; }}
+.visual-section {{ margin: 26px 0 8px; padding: 24px; background: linear-gradient(135deg,#f8faff,#eef4ff); border: 1px solid #dce6f5; border-radius: 18px; }}
+.visual-heading {{ display:flex; justify-content:space-between; align-items:flex-end; gap:14px; margin-bottom:18px; }}
+.visual-heading h2 {{ margin:0; border:0; padding:0; font-size:24px; }}
+.visual-heading p {{ margin:6px 0 0; color:#64748b; font-size:13px; }}
+.visual-hint {{ color:#64748b; font-size:12px; }}
+.visual-grid {{ display:grid; grid-template-columns:0.82fr 1.25fr 1fr; gap:14px; align-items:stretch; }}
+.visual-card {{ background:rgba(255,255,255,.92); border:1px solid #e4ebf6; border-radius:14px; padding:16px; box-shadow:0 5px 18px rgba(23,32,51,.05); min-width:0; }}
+.visual-title {{ color:#40506a; font-weight:800; font-size:14px; margin-bottom:12px; }}
+.score-visual {{ display:flex; flex-direction:column; align-items:center; justify-content:center; }}
+.gauge {{ width:170px; height:170px; border-radius:50%; background:conic-gradient(#2457d6 var(--score-angle), #e5ecf8 0); display:grid; place-items:center; margin:6px auto 10px; }}
+.gauge-inner {{ width:126px; height:126px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px #eef2f8; }}
+.gauge-inner strong {{ font-size:38px; color:#2457d6; line-height:1; }}
+.gauge-inner span {{ color:#8490a1; font-size:12px; margin-top:4px; }}
+.gauge-caption {{ padding:6px 10px; border-radius:999px; background:#eef3fb; color:#31507a; font-size:12px; font-weight:800; }}
+.radar-svg {{ width:100%; height:auto; display:block; overflow:visible; }}
+.radar-grid {{ fill:none; stroke:#dce5f2; stroke-width:1; }}
+.radar-axis {{ stroke:#e4ebf5; stroke-width:1; }}
+.radar-area {{ fill:rgba(36,87,214,.18); stroke:#2457d6; stroke-width:2.2; }}
+.radar-dot {{ fill:#2457d6; stroke:#fff; stroke-width:1.5; }}
+.radar-label {{ fill:#526175; font-size:11px; font-family:"Microsoft YaHei",sans-serif; }}
+.visual-foot {{ color:#8490a1; font-size:11px; line-height:1.5; margin-top:8px; }}
+.donut-row {{ display:flex; align-items:center; gap:18px; }}
+.donut {{ width:138px; height:138px; border-radius:50%; display:grid; place-items:center; flex:0 0 138px; }}
+.donut-hole {{ width:96px; height:96px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px #eef2f8; }}
+.donut-hole strong {{ font-size:28px; color:#2457d6; line-height:1; }}
+.donut-hole span {{ color:#8490a1; font-size:11px; margin-top:4px; }}
+.legend {{ display:flex; flex-direction:column; gap:8px; min-width:0; }}
+.legend-item {{ display:grid; grid-template-columns:10px 1fr auto; align-items:center; gap:7px; color:#526175; font-size:12px; }}
+.legend-dot {{ width:9px; height:9px; border-radius:50%; }}
+.legend-item strong {{ color:#172033; }}
+.coverage-line {{ display:flex; justify-content:space-between; gap:10px; margin-top:18px; color:#526175; font-size:12px; }}
+.coverage-line strong {{ color:#2457d6; }}
+.coverage-track {{ height:8px; background:#e9eef7; border-radius:999px; overflow:hidden; margin-top:7px; }}
+.coverage-track div {{ height:100%; border-radius:999px; background:linear-gradient(90deg,#2457d6,#0ea5e9); }}
+.visual-empty {{ color:#8490a1; font-size:13px; }}
+@media(max-width:980px) {{ .visual-grid {{ grid-template-columns:1fr 1fr; }} .claims-visual {{ grid-column:1/-1; }} }}
+@media(max-width:620px) {{ .visual-section {{ padding:16px; }} .visual-grid {{ grid-template-columns:1fr; }} .claims-visual {{ grid-column:auto; }} .donut-row {{ align-items:flex-start; }} .visual-heading {{ display:block; }} .visual-hint {{ display:block; margin-top:8px; }} }}
 ul {{ background: white; border-radius: 12px; padding: 18px 24px 18px 42px; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 .priority {{ background: linear-gradient(135deg,#eef3fb,#f8faff); border: 1px solid #dbe4f0; border-radius: 12px; padding: 18px 22px; }}
 .priority li {{ margin: 10px 0; }}
@@ -214,6 +343,7 @@ small {{ color: #697386; }}
 <h1>ReproLens Audit Report</h1>
 <div class="meta">Repository: {e(result.repo_path)}<br>Generated: {e(result.generated_at)} | Files scanned: {result.files_scanned}{source_meta}{ai_meta}</div>
 <div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 LLM/RAG/Agent 项目复现就绪度</p></div></div>
+{visual_overview}
 <h2>Evidence Overview</h2><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
