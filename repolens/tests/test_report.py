@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from repolens.html_report import render_claims_html, render_html
@@ -42,7 +43,16 @@ class ReportTests(unittest.TestCase):
         self.assertIn("radar-svg", html)
         self.assertIn("donut", html)
         self.assertIn("证据覆盖率", html)
-        self.assertIn("Evidence Appendix", html)
+        self.assertIn("Evidence Appendix（证据附录）", html)
+        self.assertIn("Evidence Overview（证据总览）", html)
+        self.assertIn("Top 3 Priority Actions（三项优先整改行动）", html)
+        self.assertIn("Dimension Scores（维度评分）", html)
+        self.assertIn("Findings（问题发现）", html)
+        self.assertIn("Execution Evidence（执行证据）", html)
+        self.assertIn("Minimal Remediation Plan（最小整改计划）", html)
+        self.assertIn("Scope and Limitations（适用范围与限制）", html)
+        self.assertIn("中文翻译：", html)
+        self.assertIn("简单解释：", html)
         self.assertIn('id="evidence"', html)
         self.assertIn('href="#evidence-E-', html)
         self.assertIn('title="requirements.txt:1', html)
@@ -71,6 +81,42 @@ class ReportTests(unittest.TestCase):
         self.assertIn('class="claim-table"', claims_html)
         self.assertIn("overflow:visible", claims_html)
         self.assertIn("box-sizing:border-box", claims_html)
+
+    def test_na_dimension_is_rendered_as_na_not_100_percent(self):
+        root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"
+        snapshot = scan_repo(root)
+        criteria = evaluate_criteria(snapshot)
+        score = total_score(criteria)
+        result = AuditResult(
+            repo_path=str(root),
+            generated_at="test",
+            total_score=score,
+            readiness=readiness_label(score),
+            dimensions=score_dimensions(criteria),
+            criteria=criteria,
+            findings=build_findings(criteria),
+            remediations=[],
+            evidence=snapshot.evidence,
+            files_scanned=len(snapshot.files),
+        )
+        na_dimension = replace(
+            next(item for item in result.dimensions if item.name == "数据可复现"),
+            points=0,
+            max_points=0,
+            percent=0,
+            applicable=False,
+        )
+        result = replace(
+            result,
+            dimensions=[
+                na_dimension if item.name == "数据可复现" else item
+                for item in result.dimensions
+            ],
+        )
+        html = render_html(result)
+        self.assertIn('<div class="value na">N/A</div>', html)
+        self.assertIn('class="radar-na">N/A</tspan>', html)
+        self.assertIn("不能用 0% 或 100% 代表好坏", html)
 
     def test_write_outputs_creates_claim_files(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-llm-app"

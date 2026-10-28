@@ -53,6 +53,7 @@ class DimensionScore:
     points: float
     max_points: float
     percent: float
+    applicable: bool = True
 
 
 @dataclass

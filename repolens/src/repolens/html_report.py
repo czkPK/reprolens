@@ -85,7 +85,7 @@ def render_html(result: AuditResult) -> str:
             f'<line x1="{cx}" y1="{cy}" x2="{point(index, 1.0)[0]:.1f}" y2="{point(index, 1.0)[1]:.1f}" class="radar-axis" />'
             for index in range(len(dims))
         )
-        values = [max(0.0, min(1.0, dim.percent / 100 if dim.max_points else 0.0)) for dim in dims]
+        values = [max(0.0, min(1.0, dim.percent / 100 if dim.applicable else 0.0)) for dim in dims]
         data_points = " ".join(f"{x:.1f},{y:.1f}" for x, y in (point(index, values[index]) for index in range(len(dims))))
         dots = "".join(
             f'<circle cx="{point(index, values[index])[0]:.1f}" cy="{point(index, values[index])[1]:.1f}" r="4" class="radar-dot" />'
@@ -96,9 +96,15 @@ def render_html(result: AuditResult) -> str:
             x, y = point(index, 1.2)
             cosine = math.cos(angles[index])
             anchor = "middle" if abs(cosine) < 0.25 else ("start" if cosine > 0 else "end")
-            labels.append(
-                f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" class="radar-label">{e(dim.name)}</text>'
-            )
+            if dim.applicable:
+                label = f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" class="radar-label">{e(dim.name)}</text>'
+            else:
+                label = (
+                    f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" class="radar-label">'
+                    f'<tspan x="{x:.1f}" dy="-0.35em">{e(dim.name)}</tspan>'
+                    f'<tspan x="{x:.1f}" dy="1.25em" class="radar-na">N/A</tspan></text>'
+                )
+            labels.append(label)
         return (
             f'<svg class="radar-svg" viewBox="0 0 {width} {height}" role="img" aria-label="六维复现能力雷达图">'
             f'{grids}{axes}<polygon points="{data_points}" class="radar-area" />{dots}{"".join(labels)}</svg>'
@@ -140,7 +146,7 @@ def render_html(result: AuditResult) -> str:
     <article class="visual-card radar-card">
       <div class="visual-title">六维能力雷达</div>
       {radar_svg()}
-      <div class="visual-foot">各维度按可用满分归一化，N/A 维度显示为 0。</div>
+      <div class="visual-foot">各维度按可用满分归一化。N/A（不适用）表示该维度没有适用检查项，雷达图中按中心点处理，并且不参与总分计算。</div>
     </article>
     <article class="visual-card claims-visual">
       <div class="visual-title">README 声明状态</div>
@@ -154,13 +160,17 @@ def render_html(result: AuditResult) -> str:
 """
 
     summary_cards = (
-        f'<div class="card"><div class="label">Evidence coverage</div><div class="value">{coverage["percent"]:.1f}%</div><div class="sub">{coverage["covered"]}/{coverage["total"]} applicable criteria</div></div>'
-        f'<div class="card"><div class="label">README claims</div><div class="value">{len(claims)}</div><div class="sub">extracted and mapped</div></div>'
-        f'<div class="card"><div class="label">Verified claims</div><div class="value">{claim_counts.get("verified", 0)}</div><div class="sub">all mapped checks pass</div></div>'
-        f'<div class="card"><div class="label">Needs evidence</div><div class="value">{attention_count}</div><div class="sub">partial or unverified</div></div>'
+        f'<div class="card"><div class="label">Evidence coverage（证据覆盖率）</div><div class="value">{coverage["percent"]:.1f}%</div><div class="sub">{coverage["covered"]}/{coverage["total"]} 个适用检查项</div></div>'
+        f'<div class="card"><div class="label">README claims（README 声明数）</div><div class="value">{len(claims)}</div><div class="sub">从 README 中抽取并映射</div></div>'
+        f'<div class="card"><div class="label">Verified claims（已验证声明）</div><div class="value">{claim_counts.get("verified", 0)}</div><div class="sub">相关检查项全部通过</div></div>'
+        f'<div class="card"><div class="label">Needs evidence（仍需证据）</div><div class="value">{attention_count}</div><div class="sub">部分验证或未验证</div></div>'
     )
     dim_cards = "".join(
-        f'<div class="card"><div class="label">{e(dim.name)}</div><div class="value">{dim.percent:.1f}%</div><div class="sub">{dim.points:.1f}/{dim.max_points:.1f}</div></div>'
+        (
+            f'<div class="card"><div class="label">{e(dim.name)}</div><div class="value">{dim.percent:.1f}%</div><div class="sub">{dim.points:.1f}/{dim.max_points:.1f} 分</div></div>'
+            if dim.applicable
+            else f'<div class="card"><div class="label">{e(dim.name)}</div><div class="value na">N/A</div><div class="sub">无适用检查项，不计入总分</div></div>'
+        )
         for dim in result.dimensions
     )
     criteria_rows = "".join(
@@ -172,13 +182,13 @@ def render_html(result: AuditResult) -> str:
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
-        f'<li><strong>{e(item.id)} [{e(item.severity.upper())}] {e(item.title)}</strong><br>{e(item.message)}<br><small>Evidence: {evidence_links(item.evidence_ids)}</small></li>'
+        f'<li><strong>{e(item.id)} [{e(item.severity.upper())}] {e(item.title)}</strong><br>{e(item.message)}<br><small>证据（Evidence）：{evidence_links(item.evidence_ids)}</small></li>'
         for item in result.findings
-    ) or "<li>No findings.</li>"
+    ) or "<li>没有发现问题。</li>"
     remediation_items = "".join(
-        f'<li><strong>{e(item.finding_id)} - {e(item.action)}</strong><br>{e(item.rationale)}<br><small>Cost: {e(item.cost)} | Impact: {e(item.impact)} | Estimated gain: +{item.estimated_score_gain:.1f}</small></li>'
+        f'<li><strong>{e(item.finding_id)} - {e(item.action)}</strong><br>{e(item.rationale)}<br><small>修复成本（Cost）：{e(item.cost)} | 影响（Impact）：{e(item.impact)} | 预计提分（Estimated gain）：+{item.estimated_score_gain:.1f}</small></li>'
         for item in result.remediations
-    ) or "<li>No remediation actions.</li>"
+    ) or "<li>没有生成整改建议。</li>"
     top_actions = sorted(result.remediations, key=lambda item: item.estimated_score_gain, reverse=True)[:3]
     priority_items = "".join(
         f'<li><strong>+{item.estimated_score_gain:.1f}</strong> {e(item.action)}<br><small>{e(item.rationale)}</small></li>'
@@ -187,7 +197,7 @@ def render_html(result: AuditResult) -> str:
     probe_rows = "".join(
         f'<tr><td>{e(probe.name)}</td><td><span class="status {e(probe.status)}">{e(probe.status.upper())}</span></td><td>{e(probe.returncode if probe.returncode is not None else "-")}</td><td>{probe.duration_seconds:.3f}s</td><td><code>{e(probe.command.replace(chr(10), " ")[:180])}</code></td></tr>'
         for probe in result.probes
-    ) or '<tr><td colspan="5">No probes run.</td></tr>'
+    ) or '<tr><td colspan="5">本次没有运行执行探测。</td></tr>'
     evidence_rows = "".join(
         f'<tr id="evidence-{e(item.id)}"><td><code>{e(item.id)}</code></td><td>{e(item.kind)}</td><td><code class="evidence-path">{e(item.path)}</code>{f":{item.line}" if item.line else ""}</td><td class="evidence-raw">{e(item.excerpt)}</td></tr>'
         for item in result.evidence
@@ -222,6 +232,9 @@ h2 {{ margin-top: 32px; border-bottom: 1px solid #dbe2ee; padding-bottom: 8px; }
 .card .label {{ color: #5f6b7a; font-size: 13px; }}
 .card .value {{ font-size: 26px; font-weight: 800; color: #2457d6; margin: 6px 0; }}
 .card .sub {{ color: #8490a1; font-size: 12px; }}
+.card .value.na {{ color: #8490a1; }}
+.section-note {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
+.section-note strong {{ color: #40506a; }}
 table {{ width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: visible; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 th, td {{ text-align: left; padding: 10px 12px; border-bottom: 1px solid #edf1f7; font-size: 13px; vertical-align: top; }}
 th {{ background: #eef3fb; color: #40506a; }}
@@ -314,6 +327,7 @@ tr:target {{ background: #fff8dc; }}
 .radar-area {{ fill:rgba(36,87,214,.18); stroke:#2457d6; stroke-width:2.2; }}
 .radar-dot {{ fill:#2457d6; stroke:#fff; stroke-width:1.5; }}
 .radar-label {{ fill:#526175; font-size:11px; font-family:"Microsoft YaHei",sans-serif; }}
+.radar-na {{ fill:#8a98aa; font-size:10px; font-weight:700; }}
 .visual-foot {{ color:#8490a1; font-size:11px; line-height:1.5; margin-top:8px; }}
 .donut-row {{ display:flex; align-items:center; gap:18px; }}
 .donut {{ width:138px; height:138px; border-radius:50%; display:grid; place-items:center; flex:0 0 138px; }}
@@ -344,16 +358,16 @@ small {{ color: #697386; }}
 <div class="meta">Repository: {e(result.repo_path)}<br>Generated: {e(result.generated_at)} | Files scanned: {result.files_scanned}{source_meta}{ai_meta}</div>
 <div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 LLM/RAG/Agent 项目复现就绪度</p></div></div>
 {visual_overview}
-<h2>Evidence Overview</h2><div class="cards summary">{summary_cards}</div>
-<h2>Top 3 Priority Actions</h2><ul class="priority">{priority_items}</ul>
-<h2>Dimension Scores</h2><div class="cards">{dim_cards}</div>
-<h2 id="criteria">Criteria（检查项）</h2><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
-<h2 id="evidence">Evidence Appendix（证据附录）</h2><p class="table-help"><strong>用途：</strong>这里保存每条证据的编号、类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动；长文件路径和原文会自动换行。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
-<h2>Findings</h2><ul>{finding_items}</ul>
-<h2>Execution Evidence</h2><table><thead><tr><th>Probe</th><th>Status</th><th>Return code</th><th>Duration</th><th>Command</th></tr></thead><tbody>{probe_rows}</tbody></table>
-<h2>Minimal Remediation Plan</h2><ul>{remediation_items}</ul>
-<h2>Scope and Limitations</h2><ul><li>This is static reproduction readiness analysis, not proof that the project reproduces successfully.</li><li>No untrusted repository code is executed by default.</li><li>Execution probes run repository scripts only with <code>--execute</code>.</li><li>AI-generated explanations must be reviewed by the team before release.</li></ul>
+<h2>Evidence Overview（证据总览）</h2><p class="section-note"><strong>中文翻译：</strong>证据总览。<strong>简单解释：</strong>汇总证据覆盖率、README 声明数量和仍需补充证据的数量，先判断证据基础是否完整。</p><div class="cards summary">{summary_cards}</div>
+<h2>Top 3 Priority Actions（三项优先整改行动）</h2><p class="section-note"><strong>中文翻译：</strong>三项优先整改行动。<strong>简单解释：</strong>按照预计提分从高到低，列出最值得先处理的三项修改。</p><ul class="priority">{priority_items}</ul>
+<h2>Dimension Scores（维度评分）</h2><p class="section-note"><strong>中文翻译：</strong>维度评分。<strong>简单解释：</strong>展示六个复现维度的得分。显示 N/A 表示该维度没有适用检查项，不能用 0% 或 100% 代表好坏。</p><div class="cards">{dim_cards}</div>
+<h2 id="criteria">Criteria（检查项）</h2><p class="section-note"><strong>中文翻译：</strong>检查项。<strong>简单解释：</strong>逐条列出检查要求、当前状态、得分、对应证据以及证据说明。</p><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 仓库中的原始证据编号。点击可跳到证据附录；鼠标悬停可查看文件、行号和原文；右侧“证据说明”会直接解释该编号对应什么内容。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
+<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="section-note"><strong>中文翻译：</strong>声明与证据矩阵。<strong>简单解释：</strong>检查 README 中声称具备的能力，是否能被仓库里的文件证据支持。</p><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2 id="evidence">Evidence Appendix（证据附录）</h2><p class="section-note"><strong>中文翻译：</strong>证据附录。<strong>简单解释：</strong>集中保存证据编号、类型、文件位置和原文，方便评委或维护者人工复核。</p><p class="table-help"><strong>用途：</strong>这里保存每条证据的编号、类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动；长文件路径和原文会自动换行。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号</th><th>证据类型</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
+<h2>Findings（问题发现）</h2><p class="section-note"><strong>中文翻译：</strong>问题发现。<strong>简单解释：</strong>列出当前检查中发现的主要缺口、风险等级和对应证据。</p><ul>{finding_items}</ul>
+<h2>Execution Evidence（执行证据）</h2><p class="section-note"><strong>中文翻译：</strong>执行证据。<strong>简单解释：</strong>记录实际运行过的探测命令、结果和耗时；它只证明这些探测执行过，不代表整个项目已经复现成功。</p><table><thead><tr><th>Probe（探测项）</th><th>Status（状态）</th><th>Return code（返回码）</th><th>Duration（耗时）</th><th>Command（命令）</th></tr></thead><tbody>{probe_rows}</tbody></table>
+<h2>Minimal Remediation Plan（最小整改计划）</h2><p class="section-note"><strong>中文翻译：</strong>最小整改计划。<strong>简单解释：</strong>给出成本较低、能够提高复现就绪度的修改建议，并估算预计提分。</p><ul>{remediation_items}</ul>
+<h2>Scope and Limitations（适用范围与限制）</h2><p class="section-note"><strong>中文翻译：</strong>适用范围与限制。<strong>简单解释：</strong>说明本报告能证明什么、不能证明什么，避免把静态体检结果误解为完整复现成功。</p><ul><li>本报告执行的是静态复现就绪度分析，不等同于证明项目能够成功复现。</li><li>系统默认不会执行来自不可信仓库的代码。</li><li>只有使用 <code>--execute</code> 时，才会运行仓库中的探测脚本。</li><li>AI 生成的解释在正式发布前仍需要团队人工复核。</li></ul>
 </main></body></html>"""
 
 

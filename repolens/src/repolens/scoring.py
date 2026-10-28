@@ -25,9 +25,16 @@ def score_dimensions(criteria: list[CriterionResult]) -> list[DimensionScore]:
         applicable = [item for item in items if item.applicable]
         max_points = sum(item.max_points for item in applicable)
         points = sum(item.points for item in applicable)
-        percent = round(points / max_points * 100, 1) if max_points else 100.0
+        applicable = max_points > 0
+        percent = round(points / max_points * 100, 1) if applicable else 0.0
         dimensions.append(
-            DimensionScore(name=name, points=round(points, 1), max_points=round(max_points, 1), percent=percent)
+            DimensionScore(
+                name=name,
+                points=round(points, 1),
+                max_points=round(max_points, 1),
+                percent=percent,
+                applicable=applicable,
+            )
         )
     return dimensions
 

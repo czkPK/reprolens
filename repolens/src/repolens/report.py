@@ -66,7 +66,8 @@ def render_markdown(result: AuditResult) -> str:
     if result.ai_metadata:
         lines.insert(4, f"- Semantic claim mapping: **{result.ai_metadata.get('mode', 'rules')}**")
     for dim in result.dimensions:
-        lines.append(f"| {dim.name} | {dim.points:.1f} | {dim.max_points:.1f} | {dim.percent:.1f}% |")
+        percent = f"{dim.percent:.1f}%" if dim.applicable else "N/A"
+        lines.append(f"| {dim.name} | {dim.points:.1f} | {dim.max_points:.1f} | {percent} |")
 
     lines.extend(["", "## Top 3 Priority Actions", ""])
     top_actions = sorted(result.remediations, key=lambda item: item.estimated_score_gain, reverse=True)[:3]
