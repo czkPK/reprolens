@@ -188,6 +188,19 @@ class ScannerTests(unittest.TestCase):
         self.assertTrue(snapshot.has("data_mention"))
         self.assertFalse(snapshot.has("data_source_link"))
 
+    def test_cloud_drive_model_weights_are_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Project\n\n## Pretrained Models\n\n"
+                "- **ViT-B**: [Baidu Pan](https://pan.baidu.com/s/example) (Code: abcd)\n"
+                "- **CLIP**: [Google Drive](https://drive.google.com/file/d/example/view)\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("model_source_link"))
+        self.assertTrue(snapshot.has("model_version"))
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

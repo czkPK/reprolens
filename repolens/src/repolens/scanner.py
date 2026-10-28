@@ -246,6 +246,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     def find_model_source_link() -> None:
         artifact_url_re = re.compile(
             r"huggingface\.co/(?!(?:datasets|docs|blog|papers|spaces)/)[^/\s)]+/[^\s)]+"
+            r"|(?:pan\.baidu\.com|drive\.google\.com|1drv\.ms|dropbox\.com|mega\.nz)[^\s)]*"
             r"|(?:storage\.googleapis\.com|dl\.fbaipublicfiles\.com|openaipublic\.azureedge\.net)[^\s)]*(?:(?:models?|checkpoints?|weights?)[^\s)]*|\.(?:pt|pth|ckpt|bin|safetensors|zip|npz)(?:[?#][^\s)]*)?)"
             r"|github\.com/[^\s)]+/releases/download[^\s)]*"
             r"|https?://[^\s)]+\.(?:pt|pth|ckpt|bin|safetensors|zip|npz)(?:[?#][^\s)]*)?",
