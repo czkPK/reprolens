@@ -8,10 +8,20 @@ import urllib.request
 from pathlib import Path
 from unittest.mock import patch
 
-from repolens.web import ReproLensHTTPServer, _run_git, parse_github_url, resolve_github_source
+from repolens.web import WEBHOOK_DEMO_HTML, ReproLensHTTPServer, _run_git, parse_github_url, resolve_github_source
 
 
 class WebTests(unittest.TestCase):
+    def test_webhook_demo_explains_technical_titles(self):
+        for text in (
+            "Webhook（回调通知）",
+            "JSON（结构化数据）",
+            "HTTP POST（提交数据）",
+            "接收状态（服务是否在线）",
+            "最近一次 HTTP POST 内容",
+        ):
+            self.assertIn(text, WEBHOOK_DEMO_HTML)
+
     def test_parse_github_url_normalizes_git_suffix(self):
         self.assertEqual(
             parse_github_url("https://github.com/openai/openai-python.git"),

@@ -34,6 +34,8 @@ RUN_ID_RE = re.compile(r"^[A-Za-z0-9_-]+$")
 REPORT_PART_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
 MAX_PENDING_JOBS = 8
+WEBHOOK_DEMO_LOCK = threading.Lock()
+WEBHOOK_DEMO_STATE = {"count": 0, "last": None, "received_at": None}
 IGNORE_DIRS = {
     ".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache",
     ".mypy_cache", "dist", "build", "target", "vendor",
@@ -413,6 +415,9 @@ run.addEventListener('click', async () => {
 </body></html>'''
 
 
+WEBHOOK_DEMO_HTML = (Path(__file__).with_name("webhook_demo.html")).read_text(encoding="utf-8")
+
+
 class ReproLensWebHandler(BaseHTTPRequestHandler):
     server_version = "ReproLensWeb/0.1"
 
@@ -451,6 +456,13 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/api/health":
             self._json({"status": "ok"})
+            return
+        if parsed.path == "/webhook-demo":
+            self._html(WEBHOOK_DEMO_HTML)
+            return
+        if parsed.path == "/api/webhook-demo/latest":
+            with WEBHOOK_DEMO_LOCK:
+                self._json(dict(WEBHOOK_DEMO_STATE))
             return
         if parsed.path.startswith("/api/jobs/"):
             job_id = parsed.path.removeprefix("/api/jobs/")
@@ -492,6 +504,24 @@ class ReproLensWebHandler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self) -> None:
+        if self.path == "/api/webhook-demo/hook":
+            length = int(self.headers.get("Content-Length", "0") or "0")
+            if length <= 0 or length > MAX_BODY_BYTES:
+                self._json({"error": "请求内容过大或为空。"}, HTTPStatus.BAD_REQUEST)
+                return
+            try:
+                payload = json.loads(self.rfile.read(length).decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                self._json({"error": "JSON 格式不合法。"}, HTTPStatus.BAD_REQUEST)
+                return
+            with WEBHOOK_DEMO_LOCK:
+                WEBHOOK_DEMO_STATE["count"] += 1
+                WEBHOOK_DEMO_STATE["last"] = payload
+                WEBHOOK_DEMO_STATE["received_at"] = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+            self.send_response(HTTPStatus.NO_CONTENT)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
         if self.path not in {"/api/audit", "/api/jobs"}:
             self._json({"error": "Not found"}, HTTPStatus.NOT_FOUND)
             return

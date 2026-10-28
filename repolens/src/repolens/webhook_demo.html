@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReproLens Webhook 接收看板</title>
+<style>
+:root{--ink:#172033;--muted:#64748b;--line:#e8edf5;--blue:#2457d6;--green:#0f8a5f;--paper:#fff;--bg:#f4f7fc}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 90% 0,rgba(36,87,214,.10),transparent 30%),var(--bg);color:var(--ink);font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:42px 22px 76px}
+h1{margin:0 0 10px;font-size:34px;letter-spacing:-.025em}h2{margin:0;font-size:22px}
+.lead{max-width:820px;color:var(--muted);line-height:1.75;font-size:15px;margin:0}
+.glossary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0 30px}
+.term{background:rgba(255,255,255,.88);border:1px solid #e3e9f3;border-radius:14px;padding:15px 16px;box-shadow:0 5px 18px rgba(23,32,51,.05)}
+.term strong{display:block;color:#31507a;font-size:14px;margin-bottom:6px}.term span{color:var(--muted);font-size:12px;line-height:1.65}
+.section-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:28px 0 13px}.section-note{color:var(--muted);font-size:12px;line-height:1.6}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
+.card{background:var(--paper);border:1px solid #edf1f7;border-radius:14px;padding:17px 18px;box-shadow:0 6px 20px rgba(23,32,51,.07)}
+.label{color:#40516c;font-size:13px;font-weight:800}.card-help{color:var(--muted);font-size:11px;line-height:1.55;margin:4px 0 0}
+.value{font-size:25px;font-weight:900;color:var(--blue);margin-top:8px}.ok{color:var(--green)}
+.panel{background:var(--paper);border:1px solid #edf1f7;border-radius:14px;box-shadow:0 6px 20px rgba(23,32,51,.07);overflow:hidden}
+.panel-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:16px 18px;border-bottom:1px solid var(--line)}
+.panel-title{font-weight:900}.panel-help{color:var(--muted);font-size:12px;line-height:1.6;margin:5px 0 0;max-width:760px}
+.pill{white-space:nowrap;border-radius:999px;background:#eef8f2;color:#0f7a50;padding:6px 10px;font-size:11px;font-weight:800}
+pre{margin:0;padding:18px;min-height:300px;max-height:600px;overflow:auto;background:#172033;color:#eaf0fa;font-size:13px;line-height:1.65}
+.waiting{color:#64748b;background:#f8faff;padding:40px 20px;text-align:center}
+.note{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.note-card{background:#fff;border:1px solid #edf1f7;border-radius:12px;padding:14px 16px;color:var(--muted);line-height:1.7;font-size:12px}
+.note-card strong{display:block;color:#40516c;font-size:13px;margin-bottom:5px}
+code{display:inline-block;background:#eef3fb;color:var(--blue);border-radius:5px;padding:3px 6px;word-break:break-all}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#16a34a;margin-right:7px}
+@media(max-width:760px){.glossary,.status,.note{grid-template-columns:1fr}.panel-head{display:block}.pill{display:inline-block;margin-top:10px}}
+</style>
+</head>
+<body><main>
+<h1>ReproLens Webhook 接收看板</h1>
+<p class="lead">这个页面用来证明：ReproLens 生成的评分 JSON 不仅能下载，还能主动发送给外部系统。下方展示的是接收端实际收到的数据。</p>
+
+<div class="glossary">
+  <div class="term"><strong>Webhook（回调通知）</strong><span>一个系统在事件发生后，主动把结果发送给另一个系统的地址，不需要人工上传文件。</span></div>
+  <div class="term"><strong>JSON（结构化数据）</strong><span>一种机器容易读取的数据格式，里面保存项目地址、评分、状态和证据覆盖率等结果。</span></div>
+  <div class="term"><strong>HTTP POST（提交数据）</strong><span>把 JSON 发送到接收地址时使用的一种标准网络请求方式。</span></div>
+</div>
+
+<div class="section-head"><h2>实时接收状态</h2><span class="section-note">这三个数字用于判断接收服务是否在线，以及是否真的收到了 ReproLens 发来的数据。</span></div>
+<div class="status">
+  <div class="card"><div class="label">接收状态（服务是否在线）</div><p class="card-help">在线表示接收地址正在等待外部系统提交 JSON。</p><div class="value ok"><span class="dot"></span>在线</div></div>
+  <div class="card"><div class="label">已接收请求（收到的 JSON 次数）</div><p class="card-help">每成功提交一次完整 JSON，这个数字增加 1。</p><div class="value" id="count">0</div></div>
+  <div class="card"><div class="label">最近接收（最后一次数据到达时间）</div><p class="card-help">显示最新一次收到数据的时间，便于确认演示不是旧结果。</p><div class="value" id="time" style="font-size:16px">等待中</div></div>
+</div>
+
+<div class="section-head"><h2>最近一次 HTTP POST 内容</h2><span class="section-note">这里展示外部系统实际收到的完整 JSON；“HTTP POST”只是发送数据的技术方式。</span></div>
+<div class="panel">
+  <div class="panel-head"><div><div class="panel-title">外部接收端实际收到的 JSON 数据</div><p class="panel-help">下面不是预设截图，而是接收地址实时保存并展示的上一条请求内容。</p></div><span class="pill">每秒自动刷新</span></div>
+  <pre id="payload" class="waiting">等待 ReproLens 发送数据…</pre>
+</div>
+
+<div class="note">
+  <div class="note-card"><strong>接收地址是什么？</strong>外部系统把 JSON 发送到这里。当前接收地址为：<br><code id="hook"></code></div>
+  <div class="note-card"><strong>演示命令是什么？</strong>该命令读取 score.json，按最低分数判断是否通过，并把精简 JSON 发送到接收地址：<br><code>python -m repolens.integrations score.json --min-score 70 --webhook-url &lt;接收地址&gt;</code></div>
+</div>
+<script>
+const hook=location.origin+'/api/webhook-demo/hook';document.getElementById('hook').textContent=hook;
+async function refresh(){try{const r=await fetch('/api/webhook-demo/latest',{cache:'no-store'});const d=await r.json();document.getElementById('count').textContent=d.count||0;document.getElementById('time').textContent=d.received_at||'等待中';const p=document.getElementById('payload');p.className=d.last===null?'waiting':'';p.textContent=d.last===null?'等待 ReproLens 发送数据…':JSON.stringify(d.last,null,2);}catch(e){}}
+refresh();setInterval(refresh,1000);
+</script>
+</main></body></html>
