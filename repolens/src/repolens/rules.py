@@ -170,8 +170,8 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     else:
         add("MODEL-03", "missing", "没有模型许可或来源说明。", applicable=(is_ml or is_llm) and not model_agnostic)
 
-    if snapshot.has("train_script") or (is_llm and snapshot.has("run_instructions")):
-        add("EXP-01", "pass", "已发现训练脚本或主运行命令。", ev("train_script", "run_instructions"))
+    if snapshot.has("train_script") or snapshot.has("train_instruction") or (is_llm and snapshot.has("run_instructions")):
+        add("EXP-01", "pass", "已发现训练脚本或 README 训练命令。", ev("train_script", "train_instruction", "run_instructions"))
     elif snapshot.has("run_instructions"):
         add("EXP-01", "partial", "有运行命令，但没有独立训练或主运行脚本。", ev("run_instructions"))
     else:

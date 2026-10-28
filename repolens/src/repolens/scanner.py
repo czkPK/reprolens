@@ -299,11 +299,26 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 return
 
     find_text(r"pip install|conda env|docker build|uv sync|poetry install", "install_instructions", "instruction")
-    find_text(r"python[^\n]*(train|finetune)|bash[^\n]*\.sh|make[^\n]*", "run_instructions", "instruction")
+    train_instruction_pattern = (
+        r"(?:\bpython(?:3)?\b[^\n]*(?:\btrain(?:ing)?\b|finetun|--train|--finetune|(?:^|\s)-m\s+[^\n]*\b(?:train|main)\b))"
+        r"|(?:\b(?:torchrun|accelerate\s+launch|deepspeed)\b[^\n]*(?:train|finetun|\.py))"
+        r"|(?:\b(?:bash|sh)\b[^\n]*(?:train|finetun)[^\n]*\.sh)"
+        r"|(?:\bmake\s+(?:train|finetune|finetuning)\b)"
+    )
+    run_instruction_pattern = (
+        r"^\s*(?:\$ )?(?:python(?:3)?|pip|conda|uv|poetry|bash\s+\S+|sh\s+\S+|"
+        r"docker\s+\w+|torchrun|accelerate\s+launch|deepspeed)\b[^\n]+"
+    )
+    if find_text(train_instruction_pattern, "train_instruction", "training-command"):
+        train_evidence = snapshot.evidence_for("train_instruction")
+        if train_evidence:
+            snapshot.mark("run_instructions", train_evidence[0])
+    else:
+        find_text(run_instruction_pattern, "run_instructions", "instruction")
     dataset_link_pattern = (
         r"(?:huggingface\.co/datasets/|kaggle\.com/|zenodo\.org/|figshare\.com/|drive\.google\.com/)"
-        r"|(?:(?:download|获取|下载)[^\n]{0,100}(?:dataset|data set|training data|data))"
-        r"|(?:(?:dataset|data set|training data)[^\n]{0,100}(?:download|https?://|huggingface|google drive|kaggle|zenodo|figshare))"
+        r"|(?:\b(?:download|获取|下载)\b[^\n]{0,100}\b(?:dataset|data set|training data)\b)"
+        r"|(?:\b(?:dataset|data set|training data)\b[^\n]{0,100}(?:https?://|huggingface|google drive|kaggle|zenodo|figshare))"
     )
     data_mention_pattern = r"\b(?:dataset|data sets?|training data|validation data|evaluation data|test data|data source)\b"
     if find_text(dataset_link_pattern, "data_source_link", "data-source"):

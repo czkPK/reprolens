@@ -154,6 +154,40 @@ class ScannerTests(unittest.TestCase):
             snapshot = scan_repo(root)
         self.assertFalse(snapshot.has("agent_trace"))
 
+    def test_module_style_training_command_is_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Training\n\n"
+                "python -m example.main --config=configs/train.py --workdir=/tmp/train\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("train_instruction"))
+        self.assertTrue(snapshot.has("run_instructions"))
+
+    def test_make_sure_is_not_a_run_command(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Setup\n\nMake sure you have Python>=3.10 installed on your machine.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("run_instructions"))
+
+    def test_dataset_phrase_with_downloaded_model_is_not_data_link(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Fine-tuning\n\n"
+                "You can run fine-tuning of the downloaded model on your dataset of interest.\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("data_mention"))
+        self.assertFalse(snapshot.has("data_source_link"))
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -16,6 +16,7 @@ EVIDENCE_TYPE_LABELS = {
     "config": "配置文件",
     "script": "运行或处理脚本",
     "instruction": "安装或运行说明",
+    "training-command": "模型训练命令",
     "data": "数据文字说明",
     "data-source": "数据集获取链接",
     "data-command": "数据下载或加载命令",
