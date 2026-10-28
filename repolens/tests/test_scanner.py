@@ -144,6 +144,16 @@ class ScannerTests(unittest.TestCase):
             snapshot = scan_repo(root)
         self.assertFalse(snapshot.has("model_source_link"))
 
+    def test_generic_profiler_trace_is_not_agent_trace(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "train.py").write_text(
+                "with profiler.StepTraceAnnotation('train', step_num=1):\n    pass\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("agent_trace"))
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

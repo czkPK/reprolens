@@ -353,7 +353,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     find_text(r"retrieval[- ]augmented generation|\bRAG\b|retriever|vector store|vector database|faiss|chroma|pinecone|weaviate|qdrant|milvus", "rag_project", "rag")
     find_text_scoped(r"index_name|index_version|collection_name|vector_store|embedding_model|chunk_size|chunk_overlap|knowledge base", "rag_index", "rag", is_config_or_script)
     find_text(r"tool_call|tool call|langgraph|autogen|crewai|\bMCP\b|function calling|llm agent|retrieval[- ]augmented agent|multi-agent system", "agent_project", "agent")
-    find_text_scoped(r"trace|trajectory|tool_call|tool call|run_id|session_id", "agent_trace", "agent", is_config_or_script)
+    find_text_scoped(r"agent[_ -]?trace|tool[_ -]?trace|trajectory|tool_call|tool call|run_id|session_id|trace_id", "agent_trace", "agent", is_config_or_script)
     find_text_scoped(r"chunk_size|chunk_overlap|index_name|collection_name|index_version|embedding_model", "rag_config", "rag", is_config_only)
     find_text_scoped(r"run_id|session_id|trace_id|trace_path|log_path", "agent_trace_artifact", "agent", lambda rel_path: is_config_only(rel_path) or "trace" in rel_path.lower() or "log" in rel_path.lower())
     find_text(r"eval dataset|evaluation set|benchmark|golden set|test set", "eval_dataset", "evaluation")
