@@ -42,6 +42,17 @@ class WebTests(unittest.TestCase):
             "https://github.com/donghaotian123/donghaotian123.github.io",
         )
 
+    def test_parse_github_url_cleans_pasted_whitespace_and_missing_scheme(self):
+        expected = "https://github.com/YangQiWei3/HiHR"
+        for value in (
+            " https: //github.com/YangQiWei3/HiHR ",
+            "https：//github.com/YangQiWei3/HiHR",
+            "github.com/YangQiWei3/HiHR",
+            "https://www.github.com/YangQiWei3/HiHR",
+        ):
+            with self.subTest(value=value):
+                self.assertEqual(parse_github_url(value), expected)
+
     def test_parse_github_url_rejects_non_repository_links(self):
         for value in (
             "http://github.com/openai/openai-python",

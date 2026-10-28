@@ -42,8 +42,18 @@ IGNORE_DIRS = {
 }
 
 
+def _normalize_source_input(value: str) -> str:
+    value = str(value).strip().replace("：", ":").replace("／", "/")
+    value = re.sub(r"\s+", "", value)
+    if re.match(r"^(?:www\.)?github\.com/", value, re.IGNORECASE) or re.match(
+        r"^[A-Za-z0-9-]+\.github\.io(?:/|$)", value, re.IGNORECASE
+    ):
+        value = "https://" + value
+    return value
+
+
 def parse_github_url(value: str) -> str:
-    value = value.strip()
+    value = _normalize_source_input(value)
     if not value:
         raise ValueError("请输入 GitHub 仓库地址或 GitHub Pages 网站地址。")
     if value.endswith(".git"):
@@ -51,7 +61,7 @@ def parse_github_url(value: str) -> str:
     parsed = urlparse(value)
     if parsed.scheme != "https":
         raise ValueError("链接必须使用 https。")
-    host = parsed.netloc.lower()
+    host = parsed.netloc.lower().removeprefix("www.")
     parts = [part for part in parsed.path.split("/") if part]
     pages_match = GITHUB_PAGES_HOST_RE.fullmatch(host)
     if host == "github.com":
@@ -71,7 +81,7 @@ def parse_github_url(value: str) -> str:
 
 
 def _is_github_pages_url(value: str) -> bool:
-    parsed = urlparse(value.strip())
+    parsed = urlparse(_normalize_source_input(value))
     return parsed.scheme == "https" and bool(GITHUB_PAGES_HOST_RE.fullmatch(parsed.netloc.lower()))
 
 
