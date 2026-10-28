@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 from .badge import badge_payload, render_badge_svg
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references, format_gap_references
 from .html_report import render_claims_html, render_html
 from .models import AuditResult
 
@@ -117,7 +117,7 @@ def render_markdown(result: AuditResult) -> str:
         lines.append("| - | 未抽取到 README 声明 | 不适用 | - | - | - | 未发现可验证声明。 |")
     for row in claim_rows:
         criteria = format_criterion_references(row.get("criteria", []), result.criteria)
-        gaps = format_criterion_references(row.get("gaps", []), result.criteria)
+        gaps = format_gap_references(row.get("gaps", []), result.criteria)
         evidence_entries = evidence_reference_entries(row.get("evidence_ids", []), result.evidence)
         evidence = "<br>".join(
             f"`{entry['id']}`（{entry.get('kind_label', evidence_type_label(entry.get('kind', '')))}） {entry['location']}：{entry['excerpt']}"

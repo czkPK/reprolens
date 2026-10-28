@@ -43,6 +43,45 @@ def evidence_type_label(kind: str) -> str:
     return EVIDENCE_TYPE_LABELS.get(kind, "其他证据线索")
 
 
+GAP_TEXT = {
+    "ENV-01": "缺少依赖清单",
+    "ENV-02": "缺少依赖版本锁定文件或容器化配置",
+    "ENV-03": "缺少清晰的安装步骤",
+    "DATA-01": "缺少可直接访问的数据获取链接",
+    "DATA-02": "缺少数据下载或预处理脚本",
+    "DATA-03": "缺少数据集卡或数据许可说明",
+    "MODEL-01": "缺少模型权重、API 或模型获取方式",
+    "MODEL-02": "缺少模型卡或版本说明",
+    "MODEL-03": "缺少模型许可和来源说明",
+    "EXP-01": "缺少训练或主运行脚本",
+    "EXP-02": "缺少评测脚本或评测命令",
+    "EXP-03": "缺少随机种子或确定性设置",
+    "EXP-04": "缺少硬件或 API 环境说明",
+    "EXP-05": "缺少预期结果和指标",
+    "DOC-01": "缺少 README",
+    "DOC-02": "缺少快速开始或运行示例",
+    "DOC-03": "缺少测试、CI 或一键复现脚本",
+    "LLM-01": "缺少模型或 API 版本记录",
+    "LLM-02": "缺少 prompt/template 版本记录",
+    "LLM-03": "缺少采样参数记录",
+    "LLM-04": "缺少 tokenizer 或上下文窗口说明",
+    "LLM-05": "缺少 RAG 索引或知识库版本",
+    "LLM-06": "缺少 Agent 工具调用轨迹",
+    "LLM-07": "缺少评测集、数据划分或污染风险说明",
+    "LLM-08": "缺少推理成本或延迟说明",
+}
+
+
+def criterion_gap_text(item: CriterionResult) -> str:
+    return GAP_TEXT.get(item.id, f"缺少{item.title.removeprefix('是否')}")
+
+
+def format_gap_references(ids: list[str], criteria: list[CriterionResult]) -> str:
+    by_id = {item.id: item for item in criteria}
+    labels = [criterion_gap_text(by_id[criterion_id]) for criterion_id in ids if criterion_id in by_id]
+    return "；".join(labels) if labels else "-"
+
+
 def _claim_criteria(text: str) -> list[str]:
     lower = text.lower()
     criteria: set[str] = set()
@@ -159,7 +198,7 @@ def evidence_explanation(item: CriterionResult, evidence: list[Evidence], projec
             return _not_applicable_reason(item, project_type, model_agnostic) + f" 列出的 {ids} 只是判断项目类型时看到的识别线索。"
         return _not_applicable_reason(item, project_type, model_agnostic)
     if not item.evidence_ids:
-        return "未找到可引用证据，因此该项不能判定为通过。"
+        return f"未找到可引用证据；{criterion_gap_text(item)}。"
     snippets: list[str] = []
     for evidence_id in item.evidence_ids:
         entry = by_id.get(evidence_id)
@@ -176,8 +215,7 @@ def evidence_explanation(item: CriterionResult, evidence: list[Evidence], projec
     if item.status == "pass":
         suffix = "。"
     else:
-        gap = item.note.strip().rstrip("。")
-        suffix = f"；仍缺：{gap}。" if gap else "；仍缺：缺少足以满足该检查项的直接证据。"
+        suffix = f"；{criterion_gap_text(item)}。"
     return prefix + "；".join(snippets) + suffix
 
 
@@ -218,7 +256,7 @@ def evidence_reference_entries(ids: list[str], evidence: list[Evidence], excerpt
 def claim_verification_note(row: dict, criteria: list[CriterionResult] | None = None) -> str:
     status = str(row.get("status", ""))
     gaps = row.get("gaps", [])
-    gap_text = format_criterion_references(gaps, criteria) if criteria else "、".join(gaps)
+    gap_text = format_gap_references(gaps, criteria) if criteria else "、".join(gaps)
     if status == "verified":
         return "相关检查项均通过，这条 README 声明有证据支持。"
     if status == "partially_verified":

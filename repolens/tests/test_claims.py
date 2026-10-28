@@ -1,6 +1,6 @@
 import unittest
 
-from repolens.claims import _claim_criteria, build_claim_matrix, claim_status, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references
+from repolens.claims import _claim_criteria, build_claim_matrix, claim_status, claim_verification_note, criterion_confidence, criterion_gap_text, evidence_coverage, evidence_explanation, evidence_reference_entries, format_criterion_references, format_gap_references
 from repolens.models import AuditResult, CriterionResult, Evidence
 from repolens.scanner import _clean_claim_line
 
@@ -61,11 +61,24 @@ class ClaimTests(unittest.TestCase):
 
     def test_partial_evidence_explanation_names_missing_item(self):
         item = criterion("partial", ["E-1"])
-        item.note = "缺少 data/download.sh 或数据预处理脚本。"
+        item.id = "DATA-02"
+        item.title = "是否提供数据下载或预处理脚本"
+        item.note = "提供了数据下载链接，但没有下载或预处理脚本。"
         evidence = [Evidence("E-1", "data-source", "README.md", 20, "dataset download link")]
         explanation = evidence_explanation(item, evidence)
-        self.assertIn("仍缺：缺少 data/download.sh 或数据预处理脚本", explanation)
+        self.assertIn("缺少数据下载或预处理脚本", explanation)
+        self.assertNotIn("仍缺", explanation)
         self.assertNotIn("现有证据不足以完全满足该项", explanation)
+
+    def test_gap_references_are_direct_missing_descriptions(self):
+        item = criterion("missing")
+        item.id = "DATA-02"
+        item.title = "是否提供数据下载或预处理脚本"
+        self.assertEqual(criterion_gap_text(item), "缺少数据下载或预处理脚本")
+        self.assertEqual(
+            format_gap_references(["DATA-02"], [item]),
+            "缺少数据下载或预处理脚本",
+        )
 
     def test_not_applicable_explanation_does_not_claim_evidence_support(self):
         item = criterion("not_applicable", ["E-1"], applicable=False)
@@ -78,9 +91,12 @@ class ClaimTests(unittest.TestCase):
         self.assertIn("识别线索", explanation)
 
     def test_claim_verification_note_explains_gaps(self):
-        note = claim_verification_note({"status": "partially_verified", "gaps": ["LLM-03"]})
+        item = criterion("missing")
+        item.id = "LLM-03"
+        item.title = "是否记录采样参数"
+        note = claim_verification_note({"status": "partially_verified", "gaps": ["LLM-03"]}, [item])
         self.assertIn("部分证据", note)
-        self.assertIn("LLM-03", note)
+        self.assertIn("缺少采样参数记录", note)
 
     def test_criterion_references_include_chinese_titles(self):
         item = criterion("pass")

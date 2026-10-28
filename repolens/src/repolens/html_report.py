@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from html import escape
 
-from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references
+from .claims import build_claim_matrix, claim_verification_note, criterion_confidence, evidence_coverage, evidence_explanation, evidence_reference_entries, evidence_type_label, format_criterion_references, format_gap_references
 from .models import AuditResult
 
 
@@ -186,7 +186,7 @@ def render_html(result: AuditResult) -> str:
         for item in result.criteria
     )
     claim_rows = "".join(
-        f'<tr><td><a class="evidence-link" href="#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_details(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
+        f'<tr><td><a class="evidence-link" href="#evidence-{e(claim_source_id(row))}"><code>{e(row.get("claim_id", "-"))}</code></a></td><td>{e(row.get("claim", ""))}</td><td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td><td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td><td>{e(format_gap_references(row.get("gaps", []), result.criteria))}</td><td>{evidence_details(row.get("evidence_ids", []))}</td><td class="evidence-explanation">{e(claim_verification_note(row, result.criteria))}</td></tr>'
         for row in claims
     ) or '<tr><td colspan="7">未抽取到 README 声明。</td></tr>'
     finding_items = "".join(
@@ -373,7 +373,7 @@ small {{ color: #697386; }}
 <h2>Top 3 Priority Actions（三项优先整改行动）</h2><p class="section-note"><strong>中文翻译：</strong>三项优先整改行动。<strong>简单解释：</strong>按照预计提分从高到低，列出最值得先处理的三项修改。</p><ul class="priority">{priority_items}</ul>
 <h2>Dimension Scores（维度评分）</h2><p class="section-note"><strong>中文翻译：</strong>维度评分。<strong>简单解释：</strong>展示六个复现维度的得分。显示 N/A 表示该维度没有适用检查项，不能用 0% 或 100% 代表好坏。</p><div class="cards">{dim_cards}</div>
 <h2 id="criteria">Criteria（检查项）</h2><p class="section-note"><strong>中文翻译：</strong>检查项。<strong>简单解释：</strong>逐条列出检查要求、当前状态、得分、对应证据以及证据说明。</p><p class="table-help"><strong>读表说明：</strong>PASS = 满足要求；PARTIAL = 只有部分证据；MISSING = 应有但没有找到；N/A = 当前项目类型不适用。Confidence 表示证据支持强度，不代表项目整体质量。<br><strong>证据编号（E-xxx）</strong> = 本次报告中的证据序号，不是固定分类。例如 E-005 只表示本次报告的第 5 条证据，具体含义由编号后的中文类型、文件位置和原文共同决定；同一仓库重新分析后序号可能变化。点击可跳到证据附录。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="criteria-table"><thead><tr><th>检查项编号</th><th>所属维度</th><th>检查要求</th><th>状态</th><th>证据强度</th><th>得分</th><th>证据编号<br>（E-xxx）</th><th>证据说明<br>（文件、行号、原文）</th></tr></thead><tbody>{criteria_rows}</tbody></table></div>
-<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="section-note"><strong>中文翻译：</strong>声明与证据矩阵。<strong>简单解释：</strong>检查 README 中声称具备的能力，是否能被仓库里的文件证据支持。</p><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 这些规则中哪些还没有满足；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
+<h2 id="claims">Claim-Evidence Matrix（声明验证矩阵）</h2><p class="section-note"><strong>中文翻译：</strong>声明与证据矩阵。<strong>简单解释：</strong>检查 README 中声称具备的能力，是否能被仓库里的文件证据支持。</p><p class="table-help"><strong>读表方法：</strong>每一行先看 README 原句，再看验证状态、检查依据、缺口和支持证据。检查项编号后面的括号是中文含义。<br><strong>检查依据（需要检查的项）</strong> = 要验证这句话，必须检查哪些规则。<br><strong>还缺什么（缺口）</strong> = 直接说明缺少的文件、脚本、说明或记录；显示“-”表示没有缺口。<br><strong>已验证</strong> = 相关检查项全部通过；<strong>部分验证</strong> = 找到部分证据但仍有缺口；<strong>未验证</strong> = 关键证据缺失；<strong>不适用</strong> = 该声明对应的检查项不适用于此项目。<br><strong>表格已固定首行和前两列，可在表格内滚动。</strong></p><div class="table-scroll sticky-scroll"><table class="claim-table"><thead><tr><th>声明编号</th><th>README 声明</th><th>验证状态</th><th>检查依据<br>（需要检查的项）</th><th>还缺什么<br>（缺口）</th><th>支持证据</th><th>验证说明</th></tr></thead><tbody>{claim_rows}</tbody></table></div>
 <h2 id="evidence">Evidence Appendix（证据附录）</h2><p class="section-note"><strong>中文翻译：</strong>证据附录。<strong>简单解释：</strong>集中保存证据编号、类型、文件位置和原文，方便评委或维护者人工复核。</p><p class="table-help"><strong>编号说明：</strong>E-xxx 只是本次报告内的顺序编号，每次扫描可能变化。真正的“意思”由“中文证据含义 + 文件位置 + 原文”共同确定。<br><strong>用途：</strong>这里保存每条证据的编号、中文含义、原始类型、文件位置和原文。表格固定首行和“证据编号”列，可横向、纵向滚动。</p><div class="evidence-scroll"><table class="evidence-table"><thead><tr><th>证据编号<br>（本次报告序号）</th><th>证据含义<br>（自动识别类型）</th><th>文件位置</th><th>原文摘录</th></tr></thead><tbody>{evidence_rows}</tbody></table></div>
 <h2>Findings（问题发现）</h2><p class="section-note"><strong>中文翻译：</strong>问题发现。<strong>简单解释：</strong>列出当前检查中发现的主要缺口、风险等级和对应证据。</p><ul>{finding_items}</ul>
 <h2>Execution Evidence（执行证据）</h2><p class="section-note"><strong>中文翻译：</strong>执行证据。<strong>简单解释：</strong>记录实际运行过的探测命令、结果和耗时；它只证明这些探测执行过，不代表整个项目已经复现成功。</p><table><thead><tr><th>Probe（探测项）</th><th>Status（状态）</th><th>Return code（返回码）</th><th>Duration（耗时）</th><th>Command（命令）</th></tr></thead><tbody>{probe_rows}</tbody></table>
@@ -423,7 +423,7 @@ def render_claims_html(result: AuditResult) -> str:
         f'<td>{e(row.get("claim", ""))}</td>'
         f'<td><span class="status {e(row.get("status", ""))}">{e(CLAIM_STATUS_LABELS.get(row.get("status", ""), row.get("status", "")))}</span></td>'
         f'<td>{e(format_criterion_references(row.get("criteria", []), result.criteria))}</td>'
-        f'<td>{e(format_criterion_references(row.get("gaps", []), result.criteria))}</td>'
+        f'<td>{e(format_gap_references(row.get("gaps", []), result.criteria))}</td>'
         f'<td>{evidence_links(row.get("evidence_ids", []))}</td>'
         f'<td class="note">{e(claim_verification_note(row, result.criteria))}</td>'
         '</tr>'
