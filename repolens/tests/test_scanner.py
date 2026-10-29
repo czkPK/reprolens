@@ -201,6 +201,46 @@ class ScannerTests(unittest.TestCase):
         self.assertTrue(snapshot.has("model_source_link"))
         self.assertTrue(snapshot.has("model_version"))
 
+    def test_google_drive_model_weight_is_not_data_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "backbone.py").write_text(
+                "model_urls = {\n"
+                "    'osnet_x1_0':\n"
+                "        'https://drive.google.com/uc?id=example-model',\n"
+                "}\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("model_source_link"))
+        self.assertFalse(snapshot.has("data_source_link"))
+
+    def test_code_reference_url_is_not_data_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            data_dir.mkdir()
+            (data_dir / "data_utils.py").write_text(
+                "# based on http://stackoverflow.com/questions/7323664/example\n"
+                "def preprocess_data(value):\n"
+                "    return value\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertFalse(snapshot.has("data_source_link"))
+
+    def test_google_drive_dataset_link_is_still_detected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Dataset\n\n"
+                "Download the dataset from "
+                "[Google Drive](https://drive.google.com/file/d/example-dataset/view).\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("data_source_link"))
+
     def test_root_install_markdown_is_searched_for_commands(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

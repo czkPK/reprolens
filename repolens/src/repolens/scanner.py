@@ -341,17 +341,54 @@ def scan_repo(root: Path) -> RepoSnapshot:
             snapshot.mark("run_instructions", train_evidence[0])
     else:
         find_text(run_instruction_pattern, "run_instructions", "instruction")
-    dataset_link_pattern = (
-        r"(?:huggingface\.co/datasets/|kaggle\.com/|zenodo\.org/|figshare\.com/|drive\.google\.com/)"
-        r"|(?:\b(?:download|获取|下载)\b[^\n]{0,100}\b(?:dataset|data set|training data)\b)"
-        r"|(?:\b(?:dataset|data set|training data)\b[^\n]{0,100}(?:https?://|huggingface|google drive|kaggle|zenodo|figshare))"
+    data_url_re = re.compile(r"https?://[^\s)>\]]+", re.IGNORECASE)
+    explicit_data_url_re = re.compile(
+        r"huggingface\.co/datasets/|kaggle\.com/(?:datasets/)?|zenodo\.org/|figshare\.com/",
+        re.IGNORECASE,
     )
+    data_context_re = re.compile(
+        r"\b(?:dataset|data sets?|training data|validation data|evaluation data|test data|data source|data)\b",
+        re.IGNORECASE,
+    )
+    model_context_re = re.compile(
+        r"\b(?:model|models|checkpoint|checkpoints|weights?|pre-?trained|backbone)\b",
+        re.IGNORECASE,
+    )
+    data_heading_re = re.compile(
+        r"(?im)^\s*#{1,6}\s*(?:data|dataset|datasets|data source|training data)\b",
+        re.IGNORECASE,
+    )
+
+    def find_data_source_link() -> bool:
+        # Prefer URLs hosted as datasets over unrelated links near a Data heading.
+        for explicit_only in (True, False):
+            for rel_path, text in preferred_text_items():
+                lines = text.splitlines()
+                for index, line in enumerate(lines):
+                    if not data_url_re.search(line):
+                        continue
+                    context = " ".join(lines[max(0, index - 3): min(len(lines), index + 4)])
+                    explicit_dataset_url = bool(explicit_data_url_re.search(line))
+                    nearby_heading = "\n".join(lines[max(0, index - 8): index])
+                    contextual_data_url = (
+                        (bool(data_context_re.search(line)) or bool(data_heading_re.search(nearby_heading)))
+                        and not bool(model_context_re.search(context))
+                    )
+                    if explicit_only and not explicit_dataset_url:
+                        continue
+                    if not explicit_only and (explicit_dataset_url or not contextual_data_url):
+                        continue
+                    path = root / rel_path
+                    evidence_id = snapshot.add_evidence(
+                        "data-source", path, index + 1, line.strip()
+                    )
+                    snapshot.mark("data_source_link", evidence_id)
+                    snapshot.mark("data_mention", evidence_id)
+                    return True
+        return False
+
     data_mention_pattern = r"\b(?:dataset|data sets?|training data|validation data|evaluation data|test data|data source)\b"
-    if find_text(dataset_link_pattern, "data_source_link", "data-source"):
-        source_evidence = snapshot.evidence_for("data_source_link")
-        if source_evidence:
-            snapshot.mark("data_mention", source_evidence[0])
-    else:
+    if not find_data_source_link():
         find_text(data_mention_pattern, "data_mention", "data")
     data_download_pattern = (
         r"(?:\b(?:hf|huggingface-cli)\s+download\b[^\n]*(?:--repo-type\s+dataset|dataset))"
