@@ -58,8 +58,26 @@ class ScoringTests(unittest.TestCase):
             criteria = evaluate_criteria(scan_repo(root))
         by_id = {item.id: item for item in criteria}
         self.assertEqual(by_id["DATA-01"].status, "pass")
-        self.assertEqual(by_id["DATA-02"].status, "partial")
-        self.assertIn("没有下载或预处理脚本", by_id["DATA-02"].note)
+        self.assertEqual(by_id["DATA-02"].status, "missing")
+        self.assertIn("没有数据下载或预处理脚本", by_id["DATA-02"].note)
+        self.assertEqual(by_id["DATA-02"].evidence_ids, [])
+
+    def test_pinned_dependency_versions_satisfy_environment_lock_check(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "requirements.txt").write_text("numpy==1.26.4\ntorch==2.4.0\n", encoding="utf-8")
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["ENV-02"].status, "pass")
+        self.assertIn("固定", by_id["ENV-02"].note)
+
+    def test_unpinned_dependency_manifest_is_only_partial_environment_lock(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "requirements.txt").write_text("numpy\ntorch\n", encoding="utf-8")
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["ENV-02"].status, "partial")
 
     def test_dataset_download_and_license_satisfy_data_checks(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
+import re
 
 from .models import CriterionResult, Finding
 from .scanner import RepoSnapshot
@@ -84,6 +86,23 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     def add(criterion_id: str, status: str, note: str, evidence_ids: list[str] | None = None, applicable: bool = True) -> None:
         results.append(_result(by_id[criterion_id], status, note, evidence_ids, applicable))
 
+    def has_pinned_dependencies() -> bool:
+        pinned_names = {
+            "requirements.txt", "pyproject.toml", "environment.yml",
+            "environment.yaml", "pipfile", "package.json",
+        }
+        for rel_path, text in snapshot.texts.items():
+            name = Path(rel_path).name.lower()
+            if name not in pinned_names:
+                continue
+            if re.search(r"(?m)^\s*[A-Za-z0-9_.-]+\s*(?:==|===)\s*[^\s#]+", text):
+                return True
+            if name.startswith("environment") and re.search(r"(?m)^\s*-?\s*[A-Za-z0-9_.-]+\s*=\s*[^\s#]+", text):
+                return True
+            if name == "pyproject.toml" and re.search(r"(?:==|===)", text):
+                return True
+        return False
+
     is_llm = snapshot.has("llm_project")
     is_rag = snapshot.has("rag_project")
     is_agent = snapshot.has("agent_project")
@@ -100,8 +119,10 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
     add("ENV-01", "pass" if snapshot.has("deps") else "missing", "已发现依赖清单。" if snapshot.has("deps") else "依赖清单是复现的第一入口。", ev("deps"))
     if snapshot.has("lockfile") or snapshot.has("container"):
         add("ENV-02", "pass", "已发现锁定文件或容器配置。", ev("lockfile", "container"))
+    elif snapshot.has("deps") and has_pinned_dependencies():
+        add("ENV-02", "pass", "依赖清单已固定关键依赖版本。", ev("deps"))
     elif snapshot.has("deps"):
-        add("ENV-02", "partial", "有依赖清单，但没有锁定文件或容器配置。", ev("deps"))
+        add("ENV-02", "partial", "有依赖清单，但未固定关键依赖版本，也没有锁定文件或容器配置。", ev("deps"))
     else:
         add("ENV-02", "missing", "没有锁定文件或容器配置。")
 
@@ -127,10 +148,6 @@ def evaluate_criteria(snapshot: RepoSnapshot) -> list[CriterionResult]:
         add("DATA-02", "pass", "README 提供了可直接执行的数据下载或加载命令。", ev("data_download_command"), applicable=data_applicable)
     elif snapshot.has("data_script"):
         add("DATA-02", "partial", "存在数据脚本，但其中仍包含 TODO/占位内容。", ev("data_script"), applicable=data_applicable)
-    elif snapshot.has("data_source_link"):
-        add("DATA-02", "partial", "提供了数据下载链接，但没有下载或预处理脚本。", ev("data_source_link"), applicable=data_applicable)
-    elif snapshot.has("data_mention"):
-        add("DATA-02", "partial", "只有数据文字说明，缺少下载或预处理脚本。", ev("data_mention"), applicable=data_applicable)
     else:
         add("DATA-02", "missing", "没有数据下载或预处理脚本。", applicable=data_applicable)
 
