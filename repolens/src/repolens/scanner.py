@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from .models import Evidence
+from .script_semantic import analyze_script
 
 
 TEXT_SUFFIXES = {
@@ -300,6 +301,28 @@ def scan_repo(root: Path) -> RepoSnapshot:
                 )
                 snapshot.mark("data_license", evidence_id)
                 return
+
+    criterion_flags = {
+        "EXP-01": "train_script",
+        "EXP-02": "eval_script",
+        "EXP-03": "seed",
+        "DATA-02": "data_script",
+        "MODEL-01": "model_source_link",
+        "ENV-03": "install_instructions",
+    }
+    for rel_path, text in texts.items():
+        for signal in analyze_script(rel_path, text):
+            path = root / rel_path
+            evidence_id = snapshot.add_evidence(signal.kind, path, signal.line, signal.excerpt)
+            flag = criterion_flags.get(signal.criterion_id)
+            if flag:
+                snapshot.mark(flag, evidence_id)
+            if signal.kind == "training-script":
+                snapshot.mark("train_script", evidence_id)
+            elif signal.kind == "evaluation-script":
+                snapshot.mark("eval_script", evidence_id)
+            elif signal.kind == "data-script":
+                snapshot.mark("data_script", evidence_id)
 
     find_text(r"pip install|conda env|docker build|uv sync|poetry install", "install_instructions", "instruction")
     train_instruction_pattern = (
