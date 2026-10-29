@@ -5,6 +5,7 @@ import base64
 import hashlib
 import hmac
 import json
+import os
 import time
 import urllib.parse
 import urllib.request
@@ -14,10 +15,16 @@ from typing import Any
 
 def compact_score(data: dict[str, Any]) -> dict[str, Any]:
     claims = data.get("claim_matrix", [])
+    project = data.get("source_url") or data.get("repo_path")
+    github_repo = os.environ.get("GITHUB_REPOSITORY")
+    if not data.get("source_url") and github_repo:
+        server = os.environ.get("GITHUB_SERVER_URL", "https://github.com").rstrip("/")
+        project = f"{server}/{github_repo}"
+    source_commit = data.get("source_commit") or os.environ.get("GITHUB_SHA")
     return {
         "schema_version": 1,
-        "project": data.get("source_url") or data.get("repo_path"),
-        "source_commit": data.get("source_commit"),
+        "project": project,
+        "source_commit": source_commit,
         "score": data.get("total_score"),
         "readiness": data.get("readiness"),
         "evidence_coverage": data.get("evidence_coverage", {}),

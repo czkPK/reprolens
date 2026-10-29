@@ -1,9 +1,11 @@
 import json
+import os
 import tempfile
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
+from unittest.mock import patch
 
 from repolens.integrations import compact_score, main, notification_payload, post_json, render_summary, sign_dingtalk_url
 
@@ -25,6 +27,20 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(summary["score"], 78.8)
         self.assertEqual(summary["claim_counts"]["verified"], 1)
         self.assertEqual(summary["top_findings"][0]["criterion_id"], "ENV-02")
+
+    def test_compact_score_uses_github_context_for_local_path(self):
+        with patch.dict(
+            os.environ,
+            {
+                "GITHUB_REPOSITORY": "czkPK/reprolens",
+                "GITHUB_SERVER_URL": "https://github.com",
+                "GITHUB_SHA": "abc123",
+            },
+            clear=False,
+        ):
+            summary = compact_score({"repo_path": "/home/runner/work/reprolens/reprolens", "total_score": 91.7})
+        self.assertEqual(summary["project"], "https://github.com/czkPK/reprolens")
+        self.assertEqual(summary["source_commit"], "abc123")
 
     def test_rendered_summary_shows_gate_result_and_webhook(self):
         summary = compact_score({"total_score": 49.1, "readiness": "At Risk", "claim_matrix": []})
