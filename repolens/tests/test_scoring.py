@@ -193,6 +193,28 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(by_id["EXP-05"].status, "missing")
         self.assertEqual(by_id["EXP-05"].evidence_ids, [])
 
+    def test_faiss_dependency_and_generic_run_id_do_not_make_project_llm(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Vision-language retrieval model\n\n"
+                "We use text prompts with pre-trained visual-text encoders.\n",
+                encoding="utf-8",
+            )
+            (root / "requirements.txt").write_text("faiss-gpu==1.7.2\ntorch==1.13.1\n", encoding="utf-8")
+            (root / "logger.py").write_text(
+                "run_id = 'experiment-id'\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+            criteria = evaluate_criteria(snapshot)
+        self.assertFalse(snapshot.has("rag_project"))
+        self.assertFalse(snapshot.has("agent_project"))
+        self.assertFalse(snapshot.has("llm_project"))
+        by_id = {item.id: item for item in criteria}
+        self.assertFalse(by_id["LLM-03"].applicable)
+        self.assertFalse(by_id["LLM-06"].applicable)
+
     def test_agent_or_rag_detection_is_not_trace_or_index_evidence(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
