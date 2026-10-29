@@ -5,7 +5,7 @@ import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-from repolens.integrations import compact_score, main, post_json, render_summary
+from repolens.integrations import compact_score, main, notification_payload, post_json, render_summary, sign_dingtalk_url
 
 
 class IntegrationTests(unittest.TestCase):
@@ -31,6 +31,25 @@ class IntegrationTests(unittest.TestCase):
         text = render_summary(summary, 60.0, False, 204)
         self.assertIn("FAILED", text)
         self.assertIn("delivered (204)", text)
+
+    def test_feishu_payload_uses_text_message_envelope(self):
+        summary = compact_score({"total_score": 78.8, "readiness": "Partially Ready", "claim_matrix": []})
+        payload = notification_payload(summary, 70, True, "feishu")
+        self.assertEqual(payload["msg_type"], "text")
+        self.assertIn("ReproLens", payload["content"]["text"])
+        self.assertIn("质量门禁：通过", payload["content"]["text"])
+
+    def test_dingtalk_payload_uses_markdown_envelope(self):
+        summary = compact_score({"total_score": 49.1, "readiness": "At Risk", "claim_matrix": []})
+        payload = notification_payload(summary, 60, False, "dingtalk")
+        self.assertEqual(payload["msgtype"], "markdown")
+        self.assertIn("ReproLens", payload["markdown"]["title"])
+        self.assertIn("质量门禁：未通过", payload["markdown"]["text"])
+
+    def test_dingtalk_signing_adds_timestamp_and_signature(self):
+        signed = sign_dingtalk_url("https://example.test/hook", "secret", timestamp="123456")
+        self.assertIn("timestamp=123456", signed)
+        self.assertIn("sign=", signed)
 
     def test_post_json_sends_payload(self):
         received = {}

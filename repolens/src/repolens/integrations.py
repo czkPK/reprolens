@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
+import hmac
 import json
+import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Any
@@ -52,6 +57,60 @@ def post_json(url: str, payload: dict[str, Any], timeout: int = 10) -> int:
         return response.status
 
 
+def sign_dingtalk_url(url: str, secret: str, timestamp: str | None = None) -> str:
+    timestamp = timestamp or str(round(time.time() * 1000))
+    string_to_sign = f"{timestamp}\n{secret}".encode("utf-8")
+    digest = hmac.new(secret.encode("utf-8"), string_to_sign, hashlib.sha256).digest()
+    sign = urllib.parse.quote_plus(base64.b64encode(digest))
+    separator = "&" if "?" in url else "?"
+    return f"{url}{separator}timestamp={timestamp}&sign={sign}"
+
+
+def render_notification_text(summary: dict[str, Any], minimum: float, passed: bool) -> str:
+    coverage = summary.get("evidence_coverage", {})
+    claims = summary.get("claim_counts", {})
+    lines = [
+        "ReproLens 复现审计通知",
+        f"项目：{summary.get('project')}",
+        f"提交：{summary.get('source_commit') or '-'}",
+        f"得分：{summary.get('score')} / 100",
+        f"就绪度：{summary.get('readiness')}",
+        f"证据覆盖率：{coverage.get('covered', 0)}/{coverage.get('total', 0)} ({coverage.get('percent', 0):.1f}%)",
+        f"声明：总数 {claims.get('total', 0)}，已验证 {claims.get('verified', 0)}，部分验证 {claims.get('partially_verified', 0)}",
+        f"质量门禁：{'通过' if passed else '未通过'}（最低 {minimum:.1f} 分）",
+    ]
+    findings = summary.get("top_findings", [])
+    if findings:
+        lines.append("主要发现：")
+        lines.extend(
+            f"- [{item.get('severity', '').upper()}] {item.get('title')} ({item.get('criterion_id')})"
+            for item in findings
+        )
+    return "\n".join(lines)
+
+
+def notification_payload(
+    summary: dict[str, Any],
+    minimum: float,
+    passed: bool,
+    payload_format: str,
+) -> dict[str, Any]:
+    if payload_format == "feishu":
+        return {
+            "msg_type": "text",
+            "content": {"text": render_notification_text(summary, minimum, passed)},
+        }
+    if payload_format == "dingtalk":
+        return {
+            "msgtype": "markdown",
+            "markdown": {
+                "title": "ReproLens 复现审计通知",
+                "text": render_notification_text(summary, minimum, passed),
+            },
+        }
+    return summary
+
+
 def render_summary(summary: dict[str, Any], minimum: float, passed: bool, webhook_status: int | None, webhook_error: str = "") -> str:
     coverage = summary.get("evidence_coverage", {})
     claims = summary.get("claim_counts", {})
@@ -81,6 +140,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("score_json", help="Path to score.json produced by ReproLens.")
     parser.add_argument("--min-score", type=float, default=0.0, help="Minimum score required by the CI gate.")
     parser.add_argument("--webhook-url", help="Optional HTTP endpoint that receives the compact JSON summary.")
+    parser.add_argument("--format", choices=("generic", "feishu", "dingtalk"), default="generic", help="Payload format for the webhook endpoint.")
+    parser.add_argument("--webhook-secret", help="Optional DingTalk signing secret.")
     parser.add_argument("--timeout", type=int, default=10)
     args = parser.parse_args(argv)
 
@@ -90,9 +151,15 @@ def main(argv: list[str] | None = None) -> int:
     passed = score >= args.min_score
     webhook_status = None
     webhook_error = ""
+    if args.webhook_secret and args.format != "dingtalk":
+        parser.error("--webhook-secret is only supported with --format dingtalk")
+    payload = notification_payload(summary, args.min_score, passed, args.format)
     if args.webhook_url:
         try:
-            webhook_status = post_json(args.webhook_url, summary, args.timeout)
+            webhook_url = args.webhook_url
+            if args.format == "dingtalk" and args.webhook_secret:
+                webhook_url = sign_dingtalk_url(webhook_url, args.webhook_secret)
+            webhook_status = post_json(webhook_url, payload, args.timeout)
         except Exception as exc:
             webhook_error = type(exc).__name__
     print(render_summary(summary, args.min_score, passed, webhook_status, webhook_error), end="")
