@@ -1,0 +1,40 @@
+name: ReproLens Feishu Notification
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: czkPK/reprolens@main
+        with:
+          path: "."
+          out-dir: "repolens-report"
+          explain: "true"
+          autofix: "false"
+
+      - name: Notify Feishu
+        if: always()
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+        run: |
+          python -m repolens.integrations \
+            repolens-report/score.json \
+            --min-score 70 \
+            --format feishu \
+            --webhook-url "$FEISHU_WEBHOOK"
