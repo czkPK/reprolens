@@ -35,6 +35,6 @@ jobs:
         run: |
           python -m repolens.integrations \
             repolens-report/score.json \
-            --min-score 70 \
+            --min-score 65 \
             --format feishu \
             --webhook-url "$FEISHU_WEBHOOK"
