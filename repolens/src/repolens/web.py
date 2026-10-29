@@ -20,6 +20,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from .cli import run_audit
+from .integrations import compact_score, notification_payload, post_json
 
 
 MAX_BODY_BYTES = 8_192
@@ -36,6 +37,8 @@ JOB_ID_RE = re.compile(r"^[a-f0-9]{32}$")
 MAX_PENDING_JOBS = 8
 WEBHOOK_DEMO_LOCK = threading.Lock()
 WEBHOOK_DEMO_STATE = {"count": 0, "last": None, "received_at": None}
+AUTO_NOTIFY_LOCK = threading.Lock()
+AUTO_NOTIFY_LAST: dict[str, float] = {}
 IGNORE_DIRS = {
     ".git", ".venv", "venv", "node_modules", "__pycache__", ".pytest_cache",
     ".mypy_cache", "dist", "build", "target", "vendor",
@@ -238,6 +241,56 @@ def clone_public_repo(source_url: str, destination: Path) -> str:
         ) from archive_error
 
 
+def _repo_key(source_url: str) -> str:
+    value = source_url.strip().lower().rstrip("/")
+    value = re.sub(r"\.git$", "", value)
+    value = re.sub(r"^https?://github\.com/", "", value)
+    return value
+
+
+def _notification_allowed(source_url: str) -> bool:
+    configured = os.environ.get("REPROLENS_NOTIFY_REPOS", "").strip()
+    if not configured:
+        return False
+    allowed = {item.strip().lower().rstrip("/") for item in configured.split(",") if item.strip()}
+    return "*" in allowed or _repo_key(source_url) in allowed
+
+
+def _send_web_notification(result, source_url: str) -> str:
+    webhook = os.environ.get("REPROLENS_FEISHU_WEBHOOK", "").strip()
+    if not webhook:
+        return "not_configured"
+    if not _notification_allowed(source_url):
+        return "not_allowed"
+
+    try:
+        minimum = float(os.environ.get("REPROLENS_NOTIFY_MIN_SCORE", "65"))
+        interval = float(os.environ.get("REPROLENS_NOTIFY_MIN_INTERVAL", "60"))
+    except ValueError:
+        minimum = 65.0
+        interval = 60.0
+
+    key = _repo_key(source_url)
+    now = time.monotonic()
+    with AUTO_NOTIFY_LOCK:
+        last = AUTO_NOTIFY_LAST.get(key, 0.0)
+        if now - last < interval:
+            return "rate_limited"
+        AUTO_NOTIFY_LAST[key] = now
+
+    payload = notification_payload(
+        compact_score(result.to_dict()),
+        minimum,
+        result.total_score >= minimum,
+        "feishu",
+    )
+    try:
+        post_json(webhook, payload, timeout=10)
+        return "sent"
+    except Exception:
+        return "failed"
+
+
 def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -> dict:
     source_url = resolve_github_source(source_url)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-") + uuid.uuid4().hex[:8]
@@ -280,6 +333,7 @@ def run_remote_audit(source_url: str, runs_dir: Path, *, autofix: bool = True) -
             "ai_mode": result.ai_metadata.get("mode", "rules"),
             "autofix_ran": autofix_ran,
             "autofix": autofix_summary,
+            "notification_status": _send_web_notification(result, source_url),
             "report_url": f"/reports/{run_id}/report.html",
             "claims_url": f"/reports/{run_id}/claims.html",
             "score_url": f"/reports/{run_id}/score.json",
@@ -364,6 +418,7 @@ button:disabled { opacity:.55; cursor:wait; }
       <div class="score-row"><div id="score" class="score"></div><div><div id="readiness" class="readiness"></div><div id="commit" class="hint"></div></div></div>
       <div class="metrics"><div class="metric"><b id="files"></b><span>扫描文件</span></div><div class="metric"><b id="coverage"></b><span>证据覆盖率</span></div><div class="metric"><b id="claims"></b><span>README 声明</span></div></div>
       <div id="autofix" class="hint"></div>
+      <div id="notification" class="hint"></div>
       <div id="links" class="actions"></div>
     </div>
   </div>
@@ -415,6 +470,8 @@ run.addEventListener('click', async () => {
     setText('files', data.files_scanned); setText('coverage', data.evidence_coverage.percent.toFixed(1)+'%'); setText('claims', data.claims);
     const fixText = data.autofix ? `AutoFix：${data.autofix.before_score.toFixed(1)} → ${data.autofix.after_score.toFixed(1)}（+${data.autofix.delta.toFixed(1)}）` : (data.autofix_ran ? 'AutoFix 已完成。' : '仓库较大，本次跳过 AutoFix，仅执行静态审计。');
     setText('autofix', fixText + '  |  语义映射：' + data.ai_mode);
+    const notifyLabels = {sent:'飞书通知：已发送', failed:'飞书通知：发送失败', not_configured:'飞书通知：未配置', not_allowed:'当前仓库未开启自动通知', rate_limited:'飞书通知：已限流'};
+    setText('notification', notifyLabels[data.notification_status] || ('飞书通知：' + (data.notification_status || '未知')));
     addLink('打开完整报告', data.report_url); addLink('查看声明矩阵', data.claims_url); if(data.autofix_url) addLink('查看 AutoFix 验证', data.autofix_url); addLink('下载评分 JSON', data.score_url);
     result.classList.add('show');
   } catch (error) {

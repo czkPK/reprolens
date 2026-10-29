@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import tempfile
 import threading
@@ -8,7 +9,7 @@ import urllib.request
 from pathlib import Path
 from unittest.mock import patch
 
-from repolens.web import WEBHOOK_DEMO_HTML, ReproLensHTTPServer, _run_git, parse_github_url, resolve_github_source
+from repolens.web import WEBHOOK_DEMO_HTML, ReproLensHTTPServer, _notification_allowed, _repo_key, _run_git, parse_github_url, resolve_github_source
 
 
 class WebTests(unittest.TestCase):
@@ -21,6 +22,12 @@ class WebTests(unittest.TestCase):
             "最近一次 HTTP POST 内容",
         ):
             self.assertIn(text, WEBHOOK_DEMO_HTML)
+
+    def test_web_notification_allowlist_matches_repo_only(self):
+        self.assertEqual(_repo_key("https://github.com/Cat-Zero/ViSA.git"), "cat-zero/visa")
+        with patch.dict(os.environ, {"REPROLENS_NOTIFY_REPOS": "Cat-Zero/ViSA"}, clear=False):
+            self.assertTrue(_notification_allowed("https://github.com/Cat-Zero/ViSA"))
+            self.assertFalse(_notification_allowed("https://github.com/openai/openai-python"))
 
     def test_parse_github_url_normalizes_git_suffix(self):
         self.assertEqual(
