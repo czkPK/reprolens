@@ -41,8 +41,11 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(summary["score"], 78.8)
         self.assertEqual(summary["claim_counts"]["verified"], 1)
         self.assertEqual(summary["top_findings"][0]["criterion_id"], "ENV-02")
+        self.assertEqual(summary["top_findings"][0]["gap"], "缺少依赖版本锁定文件或容器化配置")
         self.assertEqual(summary["top_findings"][0]["action"], "添加锁文件或 Dockerfile，固定依赖版本。")
         text = render_summary(summary, 70, True, 200)
+        self.assertIn("缺少依赖版本锁定文件或容器化配置", text)
+        self.assertNotIn("是否锁定依赖版本", text)
         self.assertIn("说明：有依赖清单", text)
         self.assertIn("建议：添加锁文件", text)
 

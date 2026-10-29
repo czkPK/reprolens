@@ -12,6 +12,8 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
+from .claims import GAP_TEXT
+
 
 def compact_score(data: dict[str, Any]) -> dict[str, Any]:
     claims = data.get("claim_matrix", [])
@@ -34,6 +36,7 @@ def compact_score(data: dict[str, Any]) -> dict[str, Any]:
                 "criterion_id": item.get("criterion_id"),
                 "severity": item.get("severity"),
                 "title": item.get("title"),
+                "gap": GAP_TEXT.get(item.get("criterion_id"), item.get("title", "").removeprefix("是否")),
                 "message": item.get("message", ""),
                 "action": remediation.get("action", ""),
                 "rationale": remediation.get("rationale", ""),
@@ -116,7 +119,7 @@ def render_notification_text(summary: dict[str, Any], minimum: float, passed: bo
         for index, item in enumerate(findings, 1):
             lines.append(
                 f"{index}. [{item.get('severity', '').upper()}] "
-                f"{item.get('title')} ({item.get('criterion_id')})"
+                f"{item.get('gap') or item.get('title')} ({item.get('criterion_id')})"
             )
             if item.get("message"):
                 lines.append(f"   说明：{item['message']}")
@@ -165,7 +168,7 @@ def render_summary(summary: dict[str, Any], minimum: float, passed: bool, webhoo
     if summary.get("top_findings"):
         lines.extend(["", "## Top findings"])
         for index, item in enumerate(summary["top_findings"], 1):
-            lines.append(f"{index}. [{item['severity'].upper()}] {item['title']} ({item['criterion_id']})")
+            lines.append(f"{index}. [{item['severity'].upper()}] {item.get('gap') or item['title']} ({item['criterion_id']})")
             if item.get("message"):
                 lines.append(f"   - 说明：{item['message']}")
             if item.get("action"):
