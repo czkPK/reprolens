@@ -117,7 +117,7 @@ The repository root contains a reusable composite Action (`action.yml`). See `do
 
 ## Current MVP
 
-- Python LLM/RAG/Agent repository scanning
+- Python-first AI/ML research repository scanning, including LLM/RAG/Agent projects; non-Python and model-agnostic SDK projects may yield N/A for some criteria.
 - static evidence extraction
 - applicability-aware criteria
 - README claim-evidence matrix with gap tracing

@@ -389,7 +389,7 @@ small {{ color: #697386; }}
 <h2>Findings（问题发现）</h2><p class="section-note"><strong>中文翻译：</strong>问题发现。<strong>简单解释：</strong>列出当前检查中发现的主要缺口、风险等级和对应证据。</p><ul>{finding_items}</ul>
 <h2>Execution Evidence（执行证据）</h2><p class="section-note"><strong>中文翻译：</strong>执行证据。<strong>简单解释：</strong>记录实际运行过的探测命令、结果和耗时；它只证明这些探测执行过，不代表整个项目已经复现成功。</p><table><thead><tr><th>Probe（探测项）</th><th>Status（状态）</th><th>Return code（返回码）</th><th>Duration（耗时）</th><th>Command（命令）</th></tr></thead><tbody>{probe_rows}</tbody></table>
 <h2>Minimal Remediation Plan（最小整改计划）</h2><p class="section-note"><strong>中文翻译：</strong>最小整改计划。<strong>简单解释：</strong>给出成本较低、能够提高复现就绪度的修改建议，并估算预计提分。</p><ul>{remediation_items}</ul>
-<h2>Scope and Limitations（适用范围与限制）</h2><p class="section-note"><strong>中文翻译：</strong>适用范围与限制。<strong>简单解释：</strong>说明本报告能证明什么、不能证明什么，避免把静态体检结果误解为完整复现成功。</p><ul><li>本报告执行的是静态复现就绪度分析，不等同于证明项目能够成功复现。</li><li>系统默认不会执行来自不可信仓库的代码。</li><li>只有使用 <code>--execute</code> 时，才会运行仓库中的探测脚本。</li><li>AI 生成的解释在正式发布前仍需要团队人工复核。</li></ul>
+<h2>Scope and Limitations（适用范围与限制）</h2><p class="section-note"><strong>中文翻译：</strong>适用范围与限制。<strong>简单解释：</strong>说明本报告能证明什么、不能证明什么，避免把静态体检结果误解为完整复现成功。</p><ul><li>本报告执行的是静态复现就绪度分析，不等同于证明项目能够成功复现。</li><li>当前优先支持 Python 为主的 AI/ML 论文代码仓库；非 Python、模型无关 SDK、私有资源或超大仓库可能只覆盖通用检查，部分项目类型会显示 N/A。</li><li>系统默认不会执行来自不可信仓库的代码。</li><li>只有使用 <code>--execute</code> 时，才会运行仓库中的探测脚本。</li><li>AI 生成的解释在正式发布前仍需要团队人工复核。</li></ul>
 </main></body></html>"""
 
 

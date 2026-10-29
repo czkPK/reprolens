@@ -188,6 +188,7 @@ def render_markdown(result: AuditResult) -> str:
             "## Scope and Limitations",
             "",
             "- This is static reproduction readiness analysis, not proof that the project reproduces successfully.",
+            "- The current scope prioritizes Python-first AI/ML research repositories; non-Python projects, model-agnostic SDKs, private resources, and very large repositories may receive only general checks or N/A results.",
             "- No untrusted repository code is executed by default.",
             "- Execution probes are optional and require explicit --execute; GitHub Action integration is available in the repository.",
             "- AI-generated explanations must be reviewed by the team before submission or release.",

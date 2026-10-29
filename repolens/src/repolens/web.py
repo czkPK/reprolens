@@ -405,14 +405,14 @@ button:disabled { opacity:.55; cursor:wait; }
   <div>
     <div class="eyebrow">Evidence-constrained repository audit</div>
     <h1>给开源 AI 项目做一次<br><span class="grad">复现体检</span></h1>
-    <p class="lead">粘贴任意公开 GitHub 仓库地址，ReproLens 会检查环境、数据、模型、实验、文档和 AI 特有风险，并把 README 声明与仓库证据一一对应。</p>
+    <p class="lead">粘贴公开 GitHub 仓库地址，优先面向 Python 为主的 AI/ML 论文代码仓库，也覆盖常见 LLM/RAG/Agent 项目。系统会把环境、数据、模型、实验、文档和 AI 特有风险与仓库证据一一对应。</p>
     <div class="badges"><span class="badge">25 项检查</span><span class="badge">证据可追溯</span><span class="badge">声明验证</span><span class="badge">AutoFix 复测</span><span class="badge">不执行第三方代码</span></div>
   </div>
   <div class="panel">
     <strong>分析公开仓库</strong>
     <div class="search"><input id="repo" placeholder="https://github.com/owner/repo" autocomplete="off"><button id="run">开始体检</button></div>
     <div class="samples"><span class="sample" data-url="https://github.com/huggingface/smolagents">huggingface/smolagents</span><span class="sample" data-url="https://github.com/mem0ai/mem0">mem0ai/mem0</span><span class="sample" data-url="https://github.com/openai/openai-python">openai/openai-python</span></div>
-    <div class="hint">仅分析公开仓库；按默认分支最新 commit 生成可追溯报告；不会运行仓库代码或安装依赖。</div>
+    <div class="hint">仅分析公开仓库；优先支持 Python 为主的 AI/ML 项目。非 Python、模型无关 SDK、私有资源或超大仓库可能只做通用静态检查，部分检查项会显示 N/A。默认不会运行仓库代码或安装依赖。</div>
     <div id="status" class="status"></div>
     <div id="result" class="result">
       <div class="score-row"><div id="score" class="score"></div><div><div id="readiness" class="readiness"></div><div id="commit" class="hint"></div></div></div>
