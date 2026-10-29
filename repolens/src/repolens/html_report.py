@@ -378,7 +378,7 @@ small {{ color: #697386; }}
 <body><main>
 <h1>ReproLens Audit Report</h1>
 <div class="meta">Repository: {e(result.repo_path)}<br>Generated: {e(result.generated_at)} | Files scanned: {result.files_scanned}{source_meta}{ai_meta}</div>
-<div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 LLM/RAG/Agent 项目复现就绪度</p></div></div>
+<div class="score"><div><div class="big">{result.total_score:.1f}</div><div class="meta">out of 100</div></div><div><span class="badge">{e(result.readiness)}</span><p class="meta">开源 AI/ML 项目复现就绪度</p></div></div>
 {visual_overview}
 <h2>Evidence Overview（证据总览）</h2><p class="section-note"><strong>中文翻译：</strong>证据总览。<strong>简单解释：</strong>汇总证据覆盖率、README 声明数量和仍需补充证据的数量，先判断证据基础是否完整。</p><div class="cards summary">{summary_cards}</div>
 <h2>Top 3 Priority Actions（三项优先整改行动）</h2><p class="section-note"><strong>中文翻译：</strong>三项优先整改行动。<strong>简单解释：</strong>按照预计提分从高到低，列出最值得先处理的三项修改。</p><ul class="priority">{priority_items}</ul>
