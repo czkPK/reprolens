@@ -21,12 +21,30 @@ class IntegrationTests(unittest.TestCase):
                 {"claim_id": "C-001", "status": "verified", "gaps": []},
                 {"claim_id": "C-002", "status": "partially_verified", "gaps": ["LLM-03"]},
             ],
-            "findings": [{"criterion_id": "ENV-02", "severity": "high", "title": "是否锁定依赖版本"}],
+            "findings": [
+                {
+                    "id": "F-001",
+                    "criterion_id": "ENV-02",
+                    "severity": "high",
+                    "title": "是否锁定依赖版本",
+                    "message": "有依赖清单，但没有锁定文件或容器配置。",
+                }
+            ],
+            "remediations": [
+                {
+                    "finding_id": "F-001",
+                    "action": "添加锁文件或 Dockerfile，固定依赖版本。",
+                }
+            ],
         }
         summary = compact_score(data)
         self.assertEqual(summary["score"], 78.8)
         self.assertEqual(summary["claim_counts"]["verified"], 1)
         self.assertEqual(summary["top_findings"][0]["criterion_id"], "ENV-02")
+        self.assertEqual(summary["top_findings"][0]["action"], "添加锁文件或 Dockerfile，固定依赖版本。")
+        text = render_summary(summary, 70, True, 200)
+        self.assertIn("说明：有依赖清单", text)
+        self.assertIn("建议：添加锁文件", text)
 
     def test_compact_score_uses_github_context_for_local_path(self):
         with patch.dict(
@@ -94,10 +112,13 @@ class IntegrationTests(unittest.TestCase):
     def test_post_json_rejects_platform_error_response(self):
         class Handler(BaseHTTPRequestHandler):
             def do_POST(self):
+                body = b'{"errcode": 310000, "errmsg": "keyword not matched"}'
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
-                self.wfile.write(b'{"errcode": 310000, "errmsg": "keyword not matched"}')
+                self.wfile.write(body)
+                self.wfile.flush()
 
             def log_message(self, fmt, *args):
                 return

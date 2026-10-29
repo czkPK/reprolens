@@ -21,6 +21,25 @@ def compact_score(data: dict[str, Any]) -> dict[str, Any]:
         server = os.environ.get("GITHUB_SERVER_URL", "https://github.com").rstrip("/")
         project = f"{server}/{github_repo}"
     source_commit = data.get("source_commit") or os.environ.get("GITHUB_SHA")
+    remediation_by_finding = {
+        item.get("finding_id"): item
+        for item in data.get("remediations", [])
+        if item.get("finding_id")
+    }
+    top_findings = []
+    for item in data.get("findings", [])[:5]:
+        remediation = remediation_by_finding.get(item.get("id"), {})
+        top_findings.append(
+            {
+                "criterion_id": item.get("criterion_id"),
+                "severity": item.get("severity"),
+                "title": item.get("title"),
+                "message": item.get("message", ""),
+                "action": remediation.get("action", ""),
+                "rationale": remediation.get("rationale", ""),
+                "estimated_score_gain": remediation.get("estimated_score_gain"),
+            }
+        )
     return {
         "schema_version": 1,
         "project": project,
@@ -42,14 +61,7 @@ def compact_score(data: dict[str, Any]) -> dict[str, Any]:
             }
             for item in claims
         ],
-        "top_findings": [
-            {
-                "criterion_id": item.get("criterion_id"),
-                "severity": item.get("severity"),
-                "title": item.get("title"),
-            }
-            for item in data.get("findings", [])[:5]
-        ],
+        "top_findings": top_findings,
     }
 
 
@@ -100,11 +112,16 @@ def render_notification_text(summary: dict[str, Any], minimum: float, passed: bo
     ]
     findings = summary.get("top_findings", [])
     if findings:
-        lines.append("主要发现：")
-        lines.extend(
-            f"- [{item.get('severity', '').upper()}] {item.get('title')} ({item.get('criterion_id')})"
-            for item in findings
-        )
+        lines.append("主要发现（按优先级）：")
+        for index, item in enumerate(findings, 1):
+            lines.append(
+                f"{index}. [{item.get('severity', '').upper()}] "
+                f"{item.get('title')} ({item.get('criterion_id')})"
+            )
+            if item.get("message"):
+                lines.append(f"   说明：{item['message']}")
+            if item.get("action"):
+                lines.append(f"   建议：{item['action']}")
     return "\n".join(lines)
 
 
@@ -147,10 +164,12 @@ def render_summary(summary: dict[str, Any], minimum: float, passed: bool, webhoo
     ]
     if summary.get("top_findings"):
         lines.extend(["", "## Top findings"])
-        lines.extend(
-            f"- [{item['severity'].upper()}] {item['title']} ({item['criterion_id']})"
-            for item in summary["top_findings"]
-        )
+        for index, item in enumerate(summary["top_findings"], 1):
+            lines.append(f"{index}. [{item['severity'].upper()}] {item['title']} ({item['criterion_id']})")
+            if item.get("message"):
+                lines.append(f"   - 说明：{item['message']}")
+            if item.get("action"):
+                lines.append(f"   - 建议：{item['action']}")
     return "\n".join(lines) + "\n"
 
 
