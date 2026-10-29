@@ -129,29 +129,31 @@ def scan_repo(root: Path) -> RepoSnapshot:
 
     snapshot = RepoSnapshot(root=root, files=files, texts=texts)
     def preferred_text_items():
+        ranked: list[tuple[int, int, str, str]] = []
         for rel_path, text in texts.items():
             low = rel_path.lower()
             name = Path(rel_path).name.lower()
-            if any(part in low for part in (
-                "changelog", "code_of_conduct", "contributing", "security",
-                "api.md", "helpers.md", "bedrock.md", ".github/", "tests/",
-                ".inline-snapshot", ".vscode", ".devcontainer", "pre-commit",
-                "issue_template", ".castiron", "conftest.py", "setup.py",
-                "openapi", "llms.txt", "_toctree",
-            )):
-                continue
             is_root_readme = "/" not in rel_path and name.startswith("readme")
-            is_docs_readme = low in {"docs/readme.md", "docs/readme.rst"}
-            is_relevant_doc = low.startswith("docs/") and any(
-                token in name for token in ("readme", "index", "quickstart", "install", "getting_started", "tutorial", "guide", "agent", "rag", "prompt")
-            )
+            is_root_doc = "/" not in rel_path and Path(name).suffix in {".md", ".rst", ".txt"}
+            is_docs = low.startswith("docs/")
             is_config = low.startswith(("configs/", "config/", "conf/")) or (low.startswith("config") and "/" not in low)
-            is_prompt = low.startswith("prompts/") or (name.startswith("prompt") and "/" not in low)
-            is_script = name in {"app.py", "main.py", "train.py", "eval.py", "evaluate.py", "infer.py", "predict.py", "reproduce.sh", "run.sh"}
+            is_prompt = low.startswith(("prompts/", "prompt/"))
+            is_script = Path(name).suffix in {".py", ".sh", ".ps1", ".js", ".ts"} or name in {
+                "app.py", "main.py", "train.py", "eval.py", "evaluate.py", "infer.py",
+                "predict.py", "reproduce.sh", "run.sh", "makefile",
+            }
             is_card = "model_card" in name or "dataset_card" in name
-            is_model_source = name in {"__init__.py", "model.py", "models.py", "hub.py", "download.py"} or "/models/" in low
-            if is_root_readme or is_docs_readme or is_relevant_doc or is_config or is_prompt or is_script or is_card or is_model_source:
-                yield rel_path, text
+            if is_root_readme:
+                rank = 0
+            elif is_root_doc or is_docs or is_card:
+                rank = 1
+            elif is_config or is_prompt or is_script:
+                rank = 2
+            else:
+                rank = 3
+            ranked.append((rank, rel_path.count("/"), rel_path, text))
+        for _, _, rel_path, text in sorted(ranked, key=lambda item: (item[0], item[1], item[2])):
+            yield rel_path, text
 
     def first_matching(pattern: str) -> Path | None:
         regex = re.compile(pattern, re.IGNORECASE)

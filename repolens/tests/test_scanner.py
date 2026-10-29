@@ -201,6 +201,29 @@ class ScannerTests(unittest.TestCase):
         self.assertTrue(snapshot.has("model_source_link"))
         self.assertTrue(snapshot.has("model_version"))
 
+    def test_root_install_markdown_is_searched_for_commands(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# Project\n\nSee INSTALL.md for setup.\n",
+                encoding="utf-8",
+            )
+            (root / "INSTALL.md").write_text(
+                "# Installation\n\n```bash\n"
+                "conda create -n example python=3.10\n"
+                "conda activate example\n"
+                "pip install -r requirements.txt\n```\n",
+                encoding="utf-8",
+            )
+            snapshot = scan_repo(root)
+        self.assertTrue(snapshot.has("install_instructions"))
+        self.assertTrue(snapshot.has("run_instructions"))
+        evidence_paths = {
+            item.path for item in snapshot.evidence
+            if item.id in snapshot.evidence_for("install_instructions", "run_instructions")
+        }
+        self.assertIn("INSTALL.md", evidence_paths)
+
     def test_claim_extraction_skips_copyright_and_docs_boilerplate(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
