@@ -18,7 +18,7 @@ python scripts\webhook_receiver_demo.py --port 8770 --output reports\latest\webh
 ```powershell
 cd D:\CODEX\ReproLens\repolens
 $env:PYTHONPATH = "src"
-python -m repolens.integrations reports\latest\score.json --min-score 40 --webhook-url http://127.0.0.1:8770/hook
+python -m repolens.integrations reports\latest\score.json --min-score 65 --webhook-url http://127.0.0.1:8770/hook
 ```
 
 ## 二、实际门禁输出
@@ -32,11 +32,11 @@ python -m repolens.integrations reports\latest\score.json --min-score 40 --webho
 - Readiness: At Risk
 - Evidence coverage: 16/25 (64.0%)
 - Claims: total=2, verified=2, partial=0
-- Gate: PASSED (minimum 40.0)
+- Gate: FAILED (minimum 65.0)
 - Webhook: delivered (204)
 ```
 
-如果阈值改为 60 分，同一份评分会显示 `FAILED`，进程返回非零退出码，可直接用于阻止低质量变更合并。
+当前示例分数 49.1 低于 65 分质量门禁，因此显示 `FAILED`，进程返回非零退出码；这正说明低质量项目会被门禁阻止。若只演示通知，可使用 `--min-score 0`，但不应把它表述为质量通过。
 
 ## 三、Webhook 实际收到的数据
 

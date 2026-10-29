@@ -84,16 +84,16 @@ delta:  +19.3
 
 ```powershell
 # 通用 Webhook
-python -m repolens.integrations score.json --min-score 70 --webhook-url "<接收地址>"
+python -m repolens.integrations score.json --min-score 65 --webhook-url "<接收地址>"
 
 # 飞书自定义机器人（安全设置建议使用关键词：ReproLens）
-python -m repolens.integrations score.json --min-score 70 --format feishu --webhook-url "<飞书机器人地址>"
+python -m repolens.integrations score.json --min-score 65 --format feishu --webhook-url "<飞书机器人地址>"
 
 # 钉钉自定义机器人（安全设置建议使用关键词：ReproLens）
-python -m repolens.integrations score.json --min-score 70 --format dingtalk --webhook-url "<钉钉机器人地址>"
+python -m repolens.integrations score.json --min-score 65 --format dingtalk --webhook-url "<钉钉机器人地址>"
 
 # 钉钉加签模式（可选）
-python -m repolens.integrations score.json --min-score 70 --format dingtalk --webhook-url "<钉钉机器人地址>" --webhook-secret "<签名密钥>"
+python -m repolens.integrations score.json --min-score 65 --format dingtalk --webhook-url "<钉钉机器人地址>" --webhook-secret "<签名密钥>"
 ```
 
 当分数低于 `--min-score` 时，命令返回退出码 `1`，可直接作为 CI 质量门禁。Webhook URL 和签名密钥属于敏感配置，不应提交到仓库。

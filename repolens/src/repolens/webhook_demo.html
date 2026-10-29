@@ -58,7 +58,7 @@ code{display:inline-block;background:#eef3fb;color:var(--blue);border-radius:5px
 
 <div class="note">
   <div class="note-card"><strong>接收地址是什么？</strong>外部系统把 JSON 发送到这里。当前接收地址为：<br><code id="hook"></code></div>
-  <div class="note-card"><strong>演示命令是什么？</strong>该命令读取 score.json，按最低分数判断是否通过，并把精简 JSON 发送到接收地址：<br><code>python -m repolens.integrations score.json --min-score 70 --webhook-url &lt;接收地址&gt;</code></div>
+  <div class="note-card"><strong>演示命令是什么？</strong>该命令读取 score.json，按最低分数判断是否通过，并把精简 JSON 发送到接收地址：<br><code>python -m repolens.integrations score.json --min-score 65 --webhook-url &lt;接收地址&gt;</code></div>
 </div>
 <script>
 const hook=location.origin+'/api/webhook-demo/hook';document.getElementById('hook').textContent=hook;
