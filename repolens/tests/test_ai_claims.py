@@ -72,11 +72,27 @@ class AIClaimTests(unittest.TestCase):
         )
         self.assertEqual(rows, result.claim_matrix)
 
-    def test_missing_configuration_falls_back_to_rules(self):
+    def test_local_semantic_mode_is_default(self):
         with patch.dict(os.environ, {}, clear=True):
+            rows, metadata = enhance_claim_matrix(_result(), enabled=True)
+        self.assertEqual(metadata["mode"], "local-semantic")
+        self.assertEqual(metadata["provider"], "local")
+        self.assertFalse(metadata["external_api"])
+        self.assertEqual(metadata["claims_enhanced"], 1)
+        self.assertIn("LLM-06", rows[0]["criteria"])
+        self.assertTrue(rows[0]["ai_assisted"])
+
+    def test_external_mode_without_configuration_falls_back_to_rules(self):
+        with patch.dict(os.environ, {"REPROLENS_SEMANTIC_MODE": "llm"}, clear=True):
             rows, metadata = enhance_claim_matrix(_result(), enabled=True)
         self.assertEqual(rows, _result().claim_matrix)
         self.assertEqual(metadata["mode"], "rules-fallback")
+
+    def test_disabled_semantic_mode_returns_rules(self):
+        with patch.dict(os.environ, {"REPROLENS_SEMANTIC_MODE": "off"}, clear=True):
+            rows, metadata = enhance_claim_matrix(_result(), enabled=True)
+        self.assertEqual(rows, _result().claim_matrix)
+        self.assertEqual(metadata["mode"], "rules")
 
 
 if __name__ == "__main__":

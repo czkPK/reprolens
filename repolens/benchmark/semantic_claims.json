@@ -1,0 +1,152 @@
+[
+  {
+    "claim_id": "S-001",
+    "claim": "Package versions and libraries are declared in requirements.txt.",
+    "expected_criterion": "ENV-01"
+  },
+  {
+    "claim_id": "S-002",
+    "claim": "A container image captures the exact Python and CUDA setup.",
+    "expected_criterion": "ENV-02"
+  },
+  {
+    "claim_id": "S-003",
+    "claim": "The setup instructions explain how to create the environment.",
+    "expected_criterion": "ENV-03"
+  },
+  {
+    "claim_id": "S-004",
+    "claim": "The raw corpus can be obtained from the public Hugging Face repository.",
+    "expected_criterion": "DATA-01"
+  },
+  {
+    "claim_id": "S-005",
+    "claim": "A Python script converts raw videos into training samples.",
+    "expected_criterion": "DATA-02"
+  },
+  {
+    "claim_id": "S-006",
+    "claim": "The data card states fields, provenance, and CC BY-NC terms.",
+    "expected_criterion": "DATA-03"
+  },
+  {
+    "claim_id": "S-007",
+    "claim": "The pretrained model file is hosted on a public checkpoint page.",
+    "expected_criterion": "MODEL-01"
+  },
+  {
+    "claim_id": "S-008",
+    "claim": "The model documentation identifies the architecture and release.",
+    "expected_criterion": "MODEL-02"
+  },
+  {
+    "claim_id": "S-009",
+    "claim": "The checkpoint is licensed separately from the source code.",
+    "expected_criterion": "MODEL-03"
+  },
+  {
+    "claim_id": "S-010",
+    "claim": "Start pretraining with the provided launcher and YAML config.",
+    "expected_criterion": "EXP-01"
+  },
+  {
+    "claim_id": "S-011",
+    "claim": "The test script computes top-1 accuracy on the validation split.",
+    "expected_criterion": "EXP-02"
+  },
+  {
+    "claim_id": "S-012",
+    "claim": "The same experiment yields identical output after rerunning.",
+    "expected_criterion": "EXP-03"
+  },
+  {
+    "claim_id": "S-013",
+    "claim": "Eight A100 GPUs and 640GB of memory are required.",
+    "expected_criterion": "EXP-04"
+  },
+  {
+    "claim_id": "S-014",
+    "claim": "The expected F1 score is 0.84.",
+    "expected_criterion": "EXP-05"
+  },
+  {
+    "claim_id": "S-015",
+    "claim": "A project introduction file is included at repository root.",
+    "expected_criterion": "DOC-01"
+  },
+  {
+    "claim_id": "S-016",
+    "claim": "The usage section contains a minimal working example.",
+    "expected_criterion": "DOC-02"
+  },
+  {
+    "claim_id": "S-017",
+    "claim": "CI executes the test suite after every change.",
+    "expected_criterion": "DOC-03"
+  },
+  {
+    "claim_id": "S-018",
+    "claim": "The provider and model revision are stored with each request.",
+    "expected_criterion": "LLM-01"
+  },
+  {
+    "claim_id": "S-019",
+    "claim": "Template versions are tracked with hashes.",
+    "expected_criterion": "LLM-02"
+  },
+  {
+    "claim_id": "S-020",
+    "claim": "Decoding parameters such as temperature and top_p are logged.",
+    "expected_criterion": "LLM-03"
+  },
+  {
+    "claim_id": "S-021",
+    "claim": "The context limit and tokenizer are documented.",
+    "expected_criterion": "LLM-04"
+  },
+  {
+    "claim_id": "S-022",
+    "claim": "The vector collection and embedding revision are recorded.",
+    "expected_criterion": "LLM-05"
+  },
+  {
+    "claim_id": "S-023",
+    "claim": "Each tool call is stored with a trace identifier.",
+    "expected_criterion": "LLM-06"
+  },
+  {
+    "claim_id": "S-024",
+    "claim": "The benchmark split and contamination checks are explained.",
+    "expected_criterion": "LLM-07"
+  },
+  {
+    "claim_id": "S-025",
+    "claim": "Token cost and response latency are measured.",
+    "expected_criterion": "LLM-08"
+  },
+  {
+    "claim_id": "S-026",
+    "claim": "The project defines its packages in pyproject.toml.",
+    "expected_criterion": "ENV-01"
+  },
+  {
+    "claim_id": "S-027",
+    "claim": "A public download URL is provided for the training corpus.",
+    "expected_criterion": "DATA-01"
+  },
+  {
+    "claim_id": "S-028",
+    "claim": "The model weights can be obtained from Baidu Pan.",
+    "expected_criterion": "MODEL-01"
+  },
+  {
+    "claim_id": "S-029",
+    "claim": "Prompt files are tracked under a versioned directory.",
+    "expected_criterion": "LLM-02"
+  },
+  {
+    "claim_id": "S-030",
+    "claim": "Random sources are initialized with fixed seeds.",
+    "expected_criterion": "EXP-03"
+  }
+]

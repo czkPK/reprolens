@@ -50,7 +50,19 @@ python -m repolens.benchmark
 
 Outputs: `report.md`, `report.html`, `claims.md`, `claims.json`, `ai-review.json`, `score.json`, `badge.svg`, `badge.json`, `evidence.json`, `remediation.json`, `execution.json`, `explanation.md` when `--explain` is used, and `autofix/FIX_PROPOSAL.md` when `--autofix` is used.
 
-Optional LLM environment variables: `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, `REPROLENS_LLM_MODEL`. With these variables, `--ai-review` performs evidence-constrained semantic claim mapping. Without them, the tool falls back to deterministic rules.
+### Local semantic model and optional LLM
+
+ReproLens includes `ReproLens-SmallSemantic-v1`, a local open-source semantic classifier for mapping README claims to the fixed audit criteria. It runs offline with no API key and is the default semantic mode.
+
+`REPROLENS_SEMANTIC_MODE` selects the semantic backend:
+
+- `local` (default): use the bundled local semantic model;
+- `llm`: use an optional OpenAI-compatible model API;
+- `off`: disable semantic enhancement and use deterministic rules only.
+
+The optional external LLM backend uses `REPROLENS_LLM_BASE_URL`, `REPROLENS_LLM_API_KEY`, and `REPROLENS_LLM_MODEL`. The external model is never allowed to invent evidence IDs or directly determine the final score.
+
+Model card: `repolens/docs/ReproLens-SmallSemantic-v1模型卡.md`.
 
 ## AutoFix
 
@@ -89,6 +101,7 @@ The repository root contains a reusable composite Action (`action.yml`). See `do
 - static evidence extraction
 - applicability-aware criteria
 - README claim-evidence matrix with gap tracing
+- bundled local semantic model with no API dependency
 - optional LLM-assisted semantic claim mapping with evidence-ID validation
 - evidence confidence and coverage metrics
 - web analysis for any public GitHub repository, pinned to commit SHA

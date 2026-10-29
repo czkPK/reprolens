@@ -1,0 +1,264 @@
+{
+  "model_id": "ReproLens-SmallSemantic-v1",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dimension": 2048,
+  "min_similarity": 0.2,
+  "second_ratio": 0.9,
+  "criteria": {
+    "ENV-01": {
+      "title": "是否存在依赖清单",
+      "examples": [
+        "依赖包列在 requirements.txt 和 pyproject.toml 中。",
+        "Dependencies are listed in environment.yml and package.json.",
+        "The project provides a dependency manifest for installation.",
+        "请根据 requirements.txt 安装全部 Python 依赖。",
+        "The repository includes pyproject.toml with required packages."
+      ]
+    },
+    "ENV-02": {
+      "title": "是否锁定依赖版本或提供容器化配置",
+      "examples": [
+        "The Dockerfile pins Python and installs exact package versions.",
+        "poetry.lock and package-lock.json are included for reproducible installs.",
+        "项目提供 Dockerfile 固定 CUDA 和依赖版本。",
+        "Use docker compose to reproduce the exact software environment.",
+        "The environment is containerized with pinned dependencies."
+      ]
+    },
+    "ENV-03": {
+      "title": "是否提供安装步骤",
+      "examples": [
+        "Run pip install -r requirements.txt to install dependencies.",
+        "Execute conda create and conda activate before installation.",
+        "SETUP.md explains the installation steps in detail.",
+        "安装步骤包括创建环境、安装 PyTorch 和运行依赖。",
+        "Follow the setup guide to install the project."
+      ]
+    },
+    "DATA-01": {
+      "title": "是否说明数据来源和获取方式",
+      "examples": [
+        "The dataset can be downloaded from Hugging Face or Google Drive.",
+        "Training data is available at the public dataset link.",
+        "数据集来源和下载地址见项目主页。",
+        "We describe where the benchmark data comes from and how to obtain it.",
+        "Download the public dataset from the provided URL."
+      ]
+    },
+    "DATA-02": {
+      "title": "是否提供数据下载或预处理脚本",
+      "examples": [
+        "We provide download_data.sh and preprocess.py for the dataset.",
+        "Run python prepare_data.py to download images and create train and test splits.",
+        "使用 data/process.py 完成数据下载和预处理。",
+        "The preprocessing script converts raw data into training tensors.",
+        "A shell script automates dataset download and cleaning.",
+        "A preprocessing utility converts raw media into model-ready training samples."
+      ]
+    },
+    "DATA-03": {
+      "title": "是否提供数据集卡或数据许可说明",
+      "examples": [
+        "The dataset card documents fields, sources, preprocessing, and license.",
+        "The dataset is released under CC BY 4.0 and includes a data card.",
+        "数据卡说明数据来源、字段、使用范围和许可。",
+        "The dataset has a separate license and terms of use.",
+        "Data provenance, privacy restrictions, and license are described."
+      ]
+    },
+    "MODEL-01": {
+      "title": "是否提供模型权重、API 或获取方式",
+      "examples": [
+        "Pretrained model weights can be downloaded from Baidu Pan.",
+        "The checkpoint is available on Hugging Face or at the model URL.",
+        "模型权重下载链接和提取码见 README。",
+        "We provide a model API endpoint and access instructions.",
+        "Download the pretrained checkpoint before running inference."
+      ]
+    },
+    "MODEL-02": {
+      "title": "是否提供模型卡或版本说明",
+      "examples": [
+        "A model card describes the architecture, training data, and version.",
+        "The model version and checkpoint name are documented.",
+        "模型卡说明了模型结构、版本和适用范围。",
+        "README records the model identifier and release version.",
+        "The repository includes documentation for the pretrained model."
+      ]
+    },
+    "MODEL-03": {
+      "title": "是否说明模型许可和来源",
+      "examples": [
+        "The model weights are released under the Apache 2.0 license.",
+        "Model provenance and license are stated in the model card.",
+        "模型许可、原始来源和再分发限制写在模型卡中。",
+        "The pretrained model is distributed under its original license.",
+        "We cite the upstream model and describe the license terms.",
+        "The model checkpoint has its own license, separate from the repository source code."
+      ]
+    },
+    "EXP-01": {
+      "title": "是否提供训练或主运行脚本",
+      "examples": [
+        "Train the model with python train.py and the provided config.",
+        "Run python -m vit_jax.main to start model training.",
+        "使用 train.sh 启动训练并指定模型配置。",
+        "The repository includes tools/train_net.py for training.",
+        "The main training script launches pretraining on the configured dataset."
+      ]
+    },
+    "EXP-02": {
+      "title": "是否提供评测脚本或评测命令",
+      "examples": [
+        "Evaluate the model with python evaluate.py and report metrics.",
+        "Run the evaluation script to reproduce test accuracy and F1.",
+        "使用 eval.sh 在测试集上运行评测。",
+        "The benchmark evaluation command is documented in the README.",
+        "Tests and evaluation commands verify model performance."
+      ]
+    },
+    "EXP-03": {
+      "title": "是否设置并说明随机种子",
+      "examples": [
+        "We set random seeds for Python, NumPy, and PyTorch.",
+        "Repeated runs produce identical results because all seeds are fixed.",
+        "实验设置了固定随机种子以保证确定性。",
+        "Training uses deterministic settings and a fixed random state.",
+        "The random seed is recorded in the experiment configuration."
+      ]
+    },
+    "EXP-04": {
+      "title": "是否说明硬件或 API 环境要求",
+      "examples": [
+        "Training requires eight A100 GPUs with 80GB VRAM.",
+        "The project documents the CUDA, GPU, and API environment requirements.",
+        "实验说明所需 GPU、显存和 CUDA 版本。",
+        "The model runs on TPU v4 and requires specific hardware.",
+        "Hardware and external API requirements are listed in the README."
+      ]
+    },
+    "EXP-05": {
+      "title": "是否给出预期结果和指标",
+      "examples": [
+        "The expected accuracy is 82% and F1 is 80% on the test set.",
+        "The README reports BLEU, ROUGE, and latency results.",
+        "项目给出了预期精度、召回率和运行结果。",
+        "Expected benchmark values are documented for reproduction.",
+        "The paper repository lists the target metrics for each experiment."
+      ]
+    },
+    "DOC-01": {
+      "title": "是否存在 README",
+      "examples": [
+        "The repository contains a root README with project documentation.",
+        "项目根目录提供 README 文件说明项目用途。",
+        "README.md is the main project documentation.",
+        "The codebase includes a README and usage guide.",
+        "Project documentation starts with a README file.",
+        "A project introduction document is stored at the repository root."
+      ]
+    },
+    "DOC-02": {
+      "title": "是否提供快速开始和运行示例",
+      "examples": [
+        "The quickstart section shows how to run a minimal example.",
+        "README provides installation and usage examples.",
+        "快速开始给出了最小运行示例和输入输出。",
+        "A short tutorial demonstrates how to run the project.",
+        "The usage section includes runnable commands and expected output."
+      ]
+    },
+    "DOC-03": {
+      "title": "是否提供测试、CI 或一键复现脚本",
+      "examples": [
+        "GitHub Actions run unit tests, smoke tests, and linting.",
+        "Use reproduce.sh for a one-command reproduction.",
+        "项目提供 CI、测试用例和 run.sh 一键复现脚本。",
+        "The repository contains automated tests and a reproduction workflow.",
+        "Continuous integration verifies the code on every commit.",
+        "The CI pipeline runs tests after each code change."
+      ]
+    },
+    "LLM-01": {
+      "title": "是否记录模型/API 版本",
+      "examples": [
+        "The application records the model name, provider, and API version.",
+        "配置中记录了 GPT-4o 和 API 版本。",
+        "README documents the exact LLM model identifier and provider.",
+        "The service stores the model name and API endpoint version.",
+        "We record the model version used for every inference request."
+      ]
+    },
+    "LLM-02": {
+      "title": "是否对 prompt/template 进行版本记录",
+      "examples": [
+        "Prompt templates and their versions are stored under prompts/.",
+        "The system prompt version is recorded in the configuration.",
+        "项目对 prompt 模板进行了版本管理。",
+        "Each template has a version hash and changelog.",
+        "Prompt files are versioned and linked to the model configuration."
+      ]
+    },
+    "LLM-03": {
+      "title": "是否记录采样参数",
+      "examples": [
+        "Temperature, top_p, top_k, and max_tokens are recorded in the config.",
+        "The generation settings include temperature and presence penalty.",
+        "配置记录了 temperature、top_p 和最大 token 数。",
+        "Sampling parameters are logged for every model call.",
+        "The LLM configuration specifies decoding parameters."
+      ]
+    },
+    "LLM-04": {
+      "title": "是否记录 tokenizer/上下文窗口",
+      "examples": [
+        "The tokenizer and context window length are documented.",
+        "配置说明 tokenizer 名称和最大上下文窗口。",
+        "The model configuration records the tokenizer and max_context.",
+        "We document the sentencepiece tokenizer and truncation strategy.",
+        "Context window size and token counting are described."
+      ]
+    },
+    "LLM-05": {
+      "title": "是否记录 RAG 索引/知识库版本",
+      "examples": [
+        "The RAG index version and embedding model are recorded.",
+        "Knowledge base collection name, chunk size, and index version are documented.",
+        "项目记录了知识库版本、向量索引和 embedding 模型。",
+        "The retrieval index is versioned with the document snapshot.",
+        "Vector store collection metadata is included in the config."
+      ]
+    },
+    "LLM-06": {
+      "title": "是否记录 Agent 工具调用轨迹",
+      "examples": [
+        "Agent tool call traces include run_id, inputs, and outputs.",
+        "The agent records a complete trajectory for each session.",
+        "项目保存了 Agent 工具调用日志和 session_id。",
+        "Each tool invocation is logged with a trace identifier.",
+        "Agent execution traces are stored for reproduction."
+      ]
+    },
+    "LLM-07": {
+      "title": "是否说明评测集、数据划分和污染风险",
+      "examples": [
+        "The evaluation dataset, train/test split, and contamination analysis are documented.",
+        "README 说明 benchmark 数据集、数据划分和污染风险。",
+        "We report the evaluation set and check for benchmark leakage.",
+        "Data splits and contamination controls are described in the paper repository.",
+        "The held-out benchmark and contamination analysis are included."
+      ]
+    },
+    "LLM-08": {
+      "title": "是否说明推理成本或延迟",
+      "examples": [
+        "Inference latency and token cost are reported.",
+        "The README provides tokens per second and API cost estimates.",
+        "项目给出了推理延迟、吞吐量和调用成本。",
+        "We measure GPU hours and runtime for each experiment.",
+        "Cost and latency benchmarks are documented."
+      ]
+    }
+  }
+}

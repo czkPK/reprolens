@@ -1,0 +1,19 @@
+{
+  "model": "ReproLens-SmallSemantic-v1",
+  "mode": "local-semantic",
+  "samples": 30,
+  "coverage": 30,
+  "coverage_rate": 1.0,
+  "top1_accuracy": 0.967,
+  "top2_hit_rate": 0.967,
+  "misses": [
+    {
+      "claim_id": "S-003",
+      "claim": "The setup instructions explain how to create the environment.",
+      "expected_criterion": "ENV-03",
+      "predicted": [
+        "ENV-02"
+      ]
+    }
+  ]
+}

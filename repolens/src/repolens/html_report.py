@@ -217,7 +217,17 @@ def render_html(result: AuditResult) -> str:
             source_meta += f' @ <code>{e(result.source_commit[:12])}</code>'
     ai_meta = ""
     if result.ai_metadata:
-        ai_meta = f'<br>Semantic claim mapping: <strong>{e(result.ai_metadata.get("mode", "rules"))}</strong>'
+        ai_mode = str(result.ai_metadata.get("mode", "rules"))
+        ai_model = str(result.ai_metadata.get("model", ""))
+        ai_provider = str(result.ai_metadata.get("provider", ""))
+        if ai_provider == "local":
+            ai_label = "本地开源语义模型"
+        elif ai_provider == "external":
+            ai_label = "外部语义模型"
+        else:
+            ai_label = "规则模式"
+        ai_detail = f" · {e(ai_model)}" if ai_model else ""
+        ai_meta = f'<br><span class="ai-badge">AI</span> Semantic claim mapping: <strong>{e(ai_mode)}</strong> · {e(ai_label)}{ai_detail}'
 
     return f"""<!doctype html>
 <html lang="zh-CN">
@@ -243,6 +253,7 @@ h2 {{ margin-top: 32px; border-bottom: 1px solid #dbe2ee; padding-bottom: 8px; }
 .card .value.na {{ color: #8490a1; }}
 .section-note {{ color: #5f6b7a; font-size: 13px; line-height: 1.65; margin: 8px 0 12px; }}
 .section-note strong {{ color: #40506a; }}
+.ai-badge {{ display:inline-block; background:#e8f1ff; color:#2457d6; border-radius:999px; padding:2px 7px; font-size:11px; font-weight:800; }}
 table {{ width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: visible; box-shadow: 0 4px 14px rgba(23,32,51,.06); }}
 th, td {{ text-align: left; padding: 10px 12px; border-bottom: 1px solid #edf1f7; font-size: 13px; vertical-align: top; }}
 th {{ background: #eef3fb; color: #40506a; }}

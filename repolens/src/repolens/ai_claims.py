@@ -94,10 +94,7 @@ def validate_ai_rows(raw: Any, result: AuditResult, rules: list[dict]) -> list[d
     return [enhanced.get(row["claim_id"], row) for row in rules]
 
 
-def enhance_claim_matrix(result: AuditResult, enabled: bool = True) -> tuple[list[dict], dict]:
-    rules = result.claim_matrix or build_claim_matrix(result)
-    if not enabled:
-        return rules, {"mode": "rules", "enabled": False, "reason": "AI review not requested"}
+def _external_enhance(result: AuditResult, rules: list[dict]) -> tuple[list[dict], dict]:
     config = _config()
     if config is None:
         return rules, {
@@ -140,14 +137,59 @@ def enhance_claim_matrix(result: AuditResult, enabled: bool = True) -> tuple[lis
         return enhanced, {
             "mode": "llm-assisted",
             "enabled": True,
+            "provider": "external",
             "model": model,
             "claims_enhanced": count,
             "validation": "criterion and evidence IDs are checked against repository evidence",
+            "external_api": True,
         }
     except Exception as exc:
         return rules, {
             "mode": "rules-fallback",
             "enabled": True,
+            "provider": "external",
             "reason": type(exc).__name__,
             "error": str(exc)[:300],
         }
+
+
+def enhance_claim_matrix(result: AuditResult, enabled: bool = True) -> tuple[list[dict], dict]:
+    rules = result.claim_matrix or build_claim_matrix(result)
+    if not enabled:
+        return rules, {"mode": "rules", "enabled": False, "reason": "AI review not requested"}
+
+    mode = os.getenv("REPROLENS_SEMANTIC_MODE", "local").strip().lower()
+    if mode == "off":
+        return rules, {"mode": "rules", "enabled": False, "reason": "Local semantic mode disabled"}
+
+    local_error = ""
+    if mode in {"local", "auto"}:
+        try:
+            from .local_semantic import predict_claims
+
+            raw_rows, metadata = predict_claims(result, rules)
+            enhanced = validate_ai_rows(raw_rows, result, rules)
+            metadata["claims_enhanced"] = sum(1 for row in enhanced if row.get("ai_assisted"))
+            return enhanced, metadata
+        except Exception as exc:
+            local_error = f"{type(exc).__name__}: {str(exc)[:240]}"
+            if mode == "local":
+                return rules, {
+                    "mode": "rules-fallback",
+                    "enabled": True,
+                    "provider": "local",
+                    "reason": "Local semantic model unavailable",
+                    "error": local_error,
+                    "external_api": False,
+                }
+
+    if mode in {"llm", "external", "auto"}:
+        return _external_enhance(result, rules)
+
+    return rules, {
+        "mode": "rules-fallback",
+        "enabled": True,
+        "reason": "Unknown semantic mode",
+        "error": local_error or mode,
+        "external_api": False,
+    }
