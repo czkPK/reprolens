@@ -54,7 +54,19 @@ def post_json(url: str, payload: dict[str, Any], timeout: int = 10) -> int:
         method="POST",
     )
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.status
+        status = response.status
+        body = response.read()
+        if body:
+            try:
+                data = json.loads(body.decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                return status
+            if isinstance(data, dict):
+                if data.get("code") not in (None, 0):
+                    raise RuntimeError(f"webhook rejected: {data.get('msg') or data.get('code')}")
+                if data.get("errcode") not in (None, 0):
+                    raise RuntimeError(f"webhook rejected: {data.get('errmsg') or data.get('errcode')}")
+        return status
 
 
 def sign_dingtalk_url(url: str, secret: str, timestamp: str | None = None) -> str:
@@ -161,7 +173,7 @@ def main(argv: list[str] | None = None) -> int:
                 webhook_url = sign_dingtalk_url(webhook_url, args.webhook_secret)
             webhook_status = post_json(webhook_url, payload, args.timeout)
         except Exception as exc:
-            webhook_error = type(exc).__name__
+            webhook_error = str(exc) or type(exc).__name__
     print(render_summary(summary, args.min_score, passed, webhook_status, webhook_error), end="")
     return 0 if passed else 1
 

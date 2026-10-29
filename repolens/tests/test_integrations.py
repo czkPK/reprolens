@@ -75,6 +75,27 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(status, 204)
         self.assertEqual(received["score"], 78.8)
 
+    def test_post_json_rejects_platform_error_response(self):
+        class Handler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"errcode": 310000, "errmsg": "keyword not matched"}')
+
+            def log_message(self, fmt, *args):
+                return
+
+        server = HTTPServer(("127.0.0.1", 0), Handler)
+        thread = threading.Thread(target=server.handle_request, daemon=True)
+        thread.start()
+        try:
+            with self.assertRaises(RuntimeError):
+                post_json(f"http://127.0.0.1:{server.server_port}/hook", {"score": 78.8})
+        finally:
+            thread.join(timeout=3)
+            server.server_close()
+
     def test_main_returns_failure_below_threshold(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "score.json"
