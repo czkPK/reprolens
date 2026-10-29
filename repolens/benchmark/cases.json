@@ -8,11 +8,11 @@
       "LLM-01": "pass",
       "LLM-02": "partial",
       "LLM-03": "pass",
-      "LLM-04": "partial",
+      "LLM-04": "missing",
       "LLM-05": "pass",
-      "LLM-06": "partial",
+      "LLM-06": "missing",
       "LLM-07": "missing",
-      "LLM-08": "partial"
+      "LLM-08": "missing"
     }
   },
   {

@@ -215,6 +215,16 @@ def scan_repo(root: Path) -> RepoSnapshot:
         name = Path(rel_path).name.lower()
         return low.startswith(("prompts/", "configs/", "config/", "conf/")) or name.startswith(("prompt", "config")) or "prompt" in low
 
+    def is_documentation(rel_path: str) -> bool:
+        low = rel_path.lower()
+        name = Path(rel_path).name.lower()
+        return (
+            low.startswith(("docs/", "doc/"))
+            or name.startswith(("readme", "install", "usage", "quickstart", "tutorial"))
+            or Path(name).suffix in {".md", ".rst"}
+            or ("/" not in rel_path and Path(name).suffix == ".txt")
+        )
+
     def is_config_or_script(rel_path: str) -> bool:
         low = rel_path.lower()
         name = Path(rel_path).name.lower()
@@ -223,6 +233,42 @@ def scan_repo(root: Path) -> RepoSnapshot:
             or name.startswith(("config", "app", "main", "train", "eval", "evaluate", "infer", "predict", "run", "reproduce"))
             or name.endswith(('.yaml', '.yml', '.toml', '.json'))
         )
+
+    def find_sampling_params() -> None:
+        param_re = re.compile(
+            r"temperature|top_p|top_k|max_tokens|presence_penalty|frequency_penalty",
+            re.IGNORECASE,
+        )
+        ambiguous_param_re = re.compile(r"temperature|top_k", re.IGNORECASE)
+        llm_context_re = re.compile(
+            r"\b(?:llm|language model|generation|prompt|completion|chat|sampling|model|openai|anthropic|ollama|vllm)\b",
+            re.IGNORECASE,
+        )
+        for rel_path, text in preferred_text_items():
+            if not is_config_or_script(rel_path):
+                continue
+            lines = text.splitlines()
+            for index, line in enumerate(lines):
+                match = param_re.search(line)
+                if not match:
+                    continue
+                context = " ".join(lines[max(0, index - 6): min(len(lines), index + 4)])
+                if ambiguous_param_re.search(line) and not llm_context_re.search(context):
+                    continue
+                if not llm_context_re.search(context) and not re.search(
+                    r"top_p|max_tokens|presence_penalty|frequency_penalty",
+                    line,
+                    re.IGNORECASE,
+                ):
+                    continue
+                path = root / rel_path
+                evidence_id = snapshot.add_evidence("llm-config", path, index + 1, line.strip())
+                around = text[max(0, match.start() - 80):match.end() + 80]
+                if PLACEHOLDER_RE.search(around):
+                    snapshot.mark_placeholder("sampling_params")
+                else:
+                    snapshot.mark("sampling_params", evidence_id)
+                return
 
     def is_config_only(rel_path: str) -> bool:
         low = rel_path.lower()
@@ -299,7 +345,41 @@ def scan_repo(root: Path) -> RepoSnapshot:
                     index + 1,
                     line.strip(),
                 )
-                snapshot.mark("data_license", evidence_id)
+                around = text[max(0, match.start() - 80):match.end() + 80]
+                if PLACEHOLDER_RE.search(around):
+                    snapshot.mark_placeholder("data_license")
+                else:
+                    snapshot.mark("data_license", evidence_id)
+                return
+
+    def find_model_license() -> None:
+        license_re = re.compile(
+            r"\blicen[cs]e\b|\bterms of use\b|\bMIT\b|\bApache[- ]?2\.0\b|\bCC[ -]?BY\b",
+            re.IGNORECASE,
+        )
+        model_re = re.compile(
+            r"\b(?:model|checkpoint|weights?|pre-?trained|backbone)\b",
+            re.IGNORECASE,
+        )
+        for rel_path, text in preferred_text_items():
+            name = Path(rel_path).name.lower()
+            is_model_card = name.startswith("model_card") or name.startswith("model-card")
+            lines = text.splitlines()
+            for index, line in enumerate(lines):
+                if not license_re.search(line):
+                    continue
+                context = " ".join(lines[max(0, index - 6): min(len(lines), index + 4)])
+                if not is_model_card and not model_re.search(context):
+                    continue
+                path = root / rel_path
+                evidence_id = snapshot.add_evidence(
+                    "model-license", path, index + 1, line.strip()
+                )
+                around = text[max(0, index - 80):index + 80]
+                if PLACEHOLDER_RE.search(around):
+                    snapshot.mark_placeholder("model_license")
+                else:
+                    snapshot.mark("model_license", evidence_id)
                 return
 
     criterion_flags = {
@@ -399,7 +479,13 @@ def scan_repo(root: Path) -> RepoSnapshot:
     )
     find_text(data_download_pattern, "data_download_command", "data-command")
     find_data_license()
-    find_text(r"accuracy|f1|bleu|rouge|psnr|ssim|expected|reproduce", "expected_results", "metric")
+    find_model_license()
+    find_text_scoped(
+        r"\b(?:accuracy|precision|recall|f1(?:-?score)?|bleu|rouge|psnr|ssim|iou|wer|cer)\b|(?-i:\bmAP\b)|\bmean\s+average\s+precision\b|\bexpected\s+(?:result|score|metric)\b|\btarget\s+(?:result|score|metric)\b",
+        "expected_results",
+        "metric",
+        is_documentation,
+    )
     find_text(r"torch\.manual_seed\s*\(\s*\d+|np\.random\.seed\s*\(\s*\d+|random_state\s*=\s*\d+|seed\s*[:=]\s*\d+", "seed", "determinism")
     find_text(r"cuda|gpu|a100|v100|h100|vram|nvidia", "hardware", "hardware")
     find_model_source_link()
@@ -410,9 +496,19 @@ def scan_repo(root: Path) -> RepoSnapshot:
     )
     find_text(model_version_pattern, "model_version", "model")
     find_text(r"prompt|system message|template", "prompt_mention", "prompt")
-    find_text(r"train[/_-]?(val|test)|validation|split", "eval_split", "evaluation")
-    find_text(r"contamination|leakage|data leak", "contamination", "evaluation")
-    find_text(r"gpu hour|training time|inference cost|inference latency|token usage|tokens per second|cost", "cost", "cost")
+    find_text_scoped(
+        r"\btrain(?:ing)?\b[^\n]{0,80}\b(?:val|validation|test)\b|\b(?:val|validation|test)\s+(?:set|data|split)\b|\bdata\s+split\b",
+        "eval_split",
+        "evaluation",
+        is_documentation,
+    )
+    find_text_scoped(r"contamination|leakage|data leak", "contamination", "evaluation", is_documentation)
+    find_text_scoped(
+        r"\b(?:inference|model)\s+(?:cost|latency)\b|\btoken\s+(?:usage|cost)\b|\btokens?\s+per\s+second\b|\bcost\s+per\s+(?:request|token)\b",
+        "cost",
+        "cost",
+        is_documentation,
+    )
     model_provider_pattern = (
         r"openai\s*(?:api|api key|\.com/v1)|openai-compatible|anthropic\s*api|"
         r"azure\s*openai|gemini\s*api|cohere\s*api|\bollama\b|\bvllm\b|"
@@ -426,7 +522,7 @@ def scan_repo(root: Path) -> RepoSnapshot:
     )
     find_text(llm_explicit_pattern, "llm_explicit", "llm")
     find_text_scoped(r"prompt_version|template_version|prompt[^\n]*version|version[^\n]*prompt", "prompt_version", "prompt", is_prompt_or_config)
-    find_text_scoped(r"temperature|top_p|top_k|max_tokens|presence_penalty|frequency_penalty", "sampling_params", "llm-config", is_config_or_script)
+    find_sampling_params()
     find_text_scoped(r"tokenizer|context_window|context window|max_context|tiktoken|sentencepiece", "tokenizer", "llm-config", is_config_or_script)
     find_text(r"retrieval[- ]augmented generation|\bRAG\b|retriever|vector store|vector database|faiss|chroma|pinecone|weaviate|qdrant|milvus", "rag_project", "rag")
     find_text_scoped(r"index_name|index_version|collection_name|vector_store|embedding_model|chunk_size|chunk_overlap|knowledge base", "rag_index", "rag", is_config_or_script)
@@ -434,7 +530,12 @@ def scan_repo(root: Path) -> RepoSnapshot:
     find_text_scoped(r"agent[_ -]?trace|tool[_ -]?trace|trajectory|tool_call|tool call|run_id|session_id|trace_id", "agent_trace", "agent", is_config_or_script)
     find_text_scoped(r"chunk_size|chunk_overlap|index_name|collection_name|index_version|embedding_model", "rag_config", "rag", is_config_only)
     find_text_scoped(r"run_id|session_id|trace_id|trace_path|log_path", "agent_trace_artifact", "agent", lambda rel_path: is_config_only(rel_path) or "trace" in rel_path.lower() or "log" in rel_path.lower())
-    find_text(r"eval dataset|evaluation set|benchmark|golden set|test set", "eval_dataset", "evaluation")
+    find_text_scoped(
+        r"\b(?:evaluation|eval)\s+(?:dataset|set)\b|\bgolden\s+set\b|\btest\s+set\b|\bbenchmark\s+(?:dataset|set|suite)\b",
+        "eval_dataset",
+        "evaluation",
+        is_documentation,
+    )
 
     deps_text = snapshot.deps_text().lower()
     all_text = snapshot.text_blob().lower()

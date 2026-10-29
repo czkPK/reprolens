@@ -95,6 +95,118 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(by_id["DATA-02"].status, "pass")
         self.assertEqual(by_id["DATA-03"].status, "pass")
 
+    def test_project_license_is_not_data_or_model_license(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM application\n\n"
+                "This project uses an OpenAI-compatible API and a dataset.\n"
+                "Dataset: https://huggingface.co/datasets/example/data\n",
+                encoding="utf-8",
+            )
+            (root / "LICENSE").write_text("MIT License\n", encoding="utf-8")
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["DATA-03"].status, "missing")
+        self.assertEqual(by_id["DATA-03"].evidence_ids, [])
+        self.assertEqual(by_id["MODEL-03"].status, "missing")
+        self.assertEqual(by_id["MODEL-03"].evidence_ids, [])
+
+    def test_model_card_license_is_model_specific_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text("# LLM application\n", encoding="utf-8")
+            (root / "model_card.md").write_text(
+                "# Model card\n\nLicense: Apache-2.0\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["MODEL-03"].status, "pass")
+        self.assertTrue(by_id["MODEL-03"].evidence_ids)
+
+    def test_sampling_parameters_do_not_satisfy_seed_or_tokenizer(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM application\n\nThis project uses an OpenAI-compatible API.\n",
+                encoding="utf-8",
+            )
+            (root / "config.yaml").write_text("temperature: 0.2\ntop_p: 0.9\n", encoding="utf-8")
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["LLM-03"].status, "pass")
+        self.assertEqual(by_id["EXP-03"].status, "missing")
+        self.assertEqual(by_id["EXP-03"].evidence_ids, [])
+        self.assertEqual(by_id["LLM-04"].status, "missing")
+        self.assertEqual(by_id["LLM-04"].evidence_ids, [])
+
+    def test_dependency_manifest_is_not_hardware_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "requirements.txt").write_text("torch==2.4.0\n", encoding="utf-8")
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["EXP-04"].status, "missing")
+        self.assertEqual(by_id["EXP-04"].evidence_ids, [])
+
+    def test_eval_dataset_is_not_expected_result_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM application\n\nWe use an evaluation dataset for testing.\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["EXP-05"].status, "missing")
+        self.assertEqual(by_id["EXP-05"].evidence_ids, [])
+
+    def test_generic_benchmark_top_k_and_training_time_are_not_mismatched(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM application\n\n"
+                "This project reports benchmark results and total training time.\n",
+                encoding="utf-8",
+            )
+            (root / "config.yaml").write_text(
+                "TOP_K: 2\nCUDNN_BENCHMARK: True\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["LLM-03"].status, "missing")
+        self.assertEqual(by_id["LLM-03"].evidence_ids, [])
+        self.assertEqual(by_id["LLM-08"].status, "missing")
+        self.assertEqual(by_id["LLM-08"].evidence_ids, [])
+
+    def test_generic_reproduce_phrase_is_not_expected_result_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM application\n\nWe aim to reproduce the original implementation.\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["EXP-05"].status, "missing")
+        self.assertEqual(by_id["EXP-05"].evidence_ids, [])
+
+    def test_agent_or_rag_detection_is_not_trace_or_index_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "README.md").write_text(
+                "# LLM agent\n\nThis project is a RAG agent with tool calling.\n",
+                encoding="utf-8",
+            )
+            criteria = evaluate_criteria(scan_repo(root))
+        by_id = {item.id: item for item in criteria}
+        self.assertEqual(by_id["LLM-05"].status, "missing")
+        self.assertEqual(by_id["LLM-05"].evidence_ids, [])
+        self.assertEqual(by_id["LLM-06"].status, "missing")
+        self.assertEqual(by_id["LLM-06"].evidence_ids, [])
+
     def test_prompt_check_not_applicable_for_non_llm_repo(self):
         root = Path(__file__).resolve().parents[1] / "examples" / "demo-ai-repo"
         snapshot = scan_repo(root)

@@ -29,6 +29,7 @@ EVIDENCE_TYPE_LABELS = {
     "data-license": "数据许可说明",
     "model": "模型名称或版本线索",
     "model-source": "模型权重或下载来源",
+    "model-license": "模型专用许可或来源说明",
     "weights": "模型权重文件",
     "llm-provider": "LLM 服务提供方",
     "llm": "LLM 使用线索",

@@ -111,14 +111,18 @@ class IntegrationTests(unittest.TestCase):
 
     def test_post_json_rejects_platform_error_response(self):
         class Handler(BaseHTTPRequestHandler):
+            protocol_version = "HTTP/1.0"
+
             def do_POST(self):
                 body = b'{"errcode": 310000, "errmsg": "keyword not matched"}'
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
+                self.send_header("Connection", "close")
                 self.end_headers()
                 self.wfile.write(body)
                 self.wfile.flush()
+                self.close_connection = True
 
             def log_message(self, fmt, *args):
                 return
